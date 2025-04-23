@@ -478,81 +478,213 @@ document.addEventListener("DOMContentLoaded", function() {
       ⭐️ Experimente o Eletta agora!
     </a>
 </div>
-|<br>
+<br>
 <h2>🌟 Por que usar o Eletta?</h2>
 
 <div style="display: flex; gap: 1.5em; flex-wrap: wrap; justify-content: center;">
   <div class="feature-card" style="border-left: 6px solid #009688; background: linear-gradient(135deg,#b2dfdb 60%,#80cbc4 100%); color: #1a2a2a;">
-      <h3 style="color:#004d40;">🔒 Segurança</h3>
-      <p style="color:#1a2a2a;">
+      <h3 style="color:#004d40;" align= "center">🔒 Segurança</h3>
+      <p style="color:#1a2a2a;" align= "center">
         Anonimato garantido, resultados transparentes e integridade dos votos para máxima confiança no processo.
       </p>
   </div>
   <div class="feature-card" style="border-left: 6px solid #673ab7; background: linear-gradient(135deg,#d1c4e9 60%,#9575cd 100%); color: #2e2257;">
-    <h3 style="color:#4527a0;">⚡ Rapidez</h3>
-    <p style="color:#2e2257;">Resultados instantâneos e interface responsiva para qualquer dispositivo.</p>
+    <h3 style="color:#4527a0;" align= "center">⚡ Rapidez</h3>
+    <p style="color:#2e2257;" align= "center">Resultados instantâneos e interface responsiva para qualquer dispositivo Android.</p>
   </div>
   <div class="feature-card" style="border-left: 6px solid #ff9800; background: linear-gradient(135deg,#ffe0b2 60%,#ffb74d 100%); color: #6d4c1b;">
-    <h3 style="color:#ef6c00;">🧩 Flexibilidade</h3>
-    <p style="color:#6d4c1b;">Ideal para empresas, escolas, comunidades e qualquer grupo que precise decidir.</p>
+    <h3 style="color:#ef6c00;" align= "center">🧩 Flexibilidade</h3>
+    <p style="color:#6d4c1b;" align= "center">Ideal para empresas, escolas, comunidades e qualquer grupo que precise decidir.</p>
   </div>
 
 </div>
 
 
-
+<br>
 <h2>👥 Nossa Equipe</h2>
-
-<div align="center" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: flex-start;">
-
-  <div style="min-width:140px;">
-    <img src="https://avatars.githubusercontent.com/u/191532479?v=4" width="100" style="border-radius:50%"><br>
-    <b>Giovanni Mateus</b><br>
-    <span title="Product Owner" style="font-size:1.1em;">🧑‍💼 Product Owner</span><br>
-    <a href="https://github.com/GiovanniMateus">@GiovanniMateus</a>
+<br>
+<!-- Carrossel de colaboradores (transição slide suave real, mais largo) -->
+<div id="eletta-collab-carousel" style="display: flex; flex-direction: column; align-items: center; gap: 1.5em;">
+  <div style="display: flex; align-items: center; gap: 2em;">
+    <button id="collab-prev" style="background: none; border: none; font-size: 2.5em; color: #fff; cursor: pointer; padding: 0 0.5em; border-radius: 50%; transition: background 0.2s;" onmouseover="this.style.background='#e0e0e0';this.style.color='#39745F'" onmouseout="this.style.background='none';this.style.color='#fff'">&#8592;</button>
+    <div id="collab-cards-viewport" style="overflow:hidden; width:1100px; min-height:270px; display:flex; align-items:stretch; justify-content:center;">
+      <div id="collab-cards" style="display: flex; gap: 2.5em; transition: transform 0.7s cubic-bezier(.77,0,.18,1); will-change: transform;">
+        <!-- Cards dos colaboradores via JS -->
+      </div>
+    </div>
+    <button id="collab-next" style="background: none; border: none; font-size: 2.5em; color: #fff; cursor: pointer; padding: 0 0.5em; border-radius: 50%; transition: background 0.2s;" onmouseover="this.style.background='#e0e0e0';this.style.color='#39745F'" onmouseout="this.style.background='none';this.style.color='#fff'">&#8594;</button>
   </div>
-  <div style="min-width:140px;">
-      <img src="https://avatars.githubusercontent.com/u/108472844?v=4" width="100" style="border-radius:50%"><br>
-      <b>Lívia Yasmin</b><br>
-      <span title="Scrum Master" style="font-size:1.1em;">🧑‍🏫 Scrum Master</span><br>
-      <a href="https://github.com/LiviaYasmin">@LiviaYasmin</a>
-  </div>
-  <div style="min-width:140px;">
-    <img src="https://avatars.githubusercontent.com/u/84422077?v=4" width="100" style="border-radius:50%"><br>
-    <b>Davi de Araújo</b><br>
-    <span title="Desenvolvedor" style="font-size:1.1em;">💻 Dev</span><br>
-    <a href="https://github.com/daviaraujobr">@daviaraujobr</a>
-  </div>
-
-  <div style="min-width:140px;">
-    <img src="https://avatars.githubusercontent.com/u/198164711?v=4" width="100" style="border-radius:50%"><br>
-    <b>Enzo Borges</b><br>
-    <span title="Desenvolvedor" style="font-size:1.1em;">💻 Dev</span><br>
-    <a href="https://github.com/enzo-fb">@enzo-fb</a>
-  </div>
-
-
-
-  <div style="min-width:140px;">
-    <img src="https://avatars.githubusercontent.com/u/145588777?v=4" width="100" style="border-radius:50%"><br>
-    <b>Renan Ribeiro</b><br>
-    <span title="Desenvolvedor" style="font-size:1.1em;">💻 Dev</span><br>
-    <a href="https://github.com/rsribeiro1">@rsribeiro1</a>
-  </div>
-
-  <div style="min-width:140px;">
-    <img src="https://avatars.githubusercontent.com/u/181674474?v=4" width="100" style="border-radius:50%"><br>
-    <b>André Livio</b><br>
-    <span title="Desenvolvedor" style="font-size:1.1em;">💻 Dev</span><br>
-    <a href="https://github.com/AndreLivio">@AndreLivio</a>
-  </div>
-
+  <div id="collab-indicators" style="display: flex; gap: 0.4em; margin-top: 0.5em;"></div>
 </div>
 
+<style>
+#collab-cards .collab-card {
+  min-width: 320px;
+  max-width: 340px;
+  min-height: 280px;
+  margin: 0;
+  /* Fundo claro e agradável, texto escuro para contraste */
+  background: linear-gradient(135deg, #e0f7fa 10%, #009688 100%);
+  border-radius: 22px;
+  box-shadow: 0 6px 32px #0002;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.2em 1.2em 1.5em 1.2em;
+  border: 3px solid #e0e0e0;
+  transition: box-shadow 0.2s, transform 0.2s;
+  color: #1a2a2a;
+}
+#collab-cards .collab-card:hover {
+  box-shadow: 0 12px 36px #39745F33;
+  transform: scale(1.04);
+}
+#collab-cards .collab-card b {
+  color: #24544e;
+}
+#collab-cards .collab-card span {
+  color: #444;
+}
+#collab-cards .collab-card a {
+  color: #39745F;
+  text-decoration: none;
+  font-weight: 500;
+}
+#collab-cards .collab-card a:hover {
+  text-decoration: underline;
+}
+</style>
 
+<script>
+const collabs = [
+  {
+    img: "https://avatars.githubusercontent.com/u/191532479?v=4",
+    name: "Giovanni Mateus",
+    role: "🧑‍💼 Product Owner",
+    github: "GiovanniMateus"
+  },
+  {
+    img: "https://avatars.githubusercontent.com/u/108472844?v=4",
+    name: "Lívia Yasmin",
+    role: "🧑‍🏫 Scrum Master",
+    github: "LiviaYasmin"
+  },
+  {
+    img: "https://avatars.githubusercontent.com/u/198164711?v=4",
+    name: "Enzo Borges",
+    role: "💻 Dev",
+    github: "enzo-fb"
+  },
+  {
+    img: "https://avatars.githubusercontent.com/u/84422077?v=4",
+    name: "Davi de Araújo",
+    role: "💻 Dev",
+    github: "daviaraujobr"
+  },
 
+  {
+    img: "https://avatars.githubusercontent.com/u/145588777?v=4",
+    name: "Renan Ribeiro",
+    role: "💻 Dev",
+    github: "rsribeiro1"
+  },
+  {
+    img: "https://avatars.githubusercontent.com/u/181674474?v=4",
+    name: "André Livio",
+    role: "💻 Dev",
+    github: "AndreLivio"
+  }
+];
+let collabIdx = 0;
+let collabInterval = null;
+let isHovered = false;
+let isTransitioning = false;
 
-<p align="center" style="margin-top:2em;">
+// Para slide: duplicar os cards para efeito infinito
+function getVisibleCards(idx) {
+  const total = collabs.length;
+  let cards = [];
+  for (let i = 0; i < total; i++) {
+    cards.push(collabs[i]);
+  }
+  // Para looping suave, duplicar o array
+  return cards.concat(cards);
+}
+
+function renderCollabs(idx, animate = true) {
+  const total = collabs.length;
+  const cardsDiv = document.getElementById('collab-cards');
+  const visibleCards = getVisibleCards(idx);
+  let html = '';
+  for (let i = 0; i < visibleCards.length; i++) {
+    const c = visibleCards[i];
+    html += `
+      <div class="collab-card">
+        <img src="${c.img}" width="120" style="border-radius:50%;box-shadow:0 2px 12px #0002;">
+        <b style="margin-top:1.1em; font-size:1.22em; color:#39745F">${c.name}</b>
+        <span style="font-size:1.18em; margin:0.5em 0 0.7em 0; color:#555;">${c.role}</span>
+        <a href="https://github.com/${c.github}" target="_blank" style="font-size:1.13em; color:#333; text-decoration:none;">@${c.github}</a>
+      </div>
+    `;
+  }
+  cardsDiv.innerHTML = html;
+
+  // Calcula o deslocamento para mostrar o trio correto
+  const cardWidth = 340 + 40; // largura + gap (aprox)
+  let offset = idx * cardWidth;
+  cardsDiv.style.transform = `translateX(-${offset}px)`;
+
+  // Indicadores
+  let indicators = '';
+  for (let i = 0; i < total; i++) {
+    indicators += `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${i===idx?'#39745F':'#bdbdbd'};margin:0 2px;transition:background 0.2s;"></span>`;
+  }
+  document.getElementById('collab-indicators').innerHTML = indicators;
+}
+
+function nextCollab() {
+  if (isTransitioning) return;
+  isTransitioning = true;
+  const total = collabs.length;
+  collabIdx = (collabIdx + 1) % total;
+  renderCollabs(collabIdx, true);
+  setTimeout(() => { isTransitioning = false; }, 700);
+}
+
+function prevCollab() {
+  if (isTransitioning) return;
+  const total = collabs.length;
+  collabIdx = (collabIdx - 1 + total) % total;
+  isTransitioning = true;
+  renderCollabs(collabIdx, true);
+  setTimeout(() => { isTransitioning = false; }, 700);
+}
+
+document.getElementById('collab-prev').onclick = prevCollab;
+document.getElementById('collab-next').onclick = nextCollab;
+
+// Auto-move
+function startAutoMove() {
+  if (collabInterval) clearInterval(collabInterval);
+  collabInterval = setInterval(() => {
+    if (!isHovered && !isTransitioning) nextCollab();
+  }, 3500);
+}
+function stopAutoMove() {
+  if (collabInterval) clearInterval(collabInterval);
+}
+
+const carousel = document.getElementById('eletta-collab-carousel');
+carousel.addEventListener('mouseenter', () => { isHovered = true; });
+carousel.addEventListener('mouseleave', () => { isHovered = false; });
+
+renderCollabs(collabIdx, false);
+startAutoMove();
+</script>
+
+<!-- ...existing code... -->
+
+<p align="center" style="margin-top:4em;">
   Junte-se a nós e transforme a forma de decidir!<br>
   <sub>© 2025 Eletta &mdash; Licença <a href="https://github.com/unb-mds/2025-1-Eletta/blob/main/LICENSE">MIT</a></sub>
 </p>
