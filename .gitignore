@@ -163,3 +163,4 @@ cython_debug/
 storage/
 __pycache__/
 .pytest_cache/
+.coverage
