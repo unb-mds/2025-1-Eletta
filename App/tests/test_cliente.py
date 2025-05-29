@@ -1,6 +1,9 @@
-import pytest
 from unittest.mock import patch, MagicMock
-from servidor.cliente import *  # seu arquivo cliente.py
+from servidor.cliente import (
+    virar_votante,
+    receber_mensagem,
+    votar,
+)  # seu arquivo cliente.py
 
 
 @patch("socket.socket")

@@ -1,4 +1,5 @@
 flet
 pytest
 coverage
-flake8
+black 
+ruff

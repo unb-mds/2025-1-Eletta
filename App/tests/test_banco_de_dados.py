@@ -1,5 +1,3 @@
-import pytest
-import json
 from unittest.mock import mock_open, patch
 from servidor.Data_Base.DB import (
     Banco_de_Dados,
