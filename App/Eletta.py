@@ -36,4 +36,4 @@ def main(page: ft.Page) -> None:
     page.on_route_change = mudar_de_pagina
     page.go("/")
 
-ft.app(target=main)
+ft.app(target=main, assets_dir="assets") #Lê o diretório
