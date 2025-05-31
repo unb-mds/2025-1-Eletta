@@ -15,7 +15,7 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
                         text="virar votante",
                         width=117,
                         height=56,
-                        color=ft.colors.WHITE,
+                        color=ft.Colors.WHITE,
                         bgcolor="#39746F",
                         on_click=controlador.entrar_na_votacao_como_votante,
                         style=ft.ButtonStyle(
@@ -30,7 +30,7 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
                         text="virar host",
                         width=117,
                         height=56,
-                        color=ft.colors.WHITE,
+                        color=ft.Colors.WHITE,
                         bgcolor="#39746F",
                         on_click=controlador.entrar_na_votacao_como_host,
                         style=ft.ButtonStyle(
@@ -55,7 +55,7 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
         controls=conteudo_da_pagina, 
         vertical_alignment = ft.MainAxisAlignment.CENTER, 
         horizontal_alignment = ft.CrossAxisAlignment.CENTER,
-        bgcolor= ft.colors.WHITE
+        bgcolor= ft.Colors.WHITE
         )
     
 def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
