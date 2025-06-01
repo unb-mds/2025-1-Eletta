@@ -20,7 +20,7 @@ def pagina_de_votacao(page: ft.Page, controlador: "Controlador") -> ft.View:
                 value=pauta,
                 size=14,
                 text_align=ft.TextAlign.CENTER,
-                color=ft.colors.BLACK,
+                color=ft.Colors.BLACK
             ),
             padding=20,
             border=ft.border.all(3, "#39746F"),
@@ -33,8 +33,9 @@ def pagina_de_votacao(page: ft.Page, controlador: "Controlador") -> ft.View:
                     text="A favor",
                     width=117,
                     height=56,
-                    bgcolor="#47D147",
-                    color=ft.colors.WHITE,
+
+                    bgcolor='#47D147',
+                    color=ft.Colors.WHITE,
                     on_click=controlador.votar,
                     data=2,
                 ),
@@ -42,8 +43,8 @@ def pagina_de_votacao(page: ft.Page, controlador: "Controlador") -> ft.View:
                     text="Contra",
                     width=117,
                     height=56,
-                    bgcolor="#C83A3A",
-                    color=ft.colors.WHITE,
+                    bgcolor='#C83A3A',
+                    color=ft.Colors.WHITE,
                     on_click=controlador.votar,
                     data=1,
                 ),
@@ -51,8 +52,9 @@ def pagina_de_votacao(page: ft.Page, controlador: "Controlador") -> ft.View:
                     text="Abster-se",
                     width=117,
                     height=56,
-                    bgcolor="#828E82",
-                    color=ft.colors.WHITE,
+
+                    bgcolor='#828E82',
+                    color=ft.Colors.WHITE,
                     on_click=controlador.votar,
                     data=0,
                 ),
@@ -80,18 +82,9 @@ def pagina_de_confirmacao(
         ),
         ft.Row(
             [
-                ft.ElevatedButton(
-                    "Confirmo",
-                    bgcolor="#47D147",
-                    color=ft.colors.WHITE,
-                    on_click=controlador.confirmar_voto,
-                ),
-                ft.ElevatedButton(
-                    "Não confirmo",
-                    bgcolor="#C83A3A",
-                    color=ft.colors.WHITE,
-                    on_click=controlador.cancelar_voto,
-                ),
+                ft.ElevatedButton("Confirmo", bgcolor="#47D147", color=ft.Colors.WHITE, on_click=controlador.confirmar_voto),
+                ft.ElevatedButton("Não confirmo", bgcolor="#C83A3A", color=ft.Colors.WHITE, on_click=controlador.cancelar_voto),
+
             ],
             alignment=ft.MainAxisAlignment.CENTER,
         ),
