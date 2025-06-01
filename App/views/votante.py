@@ -87,3 +87,4 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         )
     ]
     return ft.View('/resultado', controls=conteudo_da_pagina, vertical_alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER, bgcolor=ft.colors.WHITE)
+

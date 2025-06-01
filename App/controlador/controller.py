@@ -51,13 +51,13 @@ class Controlador():
         self.page.go('/resultado')
 
     def cancelar_voto(self, e):
-        nova_mensagem = cliente.receber_mensagem(self.udp_socket)
-        if nova_mensagem == 'votação encerrada':
-            self.mensagem = nova_mensagem
-            self.page.go('/resultado')
-        else:
-            self.page.go('/votacao')
+        self.page.go('/votacao')
 
+    def encerrar_espera_de_votos(self, e):
+        self.flag_de_controle.set()
+        self.process.join()
+        self.mensagem = servidor.mostrar_resultados(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self.page.go('/resultado')
     # ----------- host -------------
     def entrar_na_votacao_como_host(self, e) -> None:
         self.udp_socket = servidor.virar_host()
@@ -71,14 +71,21 @@ class Controlador():
 
     def enviar_pauta(self, e: ft.ControlEvent):
         self.process, self.flag_de_controle = servidor.aguardar_votos(self.banco_de_dados, self.udp_socket)
-        self.mensagem = e.control.data.value
+
+        campo_texto, dropdown_tempo = e.control.data
+        self.mensagem = campo_texto.value
+        tempo = int(dropdown_tempo.value)  # em segundos
+
         self.banco_de_dados.adicionar_pauta(self.mensagem)
         self.banco_de_dados.serializar_dados()
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
-        self.page.go('/espera_votos')
 
-    def encerrar_espera_de_votos(self, e):
-        self.flag_de_controle.set()
-        self.process.join()
-        self.mensagem = servidor.mostrar_resultados(self.banco_de_dados, self.udp_socket, self.mensagem)
-        self.page.go('/resultado')
+        # Cronômetro que encerra a votação automaticamente
+        def encerrar_votacao_automaticamente():
+            if not self.flag_de_controle.is_set():
+                self.encerrar_espera_de_votos(None)
+
+        import threading
+        threading.Timer(tempo, encerrar_votacao_automaticamente).start()
+
+        self.page.go('/espera_votos')

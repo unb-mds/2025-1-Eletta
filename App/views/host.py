@@ -7,17 +7,32 @@ def pagina_de_espera_votantes(page: ft.Page, controlador = 'Controlador') -> ft.
     return ft.View('/espera_votantes', controls=conteudo_da_pagina, vertical_alignment = ft.MainAxisAlignment.CENTER, horizontal_alignment = ft.CrossAxisAlignment.CENTER)
 
 def pagina_de_criacao_de_pauta(page: ft.Page, controlador = 'Controlador') -> ft.View:
-    texto = ft.TextField(label='digite a pauta que será votada')
+    texto = ft.TextField(label='Digite a pauta que será votada')
+    
+    dropdown_tempo = ft.Dropdown(
+        label="Tempo de votação",
+        options=[
+            ft.dropdown.Option("30"),
+            ft.dropdown.Option("45"),
+            ft.dropdown.Option("60")
+        ],
+        value="30"  # valor padrão
+    )
+
     conteudo_da_pagina = [
-        ft.Row(
-            [
+        ft.Column(
+            controls=[
                 texto,
-                ft.ElevatedButton('enviar pauta', on_click=controlador.enviar_pauta, data=texto)
+                dropdown_tempo,
+                ft.ElevatedButton('Enviar pauta', on_click=controlador.enviar_pauta, data=(texto, dropdown_tempo))
             ],
-            alignment = ft.MainAxisAlignment.CENTER
-        ),
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
+        )
     ]
-    return ft.View('/criacao_de_pauta', controls=conteudo_da_pagina, vertical_alignment = ft.MainAxisAlignment.CENTER, horizontal_alignment = ft.CrossAxisAlignment.CENTER)
+    return ft.View('/criacao_de_pauta', controls=conteudo_da_pagina,
+                   vertical_alignment=ft.MainAxisAlignment.CENTER,
+                   horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+
 
 def pagina_de_espera_votos(page: ft.Page, controlador = 'Controlador') -> ft.View:
     conteudo_da_pagina = [
