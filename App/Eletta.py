@@ -2,6 +2,7 @@ import flet as ft
 from controlador import controller
 from views import votante, host, home
 
+
 def main(page: ft.Page) -> None:
     controlador = controller.Controlador(page)
 
@@ -17,7 +18,11 @@ def main(page: ft.Page) -> None:
             page.views.append(votante.pagina_de_votacao(page, controlador))
 
         elif page.route == "/confirmacao":
-            page.views.append(votante.pagina_de_confirmacao(page, controlador, controlador.voto_pendente))
+            page.views.append(
+                votante.pagina_de_confirmacao(
+                    page, controlador, controlador.voto_pendente
+                )
+            )
 
         elif page.route == "/espera_votantes":
             page.views.append(host.pagina_de_espera_votantes(page, controlador))
@@ -31,9 +36,13 @@ def main(page: ft.Page) -> None:
         elif page.route == "/resultado":
             page.views.append(home.pagina_do_resultado(page, controlador.mensagem))
 
+        elif page.route == "/resultado_host":
+            page.views.append(host.pagina_do_resultado_host(page, controlador))
+
         page.update()
 
     page.on_route_change = mudar_de_pagina
     page.go("/")
 
-ft.app(target=main, assets_dir="assets") #Lê o diretório
+
+ft.app(target=main, assets_dir="assets")  # Lê o diretório
