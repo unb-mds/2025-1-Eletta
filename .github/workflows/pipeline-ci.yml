@@ -1,0 +1,73 @@
+name: Eletta - Build, Linting and Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11.7"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Rodar teste de build (verificar inicialização da aplicação)
+        working-directory: App
+        run: |
+          echo "Iniciando verificação de build: tentando iniciar a aplicação..."
+          flet run Eletta.py
+          echo "✅ Aplicação iniciada com sucesso. Build concluído sem erros!"
+
+      - name: Run Black (checagem de formatação)
+        run: black --check App/
+
+      - name: Run Ruff (checagem de lint)
+        run: ruff check App/
+
+      - name: Post comment on PR if linting or formatting fails
+        if: failure() && github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ❌ **Seu código não passou na formatação ou linting!**
+
+            Por favor, corrija os problemas antes de enviar novamente:
+
+            - 🖊️ **Formatação:** `black .`
+            - 🔍 **Linting:** `ruff check --fix .`
+
+            Após corrigir, faça:
+            ```
+            git add .
+            git commit -m "Corrigindo lint"
+            git push
+            ```
+
+      - name: Executar testes automatizados com cobertura de código
+        working-directory: App
+        run: |
+          echo "🔎 Iniciando testes automatizados com coverage..."
+          coverage run -m pytest
+          coverage report -m
+          echo "✅ Testes concluídos e relatório de coverage gerado com sucesso!"
