@@ -1,51 +1,43 @@
 {
   "votantes": {
-    "34490": {
-      "PORT": "127.0.0.1",
-      "votos contra": [
-        "teste 321"
-      ],
-      "votos a favor": [
-        "teste123",
-        "funciona "
-      ],
-      "votos nulo": [],
-      "pautas votadas": [
-        "teste123",
-        "teste 321",
-        "funciona "
-      ]
-    },
-    "36018": {
-      "PORT": "127.0.0.1",
-      "votos contra": [
-        "teste123",
-        "funciona "
-      ],
-      "votos a favor": [],
-      "votos nulo": [
-        "teste 321"
-      ],
-      "pautas votadas": [
-        "teste123",
-        "teste 321",
-        "funciona "
-      ]
-    },
-    "42373": {
+    "39717": {
       "PORT": "127.0.0.1",
       "votos contra": [],
       "votos a favor": [
         "teste123",
-        "funciona "
-      ],
-      "votos nulo": [
         "teste 321"
       ],
+      "votos nulo": [],
       "pautas votadas": [
         "teste123",
-        "teste 321",
-        "funciona "
+        "teste 321"
+      ]
+    },
+    "52498": {
+      "PORT": "127.0.0.1",
+      "votos contra": [
+        "teste123"
+      ],
+      "votos a favor": [
+        "teste 321"
+      ],
+      "votos nulo": [],
+      "pautas votadas": [
+        "teste123",
+        "teste 321"
+      ]
+    },
+    "59123": {
+      "PORT": "127.0.0.1",
+      "votos contra": [],
+      "votos a favor": [
+        "teste123",
+        "teste 321"
+      ],
+      "votos nulo": [],
+      "pautas votadas": [
+        "teste123",
+        "teste 321"
       ]
     }
   },
@@ -56,13 +48,8 @@
       "qtd de votos anulados": 0
     },
     "teste 321": {
-      "qtd de votos a favor": 0,
-      "qtd de votos contra": 1,
-      "qtd de votos anulados": 2
-    },
-    "funciona ": {
-      "qtd de votos a favor": 2,
-      "qtd de votos contra": 1,
+      "qtd de votos a favor": 3,
+      "qtd de votos contra": 0,
       "qtd de votos anulados": 0
     }
   }

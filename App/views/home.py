@@ -1,15 +1,14 @@
 import flet as ft
 
-def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
+
+def pagina_inicial(page: ft.Page, controlador: "Controlador") -> ft.View:
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),  # Retângulo superior
-
         ft.Container(
             expand=True,  # Ocupa o espaço central
             content=ft.Column(
                 [
                     ft.Image(src="logo.png", width=200, height=200),  # Logo
-
                     ##### botão de votante #####
                     ft.ElevatedButton(
                         text="virar votante",
@@ -20,11 +19,14 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
                         on_click=controlador.entrar_na_votacao_como_votante,
                         style=ft.ButtonStyle(
                             padding=20,
-                            text_style=ft.TextStyle(size=13, weight=ft.FontWeight.NORMAL, font_family='Inter')
-                        )
+                            text_style=ft.TextStyle(
+                                size=13,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
+                            ),
+                        ),
                     ),
                     ############################
-                    
                     ##### Botão de host #####
                     ft.ElevatedButton(
                         text="virar host",
@@ -35,31 +37,37 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
                         on_click=controlador.entrar_na_votacao_como_host,
                         style=ft.ButtonStyle(
                             padding=20,
-                            text_style=ft.TextStyle(size=13, weight=ft.FontWeight.NORMAL, font_family='Inter')
-                        )
-                    )
+                            text_style=ft.TextStyle(
+                                size=13,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
+                            ),
+                        ),
+                    ),
                     ##########################
-                    
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                expand=True
-            )
+                expand=True,
+            ),
         ),
-
-        ft.Container(height=45, bgcolor="#39746F")  # Retângulo inferior da tela
+        ft.Container(height=45, bgcolor="#39746F"),  # Retângulo inferior da tela
     ]
 
     return ft.View(
-        '/', 
-        controls=conteudo_da_pagina, 
-        vertical_alignment = ft.MainAxisAlignment.CENTER, 
-        horizontal_alignment = ft.CrossAxisAlignment.CENTER,
-        bgcolor= ft.Colors.WHITE
-        )
-    
+        "/",
+        controls=conteudo_da_pagina,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+    )
+
+
 def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
-    conteudo_da_pagina = [
-        ft.Text(value=resultado)
-    ]
-    return ft.View('/resultado', controls=conteudo_da_pagina, vertical_alignment = ft.MainAxisAlignment.CENTER, horizontal_alignment = ft.CrossAxisAlignment.CENTER)
+    conteudo_da_pagina = [ft.Text(value=resultado)]
+    return ft.View(
+        "/resultado",
+        controls=conteudo_da_pagina,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    )
