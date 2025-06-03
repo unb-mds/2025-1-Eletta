@@ -1,16 +1,16 @@
 import flet as ft
+from controlador.controller import Controlador
 
 def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
     conteudo_da_pagina = [
-        ft.Container(height=45, bgcolor="#39746F"),  # Retângulo superior
+        ft.Container(height=45, bgcolor="#39746F"),
 
         ft.Container(
-            expand=True,  # Ocupa o espaço central
+            expand=True,
             content=ft.Column(
                 [
-                    ft.Image(src="logo.png", width=200, height=200),  # Logo
+                    ft.Image(src="logo.png", width=200, height=200),
 
-                    ##### botão de votante #####
                     ft.ElevatedButton(
                         text="virar votante",
                         width=117,
@@ -23,9 +23,7 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
                             text_style=ft.TextStyle(size=13, weight=ft.FontWeight.NORMAL, font_family='Inter')
                         )
                     ),
-                    ############################
                     
-                    ##### Botão de host #####
                     ft.ElevatedButton(
                         text="virar host",
                         width=117,
@@ -38,7 +36,6 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
                             text_style=ft.TextStyle(size=13, weight=ft.FontWeight.NORMAL, font_family='Inter')
                         )
                     )
-                    ##########################
                     
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -47,7 +44,7 @@ def pagina_inicial(page: ft.Page, controlador: 'Controlador') -> ft.View:
             )
         ),
 
-        ft.Container(height=45, bgcolor="#39746F")  # Retângulo inferior da tela
+        ft.Container(height=45, bgcolor="#39746F")
     ]
 
     return ft.View(

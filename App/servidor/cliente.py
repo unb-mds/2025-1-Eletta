@@ -15,7 +15,6 @@ def votar(votante: socket.socket, voto: str, pauta: str) -> None:
     voto = voto + ', ' + pauta
     votante.sendto(voto.encode(), server_addr)
 
-# ------- código para teste -------
 if __name__ == '__main__':
     votante = virar_votante()
     pauta = receber_mensagem(votante)

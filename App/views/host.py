@@ -16,7 +16,7 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador = 'Controlador') -> ft
             ft.dropdown.Option("45"),
             ft.dropdown.Option("60")
         ],
-        value="30"  # valor padrão
+        value="30"
     )
 
     conteudo_da_pagina = [

@@ -1,4 +1,3 @@
-# file: controller.py
 import flet as ft
 from servidor import servidor, cliente
 import threading
@@ -12,36 +11,28 @@ class Controlador():
         self.banco_de_dados = None
         self.mensagem = None
         self.process = None
-        self.flag_controle = None # Isto é para operações do lado do host
+        self.flag_controle = None
         self.voto_pendente = None
 
-        # Atributos do cronômetro do votante
-        self.tempo_votacao = 0  # Duração da votação atual em segundos
-        self.timer_control_votante = None  # Controle ft.Text para a exibição do cronômetro do votante
-        self.timer_thread_votante = None   # Thread para a contagem regressiva do votante
-        self.stop_timer_event = threading.Event() # Evento para sinalizar à thread do cronômetro para parar
+        self.tempo_votacao = 0
+        self.timer_control_votante = None
+        self.timer_thread_votante = None
+        self.stop_timer_event = threading.Event()
         
-        # NOVO: Timestamp de quando a pauta atual (self.mensagem) começou a ser votada.
-        # Este é o tempo de referência para calcular o tempo restante.
         self.pauta_start_timestamp = None 
-        # NOVO: A pauta atual para verificar se uma nova pauta foi iniciada.
         self.current_pauta_text = None 
 
         print(f"[Controlador INIT]: pauta_start_timestamp={self.pauta_start_timestamp}, current_pauta_text={self.current_pauta_text}")
         self.page.go('/')
 
-    # ----------- votante -------------
     def entrar_na_votacao_como_votante(self, e) -> None:
         self.udp_socket = cliente.virar_votante()
-        self.page.go('/espera') # Mostrar tela de espera
+        self.page.go('/espera')
 
         mensagem_recebida = cliente.receber_mensagem(self.udp_socket)
 
-        # SEMPRE PARA o cronômetro aqui, pois estamos processando uma NOVA mensagem.
-        # Isso garante que qualquer timer de UI anterior seja encerrado.
         self.stop_voter_countdown() 
         print(f"[entrar_na_votacao_como_votante]: stop_voter_countdown called.")
-
 
         if mensagem_recebida == 'votação encerrada':
             self.mensagem = "A votação geral foi encerrada pelo Host."
@@ -56,20 +47,17 @@ class Controlador():
                 nova_pauta_texto = partes[0]
                 novo_tempo_votacao = int(partes[1])
 
-                # Se a pauta mudou ou é a primeira vez que recebemos uma pauta
                 if nova_pauta_texto != self.current_pauta_text:
                     self.current_pauta_text = nova_pauta_texto
-                    self.pauta_start_timestamp = time.time() # Define o tempo de início desta nova pauta
+                    self.pauta_start_timestamp = time.time()
                     self.tempo_votacao = novo_tempo_votacao
-                    self.mensagem = nova_pauta_texto # Atualiza a mensagem principal
+                    self.mensagem = nova_pauta_texto
                     print(f"[entrar_na_votacao_como_votante]: NOVA PAUTA '{nova_pauta_texto}'. pauta_start_timestamp set to {self.pauta_start_timestamp}")
                 else:
                     print(f"[entrar_na_votacao_como_votante]: MESMA PAUTA '{nova_pauta_texto}'. pauta_start_timestamp={self.pauta_start_timestamp} (não resetado).")
 
-                # Se a pauta não mudou, mas o tempo talvez sim (menos provável, mas defensivo)
-                # ou se apenas queremos garantir que self.mensagem e self.tempo_votacao estejam atualizados.
                 self.mensagem = nova_pauta_texto
-                self.tempo_votacao = novo_tempo_votacao # Garante que o tempo da votação esteja sempre atualizado
+                self.tempo_votacao = novo_tempo_votacao
 
                 if self.page.route == '/espera':
                     print(f"[entrar_na_votacao_como_votante]: Indo para /votacao.")
@@ -77,7 +65,7 @@ class Controlador():
             else:
                 print(f"[entrar_na_votacao_como_votante]: AVISO: Formato inesperado da mensagem da pauta: '{mensagem_recebida}'")
                 self.mensagem = mensagem_recebida
-                self.tempo_votacao = 0 # Define como 0 se não há tempo válido
+                self.tempo_votacao = 0
                 
                 if "Resultado da votação" in self.mensagem:
                      if self.page.route == '/espera': self.page.go('/resultado')
@@ -85,7 +73,6 @@ class Controlador():
                 elif self.page.route == '/espera':
                     self.page.go('/votacao')
                     print(f"[entrar_na_votacao_como_votante]: Mensagem desconhecida, mas indo para /votacao.")
-
 
         except ValueError:
             print(f"[entrar_na_votacao_como_votante]: ERRO: Não foi possível extrair o tempo da mensagem da pauta: '{mensagem_recebida}'")
@@ -100,10 +87,8 @@ class Controlador():
             if self.page.route == '/espera':
                  self.page.go('/votacao')
 
-
     def start_voter_countdown(self):
         print(f"[start_voter_countdown]: Chamado. pauta_start_timestamp atual={self.pauta_start_timestamp}, tempo_votacao={self.tempo_votacao}")
-        # Verifica se o controle de timer foi atribuído pela View e se tempo_votacao é válido
         if not self.timer_control_votante or self.tempo_votacao <= 0 or self.pauta_start_timestamp is None:
             print(f"[start_voter_countdown]: Não iniciando. timer_control_votante={self.timer_control_votante}, tempo_votacao={self.tempo_votacao}, pauta_start_timestamp={self.pauta_start_timestamp}")
             if self.timer_control_votante and self.tempo_votacao <= 0 :
@@ -115,27 +100,20 @@ class Controlador():
             except: pass
             return
 
-        # Sempre para qualquer timer existente antes de iniciar um novo.
-        # Isso garante que apenas um thread de timer esteja ativo e atualizando o controle FT.Text correto.
         print(f"[start_voter_countdown]: Parando thread antiga (se houver).")
         self.stop_voter_countdown() 
 
-        # Reinicia o evento para a nova thread.
         self.stop_timer_event.clear()
         
-        # Inicia a thread do cronômetro.
         print(f"[start_voter_countdown]: Iniciando NOVA thread do timer. pauta_start_timestamp={self.pauta_start_timestamp}")
         self.timer_thread_votante = threading.Thread(target=self._voter_countdown_task, daemon=True)
         self.timer_thread_votante.start()
-
 
     def _voter_countdown_task(self):
         thread_id = threading.get_ident()
         print(f"[_voter_countdown_task {thread_id}]: Thread iniciada. pauta_start_timestamp={self.pauta_start_timestamp}")
 
-        # A contagem regressiva é sempre baseada no pauta_start_timestamp.
         if self.pauta_start_timestamp is None:
-            # Isso não deveria acontecer se a lógica de entrar_na_votacao_como_votante for seguida.
             current_time = self.tempo_votacao
             print(f"[_voter_countdown_task {thread_id}]: AVISO: pauta_start_timestamp é None. Usando tempo_votacao como fallback.")
         else:
@@ -144,7 +122,6 @@ class Controlador():
             print(f"[_voter_countdown_task {thread_id}]: Tempo inicial calculado: {current_time}s (tempo_votacao={self.tempo_votacao}, decorrido={elapsed_time})")
         
         while current_time >= 0 and not self.stop_timer_event.is_set():
-            # Permite que o timer continue atualizando mesmo na tela de confirmação
             if self.page.route != "/votacao" and self.page.route != "/confirmacao":
                 print(f"[_voter_countdown_task {thread_id}]: Rota mudou para {self.page.route}. Saindo do loop.")
                 break
@@ -155,14 +132,11 @@ class Controlador():
                 else:
                     new_value = "Tempo esgotado!"
                 
-                # Só atualiza a UI se o valor mudou para evitar updates desnecessários
                 if self.timer_control_votante.value != new_value:
                     self.timer_control_votante.value = new_value
                     try:
                         self.page.update()
-                        # print(f"[_voter_countdown_task {thread_id}]: UI atualizada para: {new_value}")
                     except Exception as e:
-                        # Se a atualização da página falhar (ex: página fechada), para a thread.
                         print(f"[_voter_countdown_task {thread_id}]: Falha na atualização da UI: {e}. Parando thread.")
                         self.stop_timer_event.set()
                         break
@@ -173,33 +147,26 @@ class Controlador():
 
             time.sleep(1)
             
-            # Recalcula current_time a cada iteração para manter a sincronia
             if self.pauta_start_timestamp is not None:
                 elapsed_time = int(time.time() - self.pauta_start_timestamp)
                 current_time = max(0, self.tempo_votacao - elapsed_time)
-                # print(f"[_voter_countdown_task {thread_id}]: Loop: current_time={current_time}s (decorrido={elapsed_time})")
             else:
-                current_time -= 1 # Fallback caso pauta_start_timestamp seja perdido
+                current_time -= 1
                 print(f"[_voter_countdown_task {thread_id}]: pauta_start_timestamp é None no loop. Decrementando manualmente.")
 
         print(f"[_voter_countdown_task {thread_id}]: Thread finalizada.")
 
     def stop_voter_countdown(self):
         print(f"[stop_voter_countdown]: Chamado. Sinalizando stop_timer_event.")
-        self.stop_timer_event.set() # Sinaliza para a thread parar
+        self.stop_timer_event.set()
         if self.timer_thread_votante and self.timer_thread_votante.is_alive():
             thread_id = self.timer_thread_votante.ident
             print(f"[stop_voter_countdown]: Aguardando thread {thread_id} terminar...")
-            self.timer_thread_votante.join(timeout=1.0) # Espera um pouco mais para a thread parar.
+            self.timer_thread_votante.join(timeout=1.0)
             if self.timer_thread_votante.is_alive():
                 print(f"[stop_voter_countdown]: AVISO! Thread {thread_id} NÃO terminou graciosamente após join.")
-        self.timer_thread_votante = None # Remove a referência ao thread
+        self.timer_thread_votante = None
         print(f"[stop_voter_countdown]: Referência da thread limpa.")
-
-        # NÃO reseta pauta_start_timestamp ou current_pauta_text aqui.
-        # Eles representam o estado da pauta, não do timer da UI.
-        # Eles são resetados apenas quando uma NOVA pauta é recebida em entrar_na_votacao_como_votante.
-
 
     def votar(self, e: ft.ControlEvent):
         if e.control.data == 2:
@@ -223,13 +190,11 @@ class Controlador():
 
             if "Resultado da votação" in self.mensagem or self.mensagem == 'votação encerrada':
                 print(f"[confirmar_voto]: Mensagem de resultado ou votação encerrada. Indo para /resultado.")
-                # Se a votação realmente terminou, resetamos o estado da pauta para uma nova
                 self.pauta_start_timestamp = None 
                 self.current_pauta_text = None
                 self.page.go('/resultado')
-            else: # É uma nova pauta (ex: host enviou a próxima pauta imediatamente)
+            else:
                 print(f"[confirmar_voto]: Nova pauta recebida após voto. Re-entrando no fluxo do votante.")
-                # Isso chamará entrar_na_votacao_como_votante, que definirá pauta_start_timestamp
                 self.entrar_na_votacao_como_votante(None) 
                 return
 
@@ -245,15 +210,14 @@ class Controlador():
         print(f"[cancelar_voto]: Parando cronômetro do votante.")
         self.stop_voter_countdown()
         print(f"[cancelar_voto]: Navegando para /votacao.")
-        self.page.go('/votacao') # Isso fará com que start_voter_countdown seja chamado novamente via mudar_de_pagina
+        self.page.go('/votacao')
 
-    def encerrar_espera_de_votos(self, e): # Função do host
+    def encerrar_espera_de_votos(self, e):
         self.flag_de_controle.set()
         self.process.join()
         self.mensagem = servidor.mostrar_resultados(self.banco_de_dados, self.udp_socket, self.mensagem)
         self.page.go('/resultado')
 
-    # ----------- host -------------
     def entrar_na_votacao_como_host(self, e) -> None:
         self.udp_socket = servidor.virar_host()
         self.banco_de_dados, self.process, self.flag_de_controle = servidor.aguardar_votantes(self.udp_socket)
