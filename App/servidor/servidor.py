@@ -60,9 +60,16 @@ def mostrar_resultados(banco_de_dados: Banco_de_Dados, server: socket.socket, pa
     qtd_contra = banco_de_dados.dados['pautas'][pauta]['qtd de votos contra']
     qtd_abstenção = banco_de_dados.dados['pautas'][pauta]['qtd de votos anulados']
     total = qtd_a_favor + qtd_contra + qtd_abstenção
-    porcentagem_a_favor = qtd_a_favor/total * 100
-    porcentagem_contra  =  qtd_contra/total * 100
-    porcentagem_abstenção =  qtd_abstenção/total * 100
+    
+    if total == 0:
+        porcentagem_a_favor = 0.00
+        porcentagem_contra = 0.00
+        porcentagem_abstenção = 0.00
+    else:
+        porcentagem_a_favor = qtd_a_favor / total * 100
+        porcentagem_contra  = qtd_contra / total * 100
+        porcentagem_abstenção = qtd_abstenção / total * 100
+    
     resultado += f'votos a favor = {porcentagem_a_favor:.2f}%\nvotos contra = {porcentagem_contra:.2f}%\nvotos nulos = {porcentagem_abstenção:.2f}%\n'
     resultado += '-------------------------------------------------------------------\n\n'
     mandar_mensagem(banco_de_dados, server, resultado)
@@ -70,7 +77,7 @@ def mostrar_resultados(banco_de_dados: Banco_de_Dados, server: socket.socket, pa
 
 
 # inicia um processo que aguarda por votantes até que a flag Parar seja ativada
-def aguardar_votantes(server: socket.socket) -> (Banco_de_Dados, threading.Thread, threading.Event):
+def aguardar_votantes(server: socket.socket) -> (Banco_de_Dados, threading.Thread, threading.Event): # type: ignore
     Encerrar_espera_por_votantes = threading.Event() # criação de flag para o processo de esperar votantes
     banco_de_dados = Banco_de_Dados()
     processo = threading.Thread(target=receber_votantes, args=(banco_de_dados, server, Encerrar_espera_por_votantes))
@@ -78,7 +85,7 @@ def aguardar_votantes(server: socket.socket) -> (Banco_de_Dados, threading.Threa
     return (banco_de_dados, processo, Encerrar_espera_por_votantes)
 
 
-def aguardar_votos(banco_de_dados: Banco_de_Dados, server: socket.socket) -> (threading.Thread, threading.Event):
+def aguardar_votos(banco_de_dados: Banco_de_Dados, server: socket.socket) -> (threading.Thread, threading.Event): # type: ignore
     Encerrar_espera_por_votos = threading.Event() # criação de flag para o processo de esperar votos
     processo = threading.Thread(target=receber_votos, args=(banco_de_dados, server, Encerrar_espera_por_votos))
     processo.start()
