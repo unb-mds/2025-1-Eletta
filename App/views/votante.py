@@ -1,7 +1,5 @@
 import flet as ft
 from controlador.controller import Controlador
-# import time # Não é mais necessário aqui
-# import threading # Não é mais necessário aqui
 
 def pagina_de_espera(page: ft.Page) -> ft.View:
     conteudo_da_pagina = [
