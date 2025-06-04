@@ -36,6 +36,9 @@ def main(page: ft.Page) -> None:
         elif page.route == "/resultado":
             page.views.append(home.pagina_do_resultado(page, controlador.mensagem))
 
+        elif page.route == "/resultado_host":
+            page.views.append(host.pagina_do_resultado_host(page, controlador))
+
         page.update()
 
     page.on_route_change = mudar_de_pagina

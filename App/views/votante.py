@@ -12,7 +12,7 @@ def pagina_de_espera(page: ft.Page) -> ft.View:
     )
 
 
-def pagina_de_votacao(page: ft.Page, controlador: "Controlador") -> ft.View:
+def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
     pauta = controlador.mensagem
     conteudo_da_pagina = [
         ft.Container(
@@ -71,7 +71,7 @@ def pagina_de_votacao(page: ft.Page, controlador: "Controlador") -> ft.View:
 
 
 def pagina_de_confirmacao(
-    page: ft.Page, controlador: "Controlador", voto_selecionado: str
+    page: ft.Page, controlador: Controlador, voto_selecionado: str
 ) -> ft.View:
     texto = f"Você confirma seu voto: '{voto_selecionado}'?"
     conteudo = [

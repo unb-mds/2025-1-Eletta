@@ -94,7 +94,7 @@ def mostrar_resultados(
 # inicia um processo que aguarda por votantes até que a flag Parar seja ativada
 def aguardar_votantes(
     server: socket.socket,
-) -> (Banco_de_Dados, threading.Thread, threading.Event):
+) -> tuple[Banco_de_Dados, threading.Thread, threading.Event]:
     Encerrar_espera_por_votantes = (
         threading.Event()
     )  # criação de flag para o processo de esperar votantes
@@ -109,7 +109,7 @@ def aguardar_votantes(
 
 def aguardar_votos(
     banco_de_dados: Banco_de_Dados, server: socket.socket
-) -> (threading.Thread, threading.Event):
+) -> tuple[threading.Thread, threading.Event]:
     Encerrar_espera_por_votos = (
         threading.Event()
     )  # criação de flag para o processo de esperar votos
@@ -118,33 +118,3 @@ def aguardar_votos(
     )
     processo.start()
     return (processo, Encerrar_espera_por_votos)
-
-
-# ----- código para teste -----
-# if __name__== '__main__':
-#     server = virar_host()
-#     Encerrar_espera_por_votantes = threading.Event() # criação de flag para o processo de esperar votantes
-#     banco_de_dados = Banco_de_Dados()
-#     processo = threading.Thread(target=receber_votantes, args=(banco_de_dados, server, Encerrar_espera_por_votantes))
-#     processo.start()
-#     input("Aperte enter para iniciar a votação\n")
-#     Encerrar_espera_por_votantes.set()
-#     processo.join()
-
-#     opcao = 1
-#     while opcao == 1:
-#         pauta = input("Qual será a pauta discutida? ")
-#         banco_de_dados.adicionar_pauta(pauta)
-#         banco_de_dados.serializar_dados()
-#         mandar_mensagem(banco_de_dados, server, pauta)
-#         Encerrar_periodo_de_voto = threading.Event() # criação de flag para o processo voto
-#         processo = threading.Thread(target=receber_votos, args=(banco_de_dados, server, Encerrar_periodo_de_voto))
-#         processo.start()
-#         input("aperte enter para encerrar a votação\n")
-#         Encerrar_periodo_de_voto.set()
-#         processo.join()
-#         mostrar_resultados(banco_de_dados, server, pauta)
-#         opcao = int(input('digite 1 para levantar outra pauta '))
-#     mensagem = 'votação encerrada'
-#     mandar_mensagem(banco_de_dados, server, mensagem)
-#     print(mensagem)

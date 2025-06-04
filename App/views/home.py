@@ -1,8 +1,8 @@
 import flet as ft
-from controlador import controller
+from controlador.controller import Controlador
 
 
-def pagina_inicial(page: ft.Page, controlador: controller) -> ft.View:
+def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),  # Retângulo superior
         ft.Container(
