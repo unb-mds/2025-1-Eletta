@@ -82,6 +82,7 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador="Controlador") -> ft.V
         ),
         ft.Container(height=45, bgcolor="#39746F"),
     ]
+
     return ft.View(
         "/criacao_de_pauta",
         controls=conteudo_da_pagina,
@@ -115,7 +116,7 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-
+  
 def pagina_do_resultado_host(page: ft.Page, controlador: "Controlador") -> ft.View:
     conteudo_da_pagina = [
         ft.Column(

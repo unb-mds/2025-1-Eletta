@@ -133,4 +133,3 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         bgcolor=ft.colors.WHITE,
     )
-

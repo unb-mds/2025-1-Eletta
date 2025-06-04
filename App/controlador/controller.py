@@ -48,6 +48,7 @@ class Controlador:
             self.page.snack_bar.open = True
             self.page.update()
             return
+
         print("voto confirmado")
         self.page.go("/resultado")
         print("aguardando host")
@@ -95,6 +96,7 @@ class Controlador:
         self.mensagem = servidor.mostrar_resultados(
             self.banco_de_dados, self.udp_socket, self.mensagem
         )
+
         self.page.go("/resultado_host")
 
     def criar_nova_pauta(self, e: ft.ControlEvent) -> None:

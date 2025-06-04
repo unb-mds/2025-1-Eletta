@@ -28,7 +28,7 @@ class Banco_de_Dados:
         self.dados["pautas"][pauta] = dicionario
 
     def registrar_voto(self, user_id, voto, pauta):
-        if not (user_id in self.dados["votantes"]):
+        if user_id not in self.dados["votantes"]:
             return
 
         if pauta in self.dados["votantes"][user_id]["pautas votadas"]:
