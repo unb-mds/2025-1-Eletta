@@ -116,7 +116,7 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-  
+
 def pagina_do_resultado_host(page: ft.Page, controlador: "Controlador") -> ft.View:
     conteudo_da_pagina = [
         ft.Column(
