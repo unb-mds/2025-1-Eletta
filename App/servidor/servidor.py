@@ -94,7 +94,7 @@ def mostrar_resultados(
 # inicia um processo que aguarda por votantes até que a flag Parar seja ativada
 def aguardar_votantes(
     server: socket.socket,
-) -> (Banco_de_Dados, threading.Thread, threading.Event):
+) -> tuple[Banco_de_Dados, threading.Thread, threading.Event]:
     Encerrar_espera_por_votantes = (
         threading.Event()
     )  # criação de flag para o processo de esperar votantes
@@ -109,7 +109,7 @@ def aguardar_votantes(
 
 def aguardar_votos(
     banco_de_dados: Banco_de_Dados, server: socket.socket
-) -> (threading.Thread, threading.Event):
+) -> tuple[threading.Thread, threading.Event]:
     Encerrar_espera_por_votos = (
         threading.Event()
     )  # criação de flag para o processo de esperar votos

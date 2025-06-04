@@ -1,56 +1,69 @@
 {
   "votantes": {
-    "39717": {
-      "PORT": "127.0.0.1",
-      "votos contra": [],
-      "votos a favor": [
-        "teste123",
-        "teste 321"
-      ],
-      "votos nulo": [],
-      "pautas votadas": [
-        "teste123",
-        "teste 321"
-      ]
-    },
-    "52498": {
+    "34129": {
       "PORT": "127.0.0.1",
       "votos contra": [
-        "teste123"
+        "digamos que não"
       ],
       "votos a favor": [
-        "teste 321"
+        "digamos que sim",
+        "ultima"
       ],
       "votos nulo": [],
       "pautas votadas": [
-        "teste123",
-        "teste 321"
+        "digamos que sim",
+        "digamos que não",
+        "ultima"
       ]
     },
-    "59123": {
+    "42045": {
+      "PORT": "127.0.0.1",
+      "votos contra": [
+        "digamos que sim",
+        "ultima"
+      ],
+      "votos a favor": [],
+      "votos nulo": [
+        "digamos que não"
+      ],
+      "pautas votadas": [
+        "digamos que sim",
+        "digamos que não",
+        "ultima"
+      ]
+    },
+    "40449": {
       "PORT": "127.0.0.1",
       "votos contra": [],
       "votos a favor": [
-        "teste123",
-        "teste 321"
+        "digamos que sim"
       ],
-      "votos nulo": [],
+      "votos nulo": [
+        "digamos que não",
+        "ultima"
+      ],
       "pautas votadas": [
-        "teste123",
-        "teste 321"
+        "digamos que sim",
+        "digamos que não",
+        "ultima"
       ]
     }
   },
   "pautas": {
-    "teste123": {
+    "digamos que sim": {
       "qtd de votos a favor": 2,
       "qtd de votos contra": 1,
       "qtd de votos anulados": 0
     },
-    "teste 321": {
-      "qtd de votos a favor": 3,
-      "qtd de votos contra": 0,
-      "qtd de votos anulados": 0
+    "digamos que não": {
+      "qtd de votos a favor": 0,
+      "qtd de votos contra": 1,
+      "qtd de votos anulados": 2
+    },
+    "ultima": {
+      "qtd de votos a favor": 1,
+      "qtd de votos contra": 1,
+      "qtd de votos anulados": 1
     }
   }
 }
