@@ -3,6 +3,7 @@ from socket import socket
 from threading import Thread, Event
 from servidor import servidor, cliente
 from servidor.Data_Base.DB import Banco_de_Dados
+import time
 
 
 class Controlador:
@@ -93,6 +94,8 @@ class Controlador:
         self.banco_de_dados.adicionar_pauta(self.mensagem)
         self.banco_de_dados.serializar_dados()
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self.page.go("/sucesso_criacao_sala")
+        time.sleep(5)
         self.page.go("/espera_votos")
 
     def encerrar_espera_de_votos(self, e: ft.ControlEvent) -> None:

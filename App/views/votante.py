@@ -66,7 +66,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
     )
 
 
@@ -101,7 +101,7 @@ def pagina_de_confirmacao(
         controls=conteudo,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
     )
 
 
@@ -131,5 +131,5 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
     )
