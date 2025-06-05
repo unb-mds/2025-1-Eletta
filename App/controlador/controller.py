@@ -3,6 +3,7 @@ from socket import socket
 from threading import Thread, Event
 from servidor import servidor, cliente
 from servidor.Data_Base.DB import Banco_de_Dados
+import time
 
 
 class Controlador:
@@ -38,23 +39,8 @@ class Controlador:
     def confirmar_voto(self, e: ft.ControlEvent) -> None:
         cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
         cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
-        self.page.go("/espera")
+        self.page.go("/sucesso_voto_computado")
         self.mensagem = cliente.receber_mensagem(self.udp_socket)
-        # try:
-        # self.mensagem = cliente.receber_mensagem(self.udp_socket)
-        # if self.mensagem == "votação encerrada":
-        #     self.page.snack_bar = ft.SnackBar(ft.Text("A votação foi encerrada antes do envio do seu voto."))
-        #     self.page.snack_bar.open = True
-        #     self.page.update()
-        #     self.page.go("/resultado")
-        #     return
-        # except Exception as ex:
-        #     self.page.snack_bar = ft.SnackBar(ft.Text(f"Erro ao confirmar voto: {ex}"))
-        #     self.page.snack_bar.open = True
-        #     self.page.update()
-        #     return
-
-        print("voto confirmado")
         self.page.go("/resultado")
         print("aguardando host")
         self.mensagem = cliente.receber_mensagem(self.udp_socket)
@@ -93,6 +79,8 @@ class Controlador:
         self.banco_de_dados.adicionar_pauta(self.mensagem)
         self.banco_de_dados.serializar_dados()
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self.page.go("/sucesso_criacao_sala")
+        time.sleep(5)
         self.page.go("/espera_votos")
 
     def encerrar_espera_de_votos(self, e: ft.ControlEvent) -> None:

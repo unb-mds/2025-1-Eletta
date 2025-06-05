@@ -89,7 +89,7 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
         padding=0,
     )
 
@@ -124,7 +124,7 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
             [
                 ft.Text(controlador.mensagem),
                 ft.ElevatedButton(
-                    "criar nova pauta", on_click=controlador.criar_nova_pauta
+                    "Criar nova pauta", on_click=controlador.criar_nova_pauta
                 ),
                 ft.ElevatedButton(
                     "Encerrar Sessão", on_click=controlador.encerrar_sessao
@@ -138,4 +138,45 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+    )
+
+
+def pagina_sucesso_criacao_sala(page: ft.Page) -> ft.View:
+    conteudo = [
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            padding=ft.padding.only(top=120, left=40, right=40, bottom=40),
+            content=ft.Column(
+                [
+                    ft.Icon(name=ft.Icons.CHECK, color="#39746F", size=40),
+                    ft.Container(
+                        content=ft.Text(
+                            "Sala de votação criada com sucesso!",
+                            size=20,
+                            weight=ft.FontWeight.BOLD,
+                            text_align=ft.TextAlign.CENTER,
+                            color=ft.Colors.BLACK,
+                        ),
+                        padding=ft.padding.only(top=20),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.START,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=50,
+                expand=True,
+            ),
+            bgcolor=ft.Colors.WHITE,
+            border_radius=10,
+            alignment=ft.alignment.center,
+        ),
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+    return ft.View(
+        "/sucesso_criacao_sala",
+        controls=conteudo,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
     )

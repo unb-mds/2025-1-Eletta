@@ -66,7 +66,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
     )
 
 
@@ -101,7 +101,7 @@ def pagina_de_confirmacao(
         controls=conteudo,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
     )
 
 
@@ -131,5 +131,46 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
+    )
+
+
+def pagina_sucesso_voto_computado(page: ft.Page) -> ft.View:
+    conteudo = [
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            padding=ft.padding.only(top=120, left=40, right=40, bottom=40),
+            content=ft.Column(
+                [
+                    ft.Icon(name=ft.Icons.CHECK, color="#39746F", size=40),
+                    ft.Container(
+                        content=ft.Text(
+                            "Voto computado com sucesso!\n\nAguarde o resultado",
+                            size=20,
+                            weight=ft.FontWeight.BOLD,
+                            text_align=ft.TextAlign.CENTER,
+                            color=ft.Colors.BLACK,
+                        ),
+                        padding=ft.padding.only(top=20),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.START,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=50,
+                expand=True,
+            ),
+            bgcolor=ft.Colors.WHITE,
+            border_radius=10,
+            alignment=ft.alignment.center,
+        ),
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+    return ft.View(
+        "/sucesso_voto_computado",
+        controls=conteudo,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
     )
