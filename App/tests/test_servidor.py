@@ -64,9 +64,11 @@ def test_mostrar_resultados_envia_resultado_formatado(socket_mock, banco_mock):
     resultado = mostrar_resultados(banco_mock, socket_mock, "Educação")
 
     assert "Resultado da votação" in resultado
-    assert "votos a favor = 60.00%" in resultado
-    assert "votos contra = 20.00%" in resultado
-    assert "votos nulos = 20.00%" in resultado
+    # Asserções atualizadas para o novo formato do resultado
+    assert "Votos a Favor: 3 (60.00%)" in resultado
+    assert "Votos Contra: 1 (20.00%)" in resultado
+    assert "Abstenções: 1 (20.00%)" in resultado
+    assert "Total de Votos: 5" in resultado
 
     # Verifica se a função manda mensagem para os votantes
     assert socket_mock.sendto.called
