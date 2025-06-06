@@ -17,10 +17,11 @@ def mandar_mensagem(
     banco_de_dados: Banco_de_Dados, server: socket.socket, mensagem: str
 ) -> None:
     # Acessa a cópia dos items para evitar problemas com concorrência
-    for ip, info in list(banco_de_dados.dados["votantes"].items()):
-        porta = info["PORT"]
-        # Correção: converte a porta (que está na variável 'ip') para inteiro
-        server.sendto(mensagem.encode(), (porta, int(ip)))
+    # O 'user_id' é a porta do votante, e 'info["PORT"]' é o endereço IP.
+    for user_id, info in list(banco_de_dados.dados["votantes"].items()):
+        ip_address = info["PORT"]
+        port_number = int(user_id)
+        server.sendto(mensagem.encode(), (ip_address, port_number))
 
 
 def receber_votantes(

@@ -15,8 +15,9 @@ def banco_mock():
     banco = Mock()
     banco.dados = {
         "votantes": {
-            "192.168.0.10": {"PORT": 12345},
-            "192.168.0.11": {"PORT": 12346},
+            # Estrutura corrigida: a chave é a porta (string) e "PORT" é o IP.
+            "12345": {"PORT": "192.168.0.10"},
+            "12346": {"PORT": "192.168.0.11"},
         },
         "pautas": {
             "Educação": {
@@ -51,9 +52,10 @@ def test_virar_host_cria_socket_udp(mock_socket_class):
 
 def test_mandar_mensagem_envia_para_todos(socket_mock, banco_mock):
     mandar_mensagem(banco_mock, socket_mock, "Mensagem de teste")
+    # Chamadas esperadas corrigidas com a ordem (host, port).
     expected_calls = [
-        call.sendto(b"Mensagem de teste", (12345, "192.168.0.10")),
-        call.sendto(b"Mensagem de teste", (12346, "192.168.0.11")),
+        call.sendto(b"Mensagem de teste", ("192.168.0.10", 12345)),
+        call.sendto(b"Mensagem de teste", ("192.168.0.11", 12346)),
     ]
     socket_mock.assert_has_calls(expected_calls, any_order=True)
 
@@ -115,6 +117,6 @@ def test_receber_votantes(monkeypatch):
 
     # Verificar se o banco foi atualizado com os dados corretos
     banco_mock.adicionar_votante.assert_called_once_with(
-        votante_info[1], votante_info[0]
+        str(votante_info[1]), votante_info[0]
     )
     banco_mock.serializar_dados.assert_called()
