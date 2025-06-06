@@ -69,37 +69,45 @@ def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
 
 def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
     conteudo_da_pagina = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Conteúdo central
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
             content=ft.Column(
-                controls=[
+                [
                     ft.Text(
                         "Resultado da Votação",
                         size=22,
                         weight=ft.FontWeight.BOLD,
+                        text_align=ft.TextAlign.CENTER,
                         color="#39746F",
-                        text_align=ft.TextAlign.CENTER,
                     ),
-                    ft.Text(
-                        value=resultado,
-                        size=16,
-                        color=ft.Colors.BLACK,
-                        text_align=ft.TextAlign.CENTER,
+                    ft.Container(
+                        content=ft.Text(
+                            value=(
+                                resultado if resultado else "Aguardando resultado..."
+                            ),
+                            selectable=True,
+                            text_align=ft.TextAlign.LEFT,
+                            color=ft.Colors.BLACK,
+                            size=14,
+                            font_family="Monospace",
+                        ),
+                        padding=20,
+                        border=ft.border.all(2, "#39746F"),
+                        border_radius=ft.border_radius.all(10),
+                        width=350,
+                        alignment=ft.alignment.center,
                     ),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=30,
+                spacing=25,
+                scroll=ft.ScrollMode.AUTO,
             ),
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
-
     return ft.View(
         "/resultado",
         controls=conteudo_da_pagina,
