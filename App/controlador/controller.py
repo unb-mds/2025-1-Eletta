@@ -36,14 +36,14 @@ class Controlador:
         mensagem_recebida = cliente.receber_mensagem(self.udp_socket)
 
         self.stop_voter_countdown()
-        print(f"[entrar_na_votacao_como_votante]: stop_voter_countdown called.")
+        print("[entrar_na_votacao_como_votante]: stop_voter_countdown called.")
 
         if mensagem_recebida == "votação encerrada":
             self.mensagem = "A votação geral foi encerrada pelo Host."
             if self.page.route == "/espera" or self.page.route == "/votacao":
                 self.page.go("/resultado")
             print(
-                f"[entrar_na_votacao_como_votante]: Votação encerrada recebida. Indo para /resultado."
+                "[entrar_na_votacao_como_votante]: Votação encerrada recebida. Indo para /resultado."
             )
             return
 
@@ -70,7 +70,7 @@ class Controlador:
                 self.tempo_votacao = novo_tempo_votacao
 
                 if self.page.route == "/espera":
-                    print(f"[entrar_na_votacao_como_votante]: Indo para /votacao.")
+                    print("[entrar_na_votacao_como_votante]: Indo para /votacao.")
                     self.page.go("/votacao")
             else:
                 print(
@@ -83,12 +83,12 @@ class Controlador:
                     if self.page.route == "/espera":
                         self.page.go("/resultado")
                     print(
-                        f"[entrar_na_votacao_como_votante]: Mensagem é resultado. Indo para /resultado."
+                        "[entrar_na_votacao_como_votante]: Mensagem é resultado. Indo para /resultado."
                     )
                 elif self.page.route == "/espera":
                     self.page.go("/votacao")
                     print(
-                        f"[entrar_na_votacao_como_votante]: Mensagem desconhecida, mas indo para /votacao."
+                        "[entrar_na_votacao_como_votante]: Mensagem desconhecida, mas indo para /votacao."
                     )
 
         except ValueError:
@@ -126,11 +126,11 @@ class Controlador:
                 self.timer_control_votante.value = "Aguardando início do tempo..."
             try:
                 self.page.update()
-            except:
-                pass
+            except Exception as e:
+                print(f"Ocorreu um erro inesperado ao atualizar a página: {e}")
             return
 
-        print(f"[start_voter_countdown]: Parando thread antiga (se houver).")
+        print("[start_voter_countdown]: Parando thread antiga (se houver).")
         self.stop_voter_countdown()
 
         self.stop_timer_event.clear()
@@ -163,7 +163,9 @@ class Controlador:
 
         while current_time >= 0 and not self.stop_timer_event.is_set():
             if self.page.route != "/votacao" and self.page.route != "/confirmacao":
-                print(f"[_voter_countdown_task {thread_id}]: Rota mudou para {self.page.route}. Saindo do loop.")
+                print(
+                    f"[_voter_countdown_task {thread_id}]: Rota mudou para {self.page.route}. Saindo do loop."
+                )
                 break
 
             if self.timer_control_votante:
@@ -184,7 +186,9 @@ class Controlador:
                         break
 
             if current_time == 0:
-                print(f"[_voter_countdown_task {thread_id}]: current_time chegou a 0. Saindo do loop.")
+                print(
+                    f"[_voter_countdown_task {thread_id}]: current_time chegou a 0. Saindo do loop."
+                )
                 break
 
             time.sleep(1)
@@ -201,7 +205,7 @@ class Controlador:
         print(f"[_voter_countdown_task {thread_id}]: Thread finalizada.")
 
     def stop_voter_countdown(self):
-        print(f"[stop_voter_countdown]: Chamado. Sinalizando stop_timer_event.")
+        print("[stop_voter_countdown]: Chamado. Sinalizando stop_timer_event.")
         self.stop_timer_event.set()
         if self.timer_thread_votante and self.timer_thread_votante.is_alive():
             thread_id = self.timer_thread_votante.ident
@@ -212,7 +216,7 @@ class Controlador:
                     f"[stop_voter_countdown]: AVISO! Thread {thread_id} NÃO terminou graciosamente após join."
                 )
         self.timer_thread_votante = None
-        print(f"[stop_voter_countdown]: Referência da thread limpa.")
+        print("[stop_voter_countdown]: Referência da thread limpa.")
 
     def votar(self, e: ft.ControlEvent):
         if e.control.data == 2:
@@ -221,11 +225,13 @@ class Controlador:
             self.voto_pendente = "contra"
         elif e.control.data == 0:
             self.voto_pendente = "nulo"
-        print(f"[votar]: Navegando para /confirmacao. Voto pendente: {self.voto_pendente}")
+        print(
+            f"[votar]: Navegando para /confirmacao. Voto pendente: {self.voto_pendente}"
+        )
         self.page.go("/confirmacao")
 
     def confirmar_voto(self, e):
-        print(f"[confirmar_voto]: Parando cronômetro do votante.")
+        print("[confirmar_voto]: Parando cronômetro do votante.")
         self.stop_voter_countdown()
         try:
             cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
@@ -234,42 +240,51 @@ class Controlador:
             mensagem_resultados = cliente.receber_mensagem(self.udp_socket)
             self.mensagem = mensagem_resultados
 
-            if "Resultado da votação" in self.mensagem or self.mensagem == "votação encerrada":
+            if (
+                "Resultado da votação" in self.mensagem
+                or self.mensagem == "votação encerrada"
+            ):
                 print(
-                    f"[confirmar_voto]: Mensagem de resultado ou votação encerrada. Indo para /resultado."
+                    "[confirmar_voto]: Mensagem de resultado ou votação encerrada. Indo para /resultado."
                 )
                 self.pauta_start_timestamp = None
                 self.current_pauta_text = None
                 self.page.go("/resultado")
             else:
-                print(f"[confirmar_voto]: Nova pauta recebida após voto. Re-entrando no fluxo do votante.")
+                print(
+                    "[confirmar_voto]: Nova pauta recebida após voto. Re-entrando no fluxo do votante."
+                )
                 self.entrar_na_votacao_como_votante(None)
                 return
 
         except Exception as ex:
             print(f"[confirmar_voto]: ERRO: {ex}")
-            self.page.snack_bar = ft.SnackBar(ft.Text(f"Erro ao confirmar voto ou receber resultado: {ex}"))
+            self.page.snack_bar = ft.SnackBar(
+                ft.Text(f"Erro ao confirmar voto ou receber resultado: {ex}")
+            )
             self.page.snack_bar.open = True
             self.page.update()
             self.page.go("/")
             return
 
     def cancelar_voto(self, e):
-        print(f"[cancelar_voto]: Parando cronômetro do votante.")
+        print("[cancelar_voto]: Parando cronômetro do votante.")
         self.stop_voter_countdown()
-        print(f"[cancelar_voto]: Navegando para /votacao.")
+        print("[cancelar_voto]: Navegando para /votacao.")
         self.page.go("/votacao")
 
     def encerrar_espera_de_votos(self, e):
         self.flag_de_controle.set()
         self.process.join()
-        self.mensagem = servidor.mostrar_resultados(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self.mensagem = servidor.mostrar_resultados(
+            self.banco_de_dados, self.udp_socket, self.mensagem
+        )
         self.page.go("/resultado")
 
     def entrar_na_votacao_como_host(self, e) -> None:
         self.udp_socket = servidor.virar_host()
-        self.banco_de_dados, self.process, self.flag_de_controle = servidor.aguardar_votantes(
-            self.udp_socket
+        self.banco_de_dados, self.process, self.flag_de_controle = (
+            servidor.aguardar_votantes(self.udp_socket)
         )
         self.page.go("/espera_votantes")
 
@@ -291,10 +306,13 @@ class Controlador:
         self.banco_de_dados.serializar_dados()
 
         mensagem_com_tempo = f"{self.mensagem}|{tempo}"
-        servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, mensagem_com_tempo)
+        servidor.mandar_mensagem(
+            self.banco_de_dados, self.udp_socket, mensagem_com_tempo
+        )
 
         def encerrar_votacao_automaticamente():
             if not self.flag_de_controle.is_set():
+
                 async def _async_encerrar_espera_de_votos():
                     self.encerrar_espera_de_votos(None)
 

@@ -20,7 +20,9 @@ def pagina_inicial(page: ft.Page, controlador: "Controlador") -> ft.View:
                         style=ft.ButtonStyle(
                             padding=20,
                             text_style=ft.TextStyle(
-                                size=13, weight=ft.FontWeight.NORMAL, font_family="Inter"
+                                size=13,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
                             ),
                         ),
                     ),
@@ -34,7 +36,9 @@ def pagina_inicial(page: ft.Page, controlador: "Controlador") -> ft.View:
                         style=ft.ButtonStyle(
                             padding=20,
                             text_style=ft.TextStyle(
-                                size=13, weight=ft.FontWeight.NORMAL, font_family="Inter"
+                                size=13,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
                             ),
                         ),
                     ),

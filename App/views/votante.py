@@ -95,7 +95,9 @@ def pagina_de_confirmacao(
 ) -> ft.View:
     texto = f"Você confirma seu voto: '{voto_selecionado}'?"
     conteudo = [
-        ft.Text(texto, size=18, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER),
+        ft.Text(
+            texto, size=18, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER
+        ),
         ft.Container(height=20),
         ft.Row(
             [
@@ -141,9 +143,11 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Markdown(
-                        value=f"```\n{resultado}\n```"
-                        if resultado
-                        else "Aguardando resultado...",
+                        value=(
+                            f"```\n{resultado}\n```"
+                            if resultado
+                            else "Aguardando resultado..."
+                        ),
                         selectable=True,
                         extension_set=ft.MarkdownExtensionSet.GITHUB_WEB,
                         code_theme="atom-one-dark",

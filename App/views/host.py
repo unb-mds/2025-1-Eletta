@@ -4,7 +4,8 @@ import flet as ft
 def pagina_de_espera_votantes(page: ft.Page, controlador="Controlador") -> ft.View:
     conteudo_da_pagina = [
         ft.ElevatedButton(
-            "Encerrar espera de votantes", on_click=controlador.encerrar_espera_de_votantes
+            "Encerrar espera de votantes",
+            on_click=controlador.encerrar_espera_de_votantes,
         )
     ]
     return ft.View(
@@ -34,7 +35,9 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador="Controlador") -> ft.V
                 texto,
                 dropdown_tempo,
                 ft.ElevatedButton(
-                    "Enviar pauta", on_click=controlador.enviar_pauta, data=(texto, dropdown_tempo)
+                    "Enviar pauta",
+                    on_click=controlador.enviar_pauta,
+                    data=(texto, dropdown_tempo),
                 ),
             ],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
