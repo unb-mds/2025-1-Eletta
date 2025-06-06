@@ -18,7 +18,6 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
         # Retângulo superior (topo)
         ft.Container(height=45, bgcolor="#39746F"),
-
         # Container que centraliza o conteúdo no centro da tela
         ft.Container(
             expand=True,
@@ -33,63 +32,61 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                             value=pauta,
                             size=14,
                             text_align=ft.TextAlign.CENTER,
-                            color=ft.Colors.BLACK
+                            color=ft.Colors.BLACK,
                         ),
                         padding=20,
                         border=ft.border.all(3, "#39746F"),
                         width=329,
-                        height=73
+                        height=73,
                     ),
                     ft.Column(
                         controls=[
                             ft.ElevatedButton(
-                                text='A favor',
+                                text="A favor",
                                 width=117,
                                 height=56,
-                                bgcolor='#47D147',
+                                bgcolor="#47D147",
                                 color=ft.Colors.WHITE,
                                 on_click=controlador.votar,
-                                data=2
+                                data=2,
                             ),
                             ft.ElevatedButton(
-                                text='Contra',
+                                text="Contra",
                                 width=117,
                                 height=56,
-                                bgcolor='#C83A3A',
+                                bgcolor="#C83A3A",
                                 color=ft.Colors.WHITE,
                                 on_click=controlador.votar,
-                                data=1
+                                data=1,
                             ),
                             ft.ElevatedButton(
-                                text='Abster-se',
+                                text="Abster-se",
                                 width=117,
                                 height=56,
-                                bgcolor='#828E82',
+                                bgcolor="#828E82",
                                 color=ft.Colors.WHITE,
                                 on_click=controlador.votar,
-                                data=0
-                            )
+                                data=0,
+                            ),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=20
-                    )
-                ]
-            )
+                        spacing=20,
+                    ),
+                ],
+            ),
         ),
-
         # Retângulo inferior (rodapé)
-        ft.Container(height=45, bgcolor="#39746F")
+        ft.Container(height=45, bgcolor="#39746F"),
     ]
 
     return ft.View(
-        route='/votacao',
+        route="/votacao",
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         bgcolor=ft.Colors.WHITE,
-        padding=0
+        padding=0,
     )
-
 
 
 def pagina_de_confirmacao(

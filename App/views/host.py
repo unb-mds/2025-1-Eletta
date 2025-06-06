@@ -122,7 +122,6 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
     conteudo_da_pagina = [
         # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-
         # Container central com conteúdo
         ft.Container(
             expand=True,
@@ -134,7 +133,7 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                         size=16,
                         weight=ft.FontWeight.NORMAL,
                         color="#000000",
-                        text_align=ft.TextAlign.CENTER
+                        text_align=ft.TextAlign.CENTER,
                     ),
                     ft.ElevatedButton(
                         text="Criar nova pauta",
@@ -146,7 +145,9 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                         style=ft.ButtonStyle(
                             padding=20,
                             text_style=ft.TextStyle(
-                                size=14, weight=ft.FontWeight.NORMAL, font_family="Inter"
+                                size=14,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
                             ),
                         ),
                     ),
@@ -160,7 +161,9 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                         style=ft.ButtonStyle(
                             padding=20,
                             text_style=ft.TextStyle(
-                                size=14, weight=ft.FontWeight.NORMAL, font_family="Inter"
+                                size=14,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
                             ),
                         ),
                     ),
@@ -170,7 +173,6 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                 spacing=30,
             ),
         ),
-
         # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
@@ -181,7 +183,7 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         bgcolor=ft.Colors.WHITE,
-        padding=0
+        padding=0,
     )
 
 
