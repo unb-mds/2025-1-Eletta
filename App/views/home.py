@@ -113,6 +113,6 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
         padding=0,
     )

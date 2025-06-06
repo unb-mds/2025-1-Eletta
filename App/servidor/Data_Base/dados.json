@@ -1,41 +1,25 @@
 {
   "votantes": {
-    "59966": {
-      "PORT": "127.0.0.1",
-      "votos contra": [],
-      "votos a favor": [
-        "addsasadsda"
-      ],
-      "votos nulo": [
-        "sfdaasdasd"
-      ],
-      "pautas votadas": [
-        "addsasadsda",
-        "sfdaasdasd"
-      ]
-    },
-    "59967": {
+    "55349": {
       "PORT": "127.0.0.1",
       "votos contra": [],
       "votos a favor": [],
-      "votos nulo": [
-        "sfdaasdasd"
-      ],
-      "pautas votadas": [
-        "sfdaasdasd"
-      ]
+      "votos nulo": [],
+      "pautas votadas": []
+    },
+    "55350": {
+      "PORT": "127.0.0.1",
+      "votos contra": [],
+      "votos a favor": [],
+      "votos nulo": [],
+      "pautas votadas": []
     }
   },
   "pautas": {
-    "addsasadsda": {
-      "qtd de votos a favor": 1,
-      "qtd de votos contra": 0,
-      "qtd de votos anulados": 0
-    },
-    "sfdaasdasd": {
+    "aaa": {
       "qtd de votos a favor": 0,
       "qtd de votos contra": 0,
-      "qtd de votos anulados": 2
+      "qtd de votos anulados": 0
     }
   }
 }

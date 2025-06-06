@@ -55,7 +55,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
         size=16,
         weight=ft.FontWeight.BOLD,
         text_align=ft.TextAlign.CENTER,
-        color=ft.colors.RED_500,
+        color=ft.Colors.RED_500,
     )
     controlador.timer_control_votante = timer_display
 
@@ -187,7 +187,7 @@ def pagina_de_confirmacao(
         ],
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        bgcolor=ft.colors.WHITE,
+        bgcolor=ft.Colors.WHITE,
         padding=0,
     )
 
@@ -209,7 +209,7 @@ def pagina_sucesso_voto_computado(page: ft.Page) -> ft.View:
                             size=20,
                             weight=ft.FontWeight.BOLD,
                             text_align=ft.TextAlign.CENTER,
-                            color=ft.colors.BLACK,
+                            color=ft.Colors.BLACK,
                         ),
                         padding=ft.padding.only(top=20),
                     ),
