@@ -9,6 +9,7 @@ from cryptography.fernet import Fernet  # Para criptografia
 ARQUIVO_VOTOS = "votos.json"
 CHAVE_CRIPTOGRAFIA = "chave_cripto.key"  # Arquivo com a chave AES
 
+
 # ===== CRIPTOGRAFIA =====
 class Criptografia:
     @staticmethod
@@ -29,6 +30,7 @@ class Criptografia:
     def descriptografar(self, texto_cripto):
         return self.cipher.decrypt(texto_cripto.encode()).decode()
 
+
 # ===== SERVIDOR DE VOTAÇÃO =====
 class ServidorVotacao:
     def __init__(self, host="0.0.0.0", port=5000):
@@ -46,7 +48,7 @@ class ServidorVotacao:
                     return json.load(f)
             except (json.JSONDecodeError, IOError) as e:
                 print(f"⚠️ Erro ao carregar votos: {e}. Criando novo arquivo.")
-        
+
         return {"total": defaultdict(int), "historico": []}
 
     def _salvar_votos(self):
@@ -122,23 +124,21 @@ class ServidorVotacao:
             print("\n🛑 Servidor encerrado.")
         finally:
             self.socket.close()
- 
- 
- #PARA DESCRIPTOGRAFAR            
-#from cryptography.fernet import Fernet
 
-#chave = open("chave_cripto.key", "rb").read()
-#cipher = Fernet(chave)
 
-#with open("votos.json") as f:
- #   dados = json.load(f)
+# PARA DESCRIPTOGRAFAR
+# from cryptography.fernet import Fernet
 
-#for voto in dados["historico"]:
+# chave = open("chave_cripto.key", "rb").read()
+# cipher = Fernet(chave)
+
+# with open("votos.json") as f:
+#   dados = json.load(f)
+
+# for voto in dados["historico"]:
 #    ip_real = cipher.decrypt(voto["endereco_cripto"].encode()).decode()
-#    print(f"{ip_real}:{voto['porta']} -> {voto['tipo']}")      
-            
-            
-            
+#    print(f"{ip_real}:{voto['porta']} -> {voto['tipo']}")
+
 
 # ===== EXECUÇÃO =====
 if __name__ == "__main__":
