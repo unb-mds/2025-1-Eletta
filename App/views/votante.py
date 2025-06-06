@@ -14,59 +14,78 @@ def pagina_de_espera(page: ft.Page) -> ft.View:
 
 def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
     pauta = controlador.mensagem
+
     conteudo_da_pagina = [
+        # Retângulo superior (topo)
+        ft.Container(height=45, bgcolor="#39746F"),
+        # Container que centraliza o conteúdo no centro da tela
         ft.Container(
-            content=ft.Text(
-                value=pauta,
-                size=14,
-                text_align=ft.TextAlign.CENTER,
-                color=ft.Colors.BLACK,
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=30,
+                controls=[
+                    ft.Container(
+                        content=ft.Text(
+                            value=pauta,
+                            size=14,
+                            text_align=ft.TextAlign.CENTER,
+                            color=ft.Colors.BLACK,
+                        ),
+                        padding=20,
+                        border=ft.border.all(3, "#39746F"),
+                        width=329,
+                        height=73,
+                    ),
+                    ft.Column(
+                        controls=[
+                            ft.ElevatedButton(
+                                text="A favor",
+                                width=117,
+                                height=56,
+                                bgcolor="#47D147",
+                                color=ft.Colors.WHITE,
+                                on_click=controlador.votar,
+                                data=2,
+                            ),
+                            ft.ElevatedButton(
+                                text="Contra",
+                                width=117,
+                                height=56,
+                                bgcolor="#C83A3A",
+                                color=ft.Colors.WHITE,
+                                on_click=controlador.votar,
+                                data=1,
+                            ),
+                            ft.ElevatedButton(
+                                text="Abster-se",
+                                width=117,
+                                height=56,
+                                bgcolor="#828E82",
+                                color=ft.Colors.WHITE,
+                                on_click=controlador.votar,
+                                data=0,
+                            ),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=20,
+                    ),
+                ],
             ),
-            padding=20,
-            border=ft.border.all(3, "#39746F"),
-            width=329,
-            height=73,
         ),
-        ft.Column(
-            controls=[
-                ft.ElevatedButton(
-                    text="A favor",
-                    width=117,
-                    height=56,
-                    bgcolor="#47D147",
-                    color=ft.Colors.WHITE,
-                    on_click=controlador.votar,
-                    data=2,
-                ),
-                ft.ElevatedButton(
-                    text="Contra",
-                    width=117,
-                    height=56,
-                    bgcolor="#C83A3A",
-                    color=ft.Colors.WHITE,
-                    on_click=controlador.votar,
-                    data=1,
-                ),
-                ft.ElevatedButton(
-                    text="Abster-se",
-                    width=117,
-                    height=56,
-                    bgcolor="#828E82",
-                    color=ft.Colors.WHITE,
-                    on_click=controlador.votar,
-                    data=0,
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            spacing=20,
-        ),
+        # Retângulo inferior (rodapé)
+        ft.Container(height=45, bgcolor="#39746F"),
     ]
+
     return ft.View(
-        "/votacao",
+        route="/votacao",
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         bgcolor=ft.Colors.WHITE,
+        padding=0,
     )
 
 

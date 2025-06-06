@@ -120,24 +120,70 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
 
 def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        ft.Column(
-            [
-                ft.Text(controlador.mensagem),
-                ft.ElevatedButton(
-                    "Criar nova pauta", on_click=controlador.criar_nova_pauta
-                ),
-                ft.ElevatedButton(
-                    "Encerrar Sessão", on_click=controlador.encerrar_sessao
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        )
+        # Retângulo superior
+        ft.Container(height=45, bgcolor="#39746F"),
+        # Container central com conteúdo
+        ft.Container(
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                [
+                    ft.Text(
+                        controlador.mensagem,
+                        size=16,
+                        weight=ft.FontWeight.NORMAL,
+                        color="#000000",
+                        text_align=ft.TextAlign.CENTER,
+                    ),
+                    ft.ElevatedButton(
+                        text="Criar nova pauta",
+                        width=160,
+                        height=50,
+                        bgcolor="#39746F",
+                        color=ft.Colors.WHITE,
+                        on_click=controlador.criar_nova_pauta,
+                        style=ft.ButtonStyle(
+                            padding=20,
+                            text_style=ft.TextStyle(
+                                size=14,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
+                            ),
+                        ),
+                    ),
+                    ft.ElevatedButton(
+                        text="Encerrar Sessão",
+                        width=160,
+                        height=50,
+                        bgcolor="#C83A3A",
+                        color=ft.Colors.WHITE,
+                        on_click=controlador.encerrar_sessao,
+                        style=ft.ButtonStyle(
+                            padding=20,
+                            text_style=ft.TextStyle(
+                                size=14,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
+                            ),
+                        ),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=30,
+            ),
+        ),
+        # Retângulo inferior
+        ft.Container(height=45, bgcolor="#39746F"),
     ]
+
     return ft.View(
         "/resultado_host",
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
     )
 
 
