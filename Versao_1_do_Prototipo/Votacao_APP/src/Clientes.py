@@ -5,6 +5,7 @@ import flet as ft
 PORTA = 5000
 IP_SERVIDOR = "192.168.1.80"  # <<< Coloque aqui o IP da máquina do servidor
 
+
 def main(page: ft.Page):
     page.title = "Cliente de Votação UDP"
     page.horizontal_alignment = "center"
@@ -76,19 +77,31 @@ def main(page: ft.Page):
         page.update()
 
     page.add(
-        ft.Column([
-            ft.ElevatedButton("🔌 Conectar", on_click=conectar_servidor),
-            ft.Divider(),
-            pergunta_text,
-            ft.Divider(),
-            ft.Row([
-                ft.ElevatedButton("✅ A Favor", on_click=lambda _: enviar_voto("a favor")),
-                ft.ElevatedButton("❌ Contra", on_click=lambda _: enviar_voto("contra")),
-                ft.ElevatedButton("🤔 Abster", on_click=lambda _: enviar_voto("abster")),
-            ], alignment="center"),
-            status
-        ], alignment="center")
+        ft.Column(
+            [
+                ft.ElevatedButton("🔌 Conectar", on_click=conectar_servidor),
+                ft.Divider(),
+                pergunta_text,
+                ft.Divider(),
+                ft.Row(
+                    [
+                        ft.ElevatedButton(
+                            "✅ A Favor", on_click=lambda _: enviar_voto("a favor")
+                        ),
+                        ft.ElevatedButton(
+                            "❌ Contra", on_click=lambda _: enviar_voto("contra")
+                        ),
+                        ft.ElevatedButton(
+                            "🤔 Abster", on_click=lambda _: enviar_voto("abster")
+                        ),
+                    ],
+                    alignment="center",
+                ),
+                status,
+            ],
+            alignment="center",
+        )
     )
 
-ft.app(target=main, view=ft.WEB_BROWSER, port=8550)
 
+ft.app(target=main, view=ft.WEB_BROWSER, port=8550)

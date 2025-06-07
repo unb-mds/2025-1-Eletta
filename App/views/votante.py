@@ -193,3 +193,64 @@ def pagina_sucesso_voto_computado(page: ft.Page) -> ft.View:
         bgcolor=ft.Colors.WHITE,
         padding=0,
     )
+
+
+def pagina_aviso_tempo(page: ft.Page, controlador: Controlador) -> ft.View:
+    """
+    Cria a tela de aviso para o votante se atentar ao tempo de votação.
+    """
+    conteudo_da_pagina = [
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                controls=[
+                    ft.Text(
+                        "ATENÇÃO:",
+                        size=22,
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Text(
+                        "PARA QUE NÃO OCORRA PROBLEMAS EM SEU VOTO, "
+                        "CERTIFIQUE-SE DE VOTAR E CONFIRMAR ANTES QUE O "
+                        "TEMPO DEFINIDO PELO CRIADOR DA SALA EXPIRE.",
+                        size=16,
+                        color=ft.Colors.BLACK,
+                        text_align=ft.TextAlign.CENTER,
+                        width=300,
+                    ),
+                    ft.Container(height=30),
+                    ft.ElevatedButton(
+                        text="CONTINUAR",
+                        width=150,
+                        height=50,
+                        color=ft.Colors.WHITE,
+                        bgcolor="#39746F",
+                        on_click=controlador.ir_para_espera,
+                        style=ft.ButtonStyle(
+                            padding=15,
+                            text_style=ft.TextStyle(
+                                size=14,
+                                weight=ft.FontWeight.BOLD,
+                            ),
+                        ),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
+        ),
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+
+    return ft.View(
+        route="/aviso_tempo",
+        controls=conteudo_da_pagina,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
+    )

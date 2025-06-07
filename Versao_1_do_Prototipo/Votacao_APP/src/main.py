@@ -12,6 +12,7 @@ ARQUIVO_VOTOS = "votos.json"
 CHAVE_CRIPTOGRAFIA = "chave_cripto.key"
 PORTA = 5000
 
+
 # ===== CLASSE DE CRIPTOGRAFIA =====
 class Criptografia:
     def __init__(self):
@@ -23,6 +24,7 @@ class Criptografia:
 
     def criptografar(self, texto):
         return self.cipher.encrypt(texto.encode()).decode()
+
 
 # ===== SERVIDOR DE VOTAÇÃO =====
 class ServidorVotacao:
@@ -41,17 +43,21 @@ class ServidorVotacao:
     def definir_pergunta(self, pergunta):
         self.pergunta_atual = pergunta
         self.clientes_que_votaram.clear()
-        threading.Thread(target=self._enviar_pergunta_a_todos, daemon=True).start()  # Envia em uma thread separada
+        threading.Thread(
+            target=self._enviar_pergunta_a_todos, daemon=True
+        ).start()  # Envia em uma thread separada
         self.atualizar_ui()
         return True
 
     def _enviar_pergunta_a_todos(self):
-        for addr in list(self.clientes_conectados):  # Usa uma cópia da lista para evitar problemas de concorrência
+        for addr in list(
+            self.clientes_conectados
+        ):  # Usa uma cópia da lista para evitar problemas de concorrência
             try:
                 self.socket.sendto(f"PERGUNTA|{self.pergunta_atual}".encode(), addr)
             except:
                 self.clientes_conectados.discard(addr)  # Remove clientes inativos
-        
+
     def _carregar_votos(self):
         if os.path.exists(ARQUIVO_VOTOS):
             try:
@@ -66,7 +72,7 @@ class ServidorVotacao:
             json.dump(
                 {
                     "total": dict(self.votos["total"]),
-                    "historico": self.votos["historico"]
+                    "historico": self.votos["historico"],
                 },
                 f,
                 indent=2,
@@ -91,13 +97,15 @@ class ServidorVotacao:
 
             ip_cripto = self.crypto.criptografar(ip)
             self.votos["total"][opcoes[voto]] += 1
-            self.votos["historico"].append({
-                "pergunta": pergunta,
-                "tipo": opcoes[voto],
-                "endereco_cripto": ip_cripto,
-                "porta": porta,
-                "timestamp": datetime.now().isoformat()
-            })
+            self.votos["historico"].append(
+                {
+                    "pergunta": pergunta,
+                    "tipo": opcoes[voto],
+                    "endereco_cripto": ip_cripto,
+                    "porta": porta,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
             self.clientes_que_votaram.add(cliente_id)
             self._salvar_votos()
             self.atualizar_ui()
@@ -115,10 +123,12 @@ class ServidorVotacao:
                 while self.ativo:
                     data, addr = self.socket.recvfrom(1024)
                     mensagem = data.decode()
-                    
+
                     if mensagem.startswith("CONECT|"):
                         self.clientes_conectados.add(addr)
-                        self.socket.sendto(f"PERGUNTA|{self.pergunta_atual}".encode(), addr)
+                        self.socket.sendto(
+                            f"PERGUNTA|{self.pergunta_atual}".encode(), addr
+                        )
                     else:
                         self._processar_voto(mensagem, addr[0], addr[1])
             except Exception as e:
@@ -131,6 +141,7 @@ class ServidorVotacao:
     def parar(self):
         self.ativo = False
         self.socket.close()
+
 
 # ===== INTERFACE COM FLET =====
 def main(page: ft.Page):
@@ -165,10 +176,13 @@ def main(page: ft.Page):
         ft.Column(
             [
                 status_text,
-                ft.Row([
-                    ft.ElevatedButton("Iniciar Servidor", on_click=iniciar),
-                    ft.ElevatedButton("Parar Servidor", on_click=parar),
-                ], alignment="center"),
+                ft.Row(
+                    [
+                        ft.ElevatedButton("Iniciar Servidor", on_click=iniciar),
+                        ft.ElevatedButton("Parar Servidor", on_click=parar),
+                    ],
+                    alignment="center",
+                ),
                 pergunta_input,
                 ft.ElevatedButton("Definir Pergunta", on_click=definir_pergunta),
                 votos_totais,
@@ -182,11 +196,15 @@ def main(page: ft.Page):
         votos = servidor.votos["total"]
         votos_totais.value = f"Totais: {dict(votos)}"
         historico_list.controls = [
-            ft.Text(f"[{v['timestamp']}] {v['tipo'].upper()} - {v.get('pergunta', '')}", size=12)
+            ft.Text(
+                f"[{v['timestamp']}] {v['tipo'].upper()} - {v.get('pergunta', '')}",
+                size=12,
+            )
             for v in servidor.votos["historico"]
         ]
         page.update()
 
     servidor = ServidorVotacao(atualizar_ui)
+
 
 ft.app(target=main)

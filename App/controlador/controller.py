@@ -21,11 +21,18 @@ class Controlador:
     # ----------- votante -------------
     def entrar_na_votacao_como_votante(self, e: ft.ControlEvent) -> None:
         self.udp_socket = cliente.virar_votante()
+        # Redireciona para a nova tela de aviso em vez da tela de espera
+        self.page.go("/aviso_tempo")
+
+    def ir_para_espera(self, e: ft.ControlEvent) -> None:
+
         self.page.go("/espera")
         pauta = cliente.receber_mensagem(self.udp_socket)
         self.mensagem = pauta
         if self.mensagem != "votação encerrada":
             self.page.go("/votacao")
+        else:
+            self.page.go("/resultado")
 
     def votar(self, e: ft.ControlEvent) -> None:
         if e.control.data == 2:

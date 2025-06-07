@@ -20,18 +20,26 @@ current_question = None
 
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route("/")
 def home():
-    return render_template('interface.html')
+    return render_template("interface.html")
+
 
 # Funções auxiliares
 def salvar_resultados():
     with open(RESULTS_FILE, "w", encoding="utf-8") as f:
-        json.dump({
-            "question": current_question,
-            "results": votos,
-            "ids_votantes": list(ids_votantes)
-        }, f, ensure_ascii=False, indent=2)
+        json.dump(
+            {
+                "question": current_question,
+                "results": votos,
+                "ids_votantes": list(ids_votantes),
+            },
+            f,
+            ensure_ascii=False,
+            indent=2,
+        )
+
 
 def carregar_resultados():
     global votos, current_question, ids_votantes
@@ -44,6 +52,7 @@ def carregar_resultados():
     except FileNotFoundError:
         print("Arquivo JSON de resultados ainda não existe.")
         salvar_resultados()
+
 
 # UDP Server
 def handle_udp():
@@ -71,10 +80,13 @@ def handle_udp():
             print(f"[UDP] Erro ao processar dados de {addr}: {e}")
             udp_server.sendto("Erro no processamento do voto.".encode("utf-8"), addr)
 
+
 # Rotas HTTP
+
 
 def index():
     return send_from_directory(os.getcwd(), "Interface.html")
+
 
 @app.route("/admin-login", methods=["POST"])
 def admin_login():
@@ -83,6 +95,7 @@ def admin_login():
     if senha == "admin123":
         return jsonify({"auth": True})
     return jsonify({"auth": False}), 401
+
 
 @app.route("/question", methods=["POST"])
 def set_question():
@@ -99,9 +112,11 @@ def set_question():
     print(f"[HTTP] Nova questão definida: {question}")
     return jsonify({"message": "Questão definida com sucesso."})
 
+
 @app.route("/results", methods=["GET"])
 def get_results():
     return jsonify({"question": current_question, "results": votos})
+
 
 @app.route("/export", methods=["GET"])
 def export_results():
@@ -111,6 +126,7 @@ def export_results():
         for opcao, qtd in votos.items():
             writer.writerow([opcao, qtd])
     return jsonify({"message": "Resultados exportados para CSV."})
+
 
 @app.route("/vote", methods=["POST"])
 def vote_http():
@@ -132,13 +148,15 @@ def vote_http():
     print(f"[HTTP] Voto registrado: {user_id} -> {vote}")
     return jsonify({"message": "Voto registrado com sucesso."})
 
+
 @app.route("/json", methods=["GET"])
 def get_json_file():
     try:
         with open(RESULTS_FILE, "r", encoding="utf-8") as f:
-            return f.read(), 200, {'Content-Type': 'application/json'}
+            return f.read(), 200, {"Content-Type": "application/json"}
     except FileNotFoundError:
         return jsonify({"error": "Arquivo não encontrado"}), 404
+
 
 # Início do servidor
 def main():
@@ -146,6 +164,7 @@ def main():
     threading.Thread(target=handle_udp, daemon=True).start()
     print(f"[HTTP] Servidor web iniciado em http://localhost:{HTTP_PORT}")
     app.run(host=HOST, port=HTTP_PORT)
+
 
 if __name__ == "__main__":
     main()

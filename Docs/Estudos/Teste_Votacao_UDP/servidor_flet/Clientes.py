@@ -4,6 +4,7 @@ import flet as ft
 
 PORTA = 5000
 
+
 def main(page: ft.Page):
     page.title = "Cliente de Votação UDP"
     page.horizontal_alignment = "center"
@@ -26,7 +27,9 @@ def main(page: ft.Page):
                 if data.startswith(b"PERGUNTA|"):
                     pergunta = data.decode().split("|", 1)[1]
                     pergunta_text.value = pergunta
-                    ja_votou = False  # Reinicia a flag quando uma nova pergunta é recebida
+                    ja_votou = (
+                        False  # Reinicia a flag quando uma nova pergunta é recebida
+                    )
                     status.value = "Nova pergunta recebida! Você pode votar agora."
                     status.color = "green"
                     page.update()
@@ -48,7 +51,7 @@ def main(page: ft.Page):
             status.value = "Conectado! Aguardando perguntas..."
             status.color = "blue"
             page.update()
-            
+
             # Inicia a thread de recebimento
             threading.Thread(target=receber_mensagens, daemon=True).start()
         except Exception as e:
@@ -72,7 +75,10 @@ def main(page: ft.Page):
             return
 
         try:
-            sock.sendto(f"{pergunta_text.value}|{voto}".encode(), (ip_input.value.strip(), PORTA))
+            sock.sendto(
+                f"{pergunta_text.value}|{voto}".encode(),
+                (ip_input.value.strip(), PORTA),
+            )
             status.value = f"✅ Voto '{voto}' enviado!"
             status.color = "green"
             ja_votou = True
@@ -83,19 +89,32 @@ def main(page: ft.Page):
 
     # Layout
     page.add(
-        ft.Column([
-            ip_input,
-            ft.ElevatedButton("Conectar", on_click=lambda _: conectar_servidor()),
-            ft.Divider(),
-            pergunta_text,
-            ft.Divider(),
-            ft.Row([
-                ft.ElevatedButton("✅ A Favor", on_click=lambda _: enviar_voto("a favor")),
-                ft.ElevatedButton("❌ Contra", on_click=lambda _: enviar_voto("contra")),
-                ft.ElevatedButton("🤔 Abster", on_click=lambda _: enviar_voto("abster")),
-            ], alignment="center"),
-            status
-        ], alignment="center")
+        ft.Column(
+            [
+                ip_input,
+                ft.ElevatedButton("Conectar", on_click=lambda _: conectar_servidor()),
+                ft.Divider(),
+                pergunta_text,
+                ft.Divider(),
+                ft.Row(
+                    [
+                        ft.ElevatedButton(
+                            "✅ A Favor", on_click=lambda _: enviar_voto("a favor")
+                        ),
+                        ft.ElevatedButton(
+                            "❌ Contra", on_click=lambda _: enviar_voto("contra")
+                        ),
+                        ft.ElevatedButton(
+                            "🤔 Abster", on_click=lambda _: enviar_voto("abster")
+                        ),
+                    ],
+                    alignment="center",
+                ),
+                status,
+            ],
+            alignment="center",
+        )
     )
+
 
 ft.app(target=main)

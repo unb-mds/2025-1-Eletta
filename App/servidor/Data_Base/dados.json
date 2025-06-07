@@ -1,69 +1,30 @@
 {
   "votantes": {
-    "34129": {
+    "62789": {
       "PORT": "127.0.0.1",
       "votos contra": [
-        "digamos que não"
+        "wever"
       ],
       "votos a favor": [
-        "digamos que sim",
-        "ultima"
+        "sgberg"
       ],
       "votos nulo": [],
       "pautas votadas": [
-        "digamos que sim",
-        "digamos que não",
-        "ultima"
-      ]
-    },
-    "42045": {
-      "PORT": "127.0.0.1",
-      "votos contra": [
-        "digamos que sim",
-        "ultima"
-      ],
-      "votos a favor": [],
-      "votos nulo": [
-        "digamos que não"
-      ],
-      "pautas votadas": [
-        "digamos que sim",
-        "digamos que não",
-        "ultima"
-      ]
-    },
-    "40449": {
-      "PORT": "127.0.0.1",
-      "votos contra": [],
-      "votos a favor": [
-        "digamos que sim"
-      ],
-      "votos nulo": [
-        "digamos que não",
-        "ultima"
-      ],
-      "pautas votadas": [
-        "digamos que sim",
-        "digamos que não",
-        "ultima"
+        "sgberg",
+        "wever"
       ]
     }
   },
   "pautas": {
-    "digamos que sim": {
-      "qtd de votos a favor": 2,
-      "qtd de votos contra": 1,
+    "sgberg": {
+      "qtd de votos a favor": 1,
+      "qtd de votos contra": 0,
       "qtd de votos anulados": 0
     },
-    "digamos que não": {
+    "wever": {
       "qtd de votos a favor": 0,
       "qtd de votos contra": 1,
-      "qtd de votos anulados": 2
-    },
-    "ultima": {
-      "qtd de votos a favor": 1,
-      "qtd de votos contra": 1,
-      "qtd de votos anulados": 1
+      "qtd de votos anulados": 0
     }
   }
 }
