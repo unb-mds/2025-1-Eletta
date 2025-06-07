@@ -5,6 +5,7 @@ import uuid
 SERVER = "127.0.0.1"  # IP do servidor (sem http://)
 PORT = 5000
 
+
 def main():
     client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     user_id = str(uuid.uuid4())  # Gera um ID único para o cliente
@@ -23,6 +24,7 @@ def main():
 
         response, _ = client.recvfrom(1024)
         print("Resposta do servidor:", response.decode("utf-8"))
+
 
 if __name__ == "__main__":
     main()
