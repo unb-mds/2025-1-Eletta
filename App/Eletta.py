@@ -7,10 +7,6 @@ def main(page: ft.Page) -> None:
     controlador = controller.Controlador(page)
 
     def mudar_de_pagina(e: ft.ControlEvent) -> None:
-        # Adicionado uma verificação aqui no início de toda mudança de rota.
-        # Se o usuário NÃO está na tela de votação ou de confirmação,
-        # mandamos o cronômetro parar. Isso evita que ele continue rodando
-        # em segundo plano sem necessidade.
         if page.route not in ["/votacao", "/confirmacao"]:
             if hasattr(controlador, "stop_voter_countdown"):
                 controlador.stop_voter_countdown()
@@ -24,10 +20,13 @@ def main(page: ft.Page) -> None:
 
         elif page.route == "/votacao":
             page.views.append(votante.pagina_de_votacao(page, controlador))
-            # Este é o momento exato em que a tela de votação é carregada.
-            # Aqui nós damos o "play" no cronômetro do votante.
             if hasattr(controlador, "start_voter_countdown"):
                 controlador.start_voter_countdown()
+        
+        # --- Rota Adicionada ---
+        elif page.route == "/tempo_esgotado":
+            page.views.append(votante.pagina_tempo_esgotado(page))
+        # --- Fim da Rota ---
 
         elif page.route == "/confirmacao":
             page.views.append(
@@ -61,4 +60,4 @@ def main(page: ft.Page) -> None:
     page.go("/")
 
 
-ft.app(target=main, assets_dir="assets")  # Lê o diretório
+ft.app(target=main, assets_dir="assets")

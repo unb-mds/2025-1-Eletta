@@ -80,9 +80,20 @@ def mostrar_resultados(
     qtd_contra = banco_de_dados.dados["pautas"][pauta]["qtd de votos contra"]
     qtd_abstenção = banco_de_dados.dados["pautas"][pauta]["qtd de votos anulados"]
     total = qtd_a_favor + qtd_contra + qtd_abstenção
-    porcentagem_a_favor = qtd_a_favor / total * 100
-    porcentagem_contra = qtd_contra / total * 100
-    porcentagem_abstenção = qtd_abstenção / total * 100
+
+    # --- Início da Correção ---
+    # Verifica se o total de votos é zero para evitar o erro de divisão por zero.
+    if total == 0:
+        porcentagem_a_favor = 0.0
+        porcentagem_contra = 0.0
+        porcentagem_abstenção = 0.0
+    else:
+        # Se houver votos, calcula as porcentagens normalmente.
+        porcentagem_a_favor = qtd_a_favor / total * 100
+        porcentagem_contra = qtd_contra / total * 100
+        porcentagem_abstenção = qtd_abstenção / total * 100
+    # --- Fim da Correção ---
+
     resultado += f"votos a favor = {porcentagem_a_favor:.2f}%\nvotos contra = {porcentagem_contra:.2f}%\nvotos nulos = {porcentagem_abstenção:.2f}%\n"
     resultado += (
         "-------------------------------------------------------------------\n\n"

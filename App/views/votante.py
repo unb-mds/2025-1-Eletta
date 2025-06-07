@@ -1,6 +1,49 @@
 import flet as ft
 from controlador.controller import Controlador
 
+# --- Nova Página Adicionada ---
+def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
+    """
+    Esta é a nova tela para onde o usuário é enviado quando o tempo de votação acaba
+    e ele não votou. Mostra uma mensagem apropriada e um indicador de progresso.
+    """
+    conteudo = [
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                [
+                    ft.Icon(name=ft.icons.TIMER_OFF_OUTLINED, color="#39746F", size=40),
+                    ft.Container(
+                        content=ft.Text(
+                            "Tempo esgotado!\n\nAguarde o resultado da votação.",
+                            size=20,
+                            weight=ft.FontWeight.BOLD,
+                            text_align=ft.TextAlign.CENTER,
+                            color=ft.Colors.BLACK,
+                        ),
+                        padding=ft.padding.only(top=20),
+                    ),
+                    ft.ProgressRing(color="#39746F"), # Anel de progresso
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=30,
+                expand=True,
+            ),
+            bgcolor=ft.Colors.WHITE,
+        ),
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+    return ft.View(
+        "/tempo_esgotado",
+        controls=conteudo,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
+    )
 
 def pagina_de_espera(page: ft.Page) -> ft.View:
     conteudo_da_pagina = [ft.Text("Por favor Aguarde")]
@@ -13,25 +56,17 @@ def pagina_de_espera(page: ft.Page) -> ft.View:
 
 
 def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
-    pauta = controlador.mensagem
 
-    # --- Elemento de Texto para o Timer ---
-    # Este é o componente de texto que vai de fato aparecer na tela do usuário.
-    # O controlador vai se encarregar de atualizar o valor dele a cada segundo.
+    pauta = controlador.mensagem
     timer_display = ft.Text(
         value=f"Tempo restante: {controlador.tempo_votacao}s",
         size=16,
         weight=ft.FontWeight.BOLD,
         color=ft.colors.RED_500,
     )
-    # Entregamos o componente para o controlador, para que ele saiba quem atualizar.
     controlador.timer_control_votante = timer_display
-    # --- Fim do Elemento do Timer ---
-
     conteudo_da_pagina = [
-        # Retângulo superior (topo)
         ft.Container(height=45, bgcolor="#39746F"),
-        # Container que centraliza o conteúdo no centro da tela
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
@@ -40,8 +75,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=30,
                 controls=[
-                    # Adicionamos o cronômetro visualmente aqui na tela.
-                    timer_display,
+                    timer_display, 
                     ft.Container(
                         content=ft.Text(
                             value=pauta,
@@ -72,6 +106,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                                 bgcolor="#C83A3A",
                                 color=ft.Colors.WHITE,
                                 on_click=controlador.votar,
+
                                 data=1,
                             ),
                             ft.ElevatedButton(
@@ -90,10 +125,8 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                 ],
             ),
         ),
-        # Retângulo inferior (rodapé)
         ft.Container(height=45, bgcolor="#39746F"),
     ]
-
     return ft.View(
         route="/votacao",
         controls=conteudo_da_pagina,
@@ -104,9 +137,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
     )
 
 
-def pagina_de_confirmacao(
-    page: ft.Page, controlador: Controlador, voto_selecionado: str
-) -> ft.View:
+def pagina_de_confirmacao(page: ft.Page, controlador: Controlador, voto_selecionado: str) -> ft.View:
     texto = f"Você confirma seu voto: '{voto_selecionado}'?"
     conteudo = [
         ft.Text(
