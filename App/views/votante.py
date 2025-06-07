@@ -15,6 +15,19 @@ def pagina_de_espera(page: ft.Page) -> ft.View:
 def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
     pauta = controlador.mensagem
 
+    # --- Elemento de Texto para o Timer ---
+    # Este é o componente de texto que vai de fato aparecer na tela do usuário.
+    # O controlador vai se encarregar de atualizar o valor dele a cada segundo.
+    timer_display = ft.Text(
+        value=f"Tempo restante: {controlador.tempo_votacao}s",
+        size=16,
+        weight=ft.FontWeight.BOLD,
+        color=ft.colors.RED_500,
+    )
+    # Entregamos o componente para o controlador, para que ele saiba quem atualizar.
+    controlador.timer_control_votante = timer_display
+    # --- Fim do Elemento do Timer ---
+
     conteudo_da_pagina = [
         # Retângulo superior (topo)
         ft.Container(height=45, bgcolor="#39746F"),
@@ -27,6 +40,8 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=30,
                 controls=[
+                    # Adicionamos o cronômetro visualmente aqui na tela.
+                    timer_display,
                     ft.Container(
                         content=ft.Text(
                             value=pauta,

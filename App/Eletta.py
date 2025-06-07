@@ -7,6 +7,14 @@ def main(page: ft.Page) -> None:
     controlador = controller.Controlador(page)
 
     def mudar_de_pagina(e: ft.ControlEvent) -> None:
+        # Adicionado uma verificação aqui no início de toda mudança de rota.
+        # Se o usuário NÃO está na tela de votação ou de confirmação,
+        # mandamos o cronômetro parar. Isso evita que ele continue rodando
+        # em segundo plano sem necessidade.
+        if page.route not in ["/votacao", "/confirmacao"]:
+            if hasattr(controlador, "stop_voter_countdown"):
+                controlador.stop_voter_countdown()
+
         page.views.clear()
         if page.route == "/":
             page.views.append(home.pagina_inicial(page, controlador))
@@ -16,6 +24,10 @@ def main(page: ft.Page) -> None:
 
         elif page.route == "/votacao":
             page.views.append(votante.pagina_de_votacao(page, controlador))
+            # Este é o momento exato em que a tela de votação é carregada.
+            # Aqui nós damos o "play" no cronômetro do votante.
+            if hasattr(controlador, "start_voter_countdown"):
+                controlador.start_voter_countdown()
 
         elif page.route == "/confirmacao":
             page.views.append(
@@ -28,7 +40,7 @@ def main(page: ft.Page) -> None:
             page.views.append(host.pagina_de_espera_votantes(page, controlador))
 
         elif page.route == "/criacao_de_pauta":
-            page.views.append(host.pagina_de_criacao_de_pauta(e.page, controlador))
+            page.views.append(host.pagina_de_criacao_de_pauta(page, controlador))
 
         elif page.route == "/espera_votos":
             page.views.append(host.pagina_de_espera_votos(page, controlador))

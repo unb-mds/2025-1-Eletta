@@ -27,34 +27,30 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
         focused_border_color="#4b7d78",
         border_color="#4b7d78",
     )
+
+    # Adicionamos um menu para o host escolher quanto tempo a votação vai durar.
+    dropdown_tempo = ft.Dropdown(
+        label="Defina o tempo (segundos)",
+        width=301,
+        hint_text="30",
+        options=[
+            ft.dropdown.Option(key="30", text="30 segundos"),
+            ft.dropdown.Option(key="45", text="45 segundos"),
+            ft.dropdown.Option(key="60", text="60 segundos"),
+        ],
+        value="30",  # Deixamos 30 segundos como padrão.
+        color="#4b7d78",
+        border_color="#4b7d78",
+    )
+
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),
         # Container que centraliza a coluna na tela
         ft.Container(
             content=ft.Column(  # Coluna com os conteudos da pagina
                 controls=[
-                    ft.Dropdown(  # Seleção do tempo
-                        label="Defina o tempo",
-                        width=301,
-                        hint_text="00:30",
-                        options=[
-                            ft.dropdown.Option(
-                                key="00:30",
-                                content=ft.Text(value="00:30", color="#4b7d78"),
-                            ),  # Opções
-                            ft.dropdown.Option(
-                                key="00:45",
-                                content=ft.Text(value="00:45", color="#4b7d78"),
-                            ),
-                            ft.dropdown.Option(
-                                key="01:00",
-                                content=ft.Text(value="01:00", color="#4b7d78"),
-                            ),
-                        ],
-                        color="#4b7d78",
-                        border_color="#4b7d78",
-                        bgcolor=ft.Colors.WHITE,
-                    ),
+                    # Adicionamos o seletor de tempo na tela, antes da pauta.
+                    dropdown_tempo,
                     pauta,
                     ft.ElevatedButton(  # Botão de iniciar a votação
                         text="Gerar votação",
@@ -62,7 +58,10 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
                         height=56,
                         color=ft.Colors.WHITE,
                         bgcolor="#39746F",
-                        data=pauta,
+                        # Ponto importante: agora o botão não envia só o texto da pauta.
+                        # Ele envia uma tupla (um par) contendo tanto o campo da pauta
+                        # quanto o seletor de tempo, para o controlador ter as duas informações.
+                        data=(pauta, dropdown_tempo),
                         on_click=controlador.enviar_pauta,
                         style=ft.ButtonStyle(
                             padding=20,
