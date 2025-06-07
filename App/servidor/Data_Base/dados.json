@@ -1,17 +1,13 @@
 {
   "votantes": {
-    "61628": {
+    "50512": {
       "PORT": "127.0.0.1",
       "votos contra": [],
-      "votos a favor": [
-        "s"
-      ],
+      "votos a favor": [],
       "votos nulo": [],
-      "pautas votadas": [
-        "s"
-      ]
+      "pautas votadas": []
     },
-    "61629": {
+    "50513": {
       "PORT": "127.0.0.1",
       "votos contra": [],
       "votos a favor": [],
@@ -20,8 +16,8 @@
     }
   },
   "pautas": {
-    "s": {
-      "qtd de votos a favor": 1,
+    "a": {
+      "qtd de votos a favor": 0,
       "qtd de votos contra": 0,
       "qtd de votos anulados": 0
     }

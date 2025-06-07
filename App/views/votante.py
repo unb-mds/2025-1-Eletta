@@ -1,6 +1,7 @@
 import flet as ft
 from controlador.controller import Controlador
 
+
 # --- Nova Página Adicionada ---
 def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
     """
@@ -25,7 +26,7 @@ def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
                         ),
                         padding=ft.padding.only(top=20),
                     ),
-                    ft.ProgressRing(color="#39746F"), # Anel de progresso
+                    ft.ProgressRing(color="#39746F"),  # Anel de progresso
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -44,6 +45,7 @@ def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
         bgcolor=ft.Colors.WHITE,
         padding=0,
     )
+
 
 def pagina_de_espera(page: ft.Page) -> ft.View:
     conteudo_da_pagina = [ft.Text("Por favor Aguarde")]
@@ -75,7 +77,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=30,
                 controls=[
-                    timer_display, 
+                    timer_display,
                     ft.Container(
                         content=ft.Text(
                             value=pauta,
@@ -106,7 +108,6 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                                 bgcolor="#C83A3A",
                                 color=ft.Colors.WHITE,
                                 on_click=controlador.votar,
-
                                 data=1,
                             ),
                             ft.ElevatedButton(
@@ -137,7 +138,10 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
     )
 
 
-def pagina_de_confirmacao(page: ft.Page, controlador: Controlador, voto_selecionado: str) -> ft.View:
+def pagina_de_confirmacao(
+    page: ft.Page, controlador: Controlador, voto_selecionado: str
+) -> ft.View:
+    # ... (código original sem alterações)
     texto = f"Você confirma seu voto: '{voto_selecionado}'?"
     conteudo = [
         ft.Text(

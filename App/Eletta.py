@@ -22,7 +22,7 @@ def main(page: ft.Page) -> None:
             page.views.append(votante.pagina_de_votacao(page, controlador))
             if hasattr(controlador, "start_voter_countdown"):
                 controlador.start_voter_countdown()
-        
+
         # --- Rota Adicionada ---
         elif page.route == "/tempo_esgotado":
             page.views.append(votante.pagina_tempo_esgotado(page))

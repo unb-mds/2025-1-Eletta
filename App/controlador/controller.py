@@ -45,7 +45,7 @@ class Controlador:
         while not self.stop_timer_event.is_set():
             elapsed_time = int(time.time() - self.pauta_start_timestamp)
             current_time = max(0, self.tempo_votacao - elapsed_time)
-            
+
             if self.page.route not in ["/votacao", "/confirmacao"]:
                 break
 
@@ -60,7 +60,7 @@ class Controlador:
                     self.page.update()
                 except Exception:
                     break
-            
+
             if current_time == 0:
                 # 1. Navega para a nova tela de tempo esgotado de forma segura.
                 #    A correção é chamar nosso novo método '_navigate_async'.
@@ -76,7 +76,7 @@ class Controlador:
                 next_message = cliente.receber_mensagem(self.udp_socket)
                 print(f"mensagem recebida: {next_message}")
                 self.page.run_task(self._process_next_pauta_message, next_message)
-                break 
+                break
             time.sleep(1)
 
     def stop_voter_countdown(self):
@@ -84,7 +84,7 @@ class Controlador:
         if self.timer_thread_votante and self.timer_thread_votante.is_alive():
             self.timer_thread_votante.join(timeout=1.0)
         self.timer_thread_votante = None
-    
+
     # --- Métodos Auxiliares Async para a UI ---
     async def _navigate_async(self, route: str):
         """
@@ -98,7 +98,7 @@ class Controlador:
             self.page.go("/")
         else:
             try:
-                pauta, tempo_str = message.split('|')
+                pauta, tempo_str = message.split("|")
                 self.mensagem = pauta
                 self.tempo_votacao = int(tempo_str)
                 self.pauta_start_timestamp = time.time()
@@ -106,20 +106,20 @@ class Controlador:
                 self.mensagem = message
                 self.tempo_votacao = 0
             self.page.go("/votacao")
-            
+
     # ----------- votante -------------
     def entrar_na_votacao_como_votante(self, e: ft.ControlEvent) -> None:
         self.udp_socket = cliente.virar_votante()
         self.page.go("/espera")
         mensagem_servidor = cliente.receber_mensagem(self.udp_socket)
         try:
-            pauta, tempo_str = mensagem_servidor.split('|')
+            pauta, tempo_str = mensagem_servidor.split("|")
             self.mensagem = pauta
             self.tempo_votacao = int(tempo_str)
             self.pauta_start_timestamp = time.time()
         except ValueError:
             self.mensagem = mensagem_servidor
-            self.tempo_votacao = 0 
+            self.tempo_votacao = 0
         if self.mensagem != "votação encerrada":
             self.page.go("/votacao")
 
@@ -136,14 +136,14 @@ class Controlador:
         cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
         cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
         self.page.go("/sucesso_voto_computado")
-        
+
         self.mensagem = cliente.receber_mensagem(self.udp_socket)
         self.page.go("/resultado")
 
         print("aguardando host")
         next_message = cliente.receber_mensagem(self.udp_socket)
         print(f"mensagem recebida: {next_message}")
-        
+
         # A função de processar a próxima pauta já é async, então podemos
         # usar run_task diretamente aqui se quiséssemos rodar em thread,
         # mas como a função `confirmar_voto` bloqueia a thread principal,
@@ -177,7 +177,9 @@ class Controlador:
         self.banco_de_dados.adicionar_pauta(self.mensagem)
         self.banco_de_dados.serializar_dados()
         mensagem_com_tempo = f"{self.mensagem}|{tempo_selecionado}"
-        servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, mensagem_com_tempo)
+        servidor.mandar_mensagem(
+            self.banco_de_dados, self.udp_socket, mensagem_com_tempo
+        )
         self.page.go("/sucesso_criacao_sala")
         timer_encerramento = threading.Timer(
             tempo_selecionado, self.encerrar_espera_de_votos, args=(None,)
