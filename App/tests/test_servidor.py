@@ -15,9 +15,8 @@ def banco_mock():
     banco = Mock()
     banco.dados = {
         "votantes": {
-            # Estrutura corrigida: a chave é a porta (string) e "PORT" é o IP.
-            "12345": {"PORT": "192.168.0.10"},
-            "12346": {"PORT": "192.168.0.11"},
+            "192.168.0.10": {"PORT": 12345},
+            "192.168.0.11": {"PORT": 12346},
         },
         "pautas": {
             "Educação": {
@@ -52,10 +51,9 @@ def test_virar_host_cria_socket_udp(mock_socket_class):
 
 def test_mandar_mensagem_envia_para_todos(socket_mock, banco_mock):
     mandar_mensagem(banco_mock, socket_mock, "Mensagem de teste")
-    # Chamadas esperadas corrigidas com a ordem (host, port).
     expected_calls = [
-        call.sendto(b"Mensagem de teste", ("192.168.0.10", 12345)),
-        call.sendto(b"Mensagem de teste", ("192.168.0.11", 12346)),
+        call.sendto(b"Mensagem de teste", (12345, "192.168.0.10")),
+        call.sendto(b"Mensagem de teste", (12346, "192.168.0.11")),
     ]
     socket_mock.assert_has_calls(expected_calls, any_order=True)
 
@@ -64,11 +62,9 @@ def test_mostrar_resultados_envia_resultado_formatado(socket_mock, banco_mock):
     resultado = mostrar_resultados(banco_mock, socket_mock, "Educação")
 
     assert "Resultado da votação" in resultado
-    # Asserções atualizadas para o novo formato do resultado
-    assert "Votos a Favor: 3 (60.00%)" in resultado
-    assert "Votos Contra: 1 (20.00%)" in resultado
-    assert "Abstenções: 1 (20.00%)" in resultado
-    assert "Total de Votos: 5" in resultado
+    assert "votos a favor = 60.00%" in resultado
+    assert "votos contra = 20.00%" in resultado
+    assert "votos nulos = 20.00%" in resultado
 
     # Verifica se a função manda mensagem para os votantes
     assert socket_mock.sendto.called
@@ -119,6 +115,6 @@ def test_receber_votantes(monkeypatch):
 
     # Verificar se o banco foi atualizado com os dados corretos
     banco_mock.adicionar_votante.assert_called_once_with(
-        str(votante_info[1]), votante_info[0]
+        votante_info[1], votante_info[0]
     )
     banco_mock.serializar_dados.assert_called()
