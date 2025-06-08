@@ -23,7 +23,7 @@ class Controlador:
         self.udp_socket = cliente.virar_votante()
         self.page.go("/aguardar_host")
         pauta = cliente.receber_mensagem(self.udp_socket)
-        while pauta == None or pauta == "":
+        while pauta is None or pauta == "":
             self.page.go("/aguardar_host")
             pauta = cliente.receber_mensagem(self.udp_socket)
         self.mensagem = pauta
