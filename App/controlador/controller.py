@@ -21,11 +21,26 @@ class Controlador:
     # ----------- votante -------------
     def entrar_na_votacao_como_votante(self, e: ft.ControlEvent) -> None:
         self.udp_socket = cliente.virar_votante()
+        # Redireciona para a nova tela de aviso em vez da tela de espera
+        self.page.go("/aviso_tempo")
+
+
+    def ir_para_espera(self, e: ft.ControlEvent) -> None:
+        """
+        Redireciona para a página de espera e aguarda a pauta do host.
+        É chamada após o usuário clicar em 'CONTINUAR' na tela de aviso.
+        """
         self.page.go("/espera")
+        
+        # O código abaixo é bloqueante e vai "travar" a UI na tela de espera
+        # até receber uma mensagem, mantendo o comportamento original do projeto.
         pauta = cliente.receber_mensagem(self.udp_socket)
         self.mensagem = pauta
         if self.mensagem != "votação encerrada":
             self.page.go("/votacao")
+        else:
+            self.page.go("/resultado") # Caso a votação já tenha encerrado
+
 
     def votar(self, e: ft.ControlEvent) -> None:
         if e.control.data == 2:

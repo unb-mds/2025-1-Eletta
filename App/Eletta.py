@@ -11,6 +11,9 @@ def main(page: ft.Page) -> None:
         if page.route == "/":
             page.views.append(home.pagina_inicial(page, controlador))
 
+        elif page.route == "/aviso_tempo":
+            page.views.append(votante.pagina_aviso_tempo(page, controlador))
+
         elif page.route == "/espera":
             page.views.append(votante.pagina_de_espera(page))
 
