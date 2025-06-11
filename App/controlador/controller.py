@@ -20,12 +20,23 @@ class Controlador:
 
     # ----------- votante -------------
     def entrar_na_votacao_como_votante(self, e: ft.ControlEvent) -> None:
+        """
+        Inicia a conexão do votante e o redireciona para a tela de atenção.
+        """
         self.udp_socket = cliente.virar_votante()
+        self.page.go("/atencao_votante")
+
+    def iniciar_escuta_votante(self, e: ft.ControlEvent) -> None:
+        """
+        Inicia a escuta por pautas após o votante clicar em 'Continuar'.
+        """
         self.page.go("/aguardar_host")
+        # A lógica de receber a pauta e navegar para a votação continua a mesma
         pauta = cliente.receber_mensagem(self.udp_socket)
         while pauta is None or pauta == "":
             self.page.go("/aguardar_host")
             pauta = cliente.receber_mensagem(self.udp_socket)
+
         self.mensagem = pauta
         if self.mensagem != "votação encerrada":
             self.page.go("/votacao")

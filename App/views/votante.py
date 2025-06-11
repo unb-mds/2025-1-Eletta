@@ -232,3 +232,61 @@ def aguardar_host(
         bgcolor=ft.Colors.WHITE,
         padding=0,
     )
+
+
+def pagina_de_atencao(page: ft.Page, controlador: Controlador) -> ft.View:
+    """
+    Cria a página de atenção para o votante.
+    """
+    conteudo = [
+        # Retângulo superior
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            content=ft.Column(
+                [
+                    ft.Text(
+                        "ATENÇÃO:",
+                        size=20,
+                        weight=ft.FontWeight.BOLD,
+                        text_align=ft.TextAlign.CENTER,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Text(
+                        "PARA QUE NÃO OCORRA\n"
+                        "PROBLEMAS EM SEU VOTO,\n"
+                        "CERTIFIQUE-SE DE VOTAR E\n"
+                        "CONFIRMAR ANTES QUE O\n"
+                        "TEMPO DEFINIDO PELO\n"
+                        "CRIADOR DA SALA EXPIRE",
+                        size=16,
+                        text_align=ft.TextAlign.CENTER,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.ElevatedButton(
+                        text="CONTINUAR",
+                        width=150,
+                        height=50,
+                        bgcolor="#39746F",
+                        color=ft.Colors.WHITE,
+                        on_click=controlador.iniciar_escuta_votante,
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=40,
+            ),
+            alignment=ft.alignment.center,
+        ),
+        # Retângulo inferior
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+
+    return ft.View(
+        route="/atencao_votante",
+        controls=conteudo,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
+    )
