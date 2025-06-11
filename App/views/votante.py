@@ -195,6 +195,45 @@ def pagina_sucesso_voto_computado(page: ft.Page) -> ft.View:
     )
 
 
+def aguardar_host(
+    page: ft.Page,
+    mensagem: str = "Por favor, aguarde o\nresponsável pela votação \nliberar a pergunta...",
+):
+    conteudo = [
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            content=ft.Column(
+                [
+                    ft.Container(
+                        content=ft.Text(
+                            mensagem,
+                            size=20,
+                            weight=ft.FontWeight.BOLD,
+                            text_align=ft.TextAlign.CENTER,
+                            color=ft.Colors.BLACK,
+                        ),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                expand=True,
+            ),
+            bgcolor=ft.Colors.WHITE,
+            alignment=ft.alignment.center,
+        ),
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+    return ft.View(
+        "/aguardar_host",
+        controls=conteudo,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
+    )
+
+
 def pagina_aviso_tempo(page: ft.Page, controlador: Controlador) -> ft.View:
     """
     Cria a tela de aviso para o votante se atentar ao tempo de votação.

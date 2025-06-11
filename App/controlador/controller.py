@@ -55,12 +55,19 @@ class Controlador:
         self.page.go("/sucesso_voto_computado")
         self.mensagem = cliente.receber_mensagem(self.udp_socket)
         self.page.go("/resultado")
+        time.sleep(
+            10
+        )  # Aguarda, pelo menos, 10 segundos para o votante interpretar o resultado antes de receber uma nova pauta ou encerrar a sessão
         print("aguardando host")
         self.mensagem = cliente.receber_mensagem(self.udp_socket)
         print(f"mensagem recebida: {self.mensagem}")
         if self.mensagem == "sessao encerrada":
             self.page.go("/")
-        else:
+        elif self.mensagem == "aguardando nova pauta":
+            self.page.go("/aguardar_host")
+            self.mensagem = cliente.receber_mensagem(self.udp_socket)
+            while self.mensagem == "" or self.mensagem is None:
+                self.mensagem = cliente.receber_mensagem(self.udp_socket)
             self.page.go("/votacao")
 
     def cancelar_voto(self, e: ft.ControlEvent) -> None:
@@ -106,6 +113,8 @@ class Controlador:
         self.page.go("/resultado_host")
 
     def criar_nova_pauta(self, e: ft.ControlEvent) -> None:
+        mensagem = "aguardando nova pauta"
+        servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, mensagem)
         self.page.go("/criacao_de_pauta")
 
     def encerrar_sessao(self, e: ft.ControlEvent) -> None:
