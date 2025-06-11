@@ -44,12 +44,8 @@ def main(page: ft.Page) -> None:
 
         elif page.route == "/sucesso_criacao_sala":
             page.views.append(host.pagina_sucesso_criacao_sala(page))
-
         elif page.route == "/sucesso_voto_computado":
             page.views.append(votante.pagina_sucesso_voto_computado(page))
-
-        elif page.route == "/aguardar_host":
-            page.views.append(votante.aguardar_host(page))
         page.update()
 
     page.on_route_change = mudar_de_pagina
