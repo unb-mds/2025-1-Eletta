@@ -1,25 +1,14 @@
 import flet as ft
 
 from controlador import controller
-from views import votante, host, home
+from views import host, home, votante
 
 
 def main(page: ft.Page) -> None:
-    """
-    Função principal que inicializa a aplicação Flet.
-
-    Args:
-        page (ft.Page): A página principal da aplicação.
-    """
     controlador = controller.Controlador(page)
 
     def mudar_de_pagina(e: ft.ControlEvent) -> None:
-        """
-        Gerencia a navegação entre as diferentes visualizações (páginas) da aplicação.
 
-        Args:
-            e (ft.ControlEvent): O evento que acionou a mudança de rota.
-        """
         # --- Correção ---
         # Isso garante que a thread que escuta o resultado da votação não seja
         # encerrada prematuramente quando o usuário vota com sucesso ou quando
