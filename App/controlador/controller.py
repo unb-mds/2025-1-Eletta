@@ -206,8 +206,6 @@ class Controlador:
         )
         timer_encerramento.start()
 
-        # O time.sleep(5) que estava aqui foi REMOVIDO pois congelava a interface do host.
-        # A navegação para a tela de espera agora é feita de forma não-bloqueante.
         def navegar_para_espera():
             if self.page.route == "/sucesso_criacao_sala":
                 self.page.go("/espera_votos")

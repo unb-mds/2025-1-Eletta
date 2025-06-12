@@ -4,9 +4,21 @@ from views import votante, host, home
 
 
 def main(page: ft.Page) -> None:
+    """
+    Função principal que inicializa a aplicação Flet.
+
+    Args:
+        page (ft.Page): A página principal da aplicação.
+    """
     controlador = controller.Controlador(page)
 
     def mudar_de_pagina(e: ft.ControlEvent) -> None:
+        """
+        Gerencia a navegação entre as diferentes visualizações (páginas) da aplicação.
+
+        Args:
+            e (ft.ControlEvent): O evento que acionou a mudança de rota.
+        """
         # --- Correção ---
         # Isso garante que a thread que escuta o resultado da votação não seja
         # encerrada prematuramente quando o usuário vota com sucesso ou quando
@@ -68,12 +80,15 @@ def main(page: ft.Page) -> None:
 
         elif page.route == "/sucesso_criacao_sala":
             page.views.append(host.pagina_sucesso_criacao_sala(page))
+
         elif page.route == "/sucesso_voto_computado":
             page.views.append(votante.pagina_sucesso_voto_computado(page))
+
         page.update()
 
     page.on_route_change = mudar_de_pagina
     page.go("/")
 
 
-ft.app(target=main, assets_dir="assets")  # Lê o diretório
+if __name__ == "__main__":
+    ft.app(target=main, assets_dir="assets")  # Lê o diretório
