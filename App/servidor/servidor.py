@@ -21,7 +21,7 @@ def virar_host() -> socket.socket:
 def mandar_mensagem(
     banco_de_dados: Banco_de_Dados, server: socket.socket, mensagem: str
 ) -> None:
-   
+
     for user_id, info in banco_de_dados.dados["votantes"].items():
         try:
             # Tenta converter a chave (user_id) para inteiro.
