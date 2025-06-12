@@ -1,4 +1,5 @@
 import flet as ft
+
 from controlador import controller
 from views import votante, host, home
 
