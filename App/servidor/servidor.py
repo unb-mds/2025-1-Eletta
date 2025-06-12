@@ -21,9 +21,9 @@ def virar_host() -> socket.socket:
 def mandar_mensagem(
     banco_de_dados: Banco_de_Dados, server: socket.socket, mensagem: str
 ) -> None:
-    
-    #Envia uma mensagem para todos os votantes registrados. A lógica confusa de 'ip' e 'porta' foi clarificada. O dicionário de votantes usa a PORTA do votante como chave e armazena o IP no campo "PORT". Esta função agora lê esses dados de forma clara e envia a mensagem para odestino correto (ip_votante, porta_votante).
- 
+
+    # Envia uma mensagem para todos os votantes registrados. A lógica confusa de 'ip' e 'porta' foi clarificada. O dicionário de votantes usa a PORTA do votante como chave e armazena o IP no campo "PORT". Esta função agora lê esses dados de forma clara e envia a mensagem para odestino correto (ip_votante, porta_votante).
+
     for user_id, info in banco_de_dados.dados["votantes"].items():
         # O campo "PORT" na verdade contém o endereço IP do votante.
         ip_votante = info["PORT"]
