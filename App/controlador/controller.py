@@ -9,7 +9,7 @@ import threading
 
 class Controlador:
     def __init__(self, page: ft.Page):
-        """Inicializa o Controlador principal da aplicação."""
+        # Inicializa o Controlador principal da aplicação.#
         self.page = page
         self.page.title = "Elleta"
         self.udp_socket: socket.socket
@@ -29,9 +29,7 @@ class Controlador:
 
     # --- Métodos do Timer e Resultado ---
     def iniciar_contagem_regressiva_votante(self):
-        """
-        Inicia a thread para a contagem regressiva do tempo de votação na tela do votante.
-        """
+        # Inicia a thread para a contagem regressiva do tempo de votação na tela do votante.
         if (
             not self.timer_control_votante
             or self.tempo_votacao <= 0
@@ -47,18 +45,14 @@ class Controlador:
         self.timer_thread_votante.start()
 
     def parar_contagem_regressiva_votante(self):
-        """Sinaliza e aguarda a thread do timer atual terminar."""
+        # Sinaliza e aguarda a thread do timer atual terminar.#
         self.stop_timer_event.set()
         if self.timer_thread_votante and self.timer_thread_votante.is_alive():
             self.timer_thread_votante.join(timeout=1.0)  # Espera no máximo 1s
         self.timer_thread_votante = None
 
     def _tarefa_contagem_regressiva_votante(self):
-        """
-        [VERSÃO CORRIGIDA E ROBUSTA]
-        Loop principal do votante que executa em uma thread.
-        Esta versão é mais resistente a falhas de rede e não termina prematuramente.
-        """
+        # [VERSÃO CORRIGIDA E ROBUSTA],Loop principal do votante que executa em uma thread.
         self.udp_socket.settimeout(1.0)
         while not self.stop_timer_event.is_set():
             try:
@@ -99,14 +93,12 @@ class Controlador:
 
     # --- Métodos Auxiliares Async para a UI ---
     async def _navegar_async(self, route: str):
-        """Navega para uma rota de forma assíncrona, segura para threads."""
+        # Navega para uma rota de forma assíncrona, segura para threads.#
         self.page.go(route)
 
     async def _processar_mensagem_pauta(self, message: str):
-        """
-        Processa uma mensagem de pauta (inicial ou subsequente) e navega para a votação.
-        A mensagem deve ter o formato "Texto da Pauta|tempo_em_segundos".
-        """
+        # Processa uma mensagem de pauta (inicial ou subsequente) e navega para a votação. A mensagem deve ter o formato "Texto da Pauta|tempo_em_segundos".
+
         if message == "sessao encerrada" or message == "votação encerrada":
             self.page.go("/")
             return
@@ -126,9 +118,7 @@ class Controlador:
 
     # ----------- Votante -------------
     def _tarefa_esperar_pauta(self):
-        """
-        Roda em uma thread, esperando a pauta inicial sem bloquear a UI.
-        """
+        # Roda em uma thread, esperando a pauta inicial sem bloquear a UI.
         try:
             mensagem_servidor = cliente.receber_mensagem(self.udp_socket)
             # Usa run_task para interagir com a UI a partir de uma thread
@@ -138,13 +128,12 @@ class Controlador:
             self.page.run_task(self._navegar_async, "/")
 
     def entrar_na_votacao_como_votante(self, e: ft.ControlEvent) -> None:
-        """Navega para a tela de atenção inicial do votante."""
+        # Navega para a tela de atenção inicial do votante.
         self.page.go("/atencao_votante")
 
     def iniciar_escuta_votante(self, e: ft.ControlEvent) -> None:
-        """
-        Inicia o fluxo do votante de forma não-bloqueante após a tela de atenção.
-        """
+        # Inicia o fluxo do votante de forma não-bloqueante após a tela de atenção.
+
         self.udp_socket = cliente.virar_votante()
         self.page.go("/aguardar_host")
         # Inicia uma thread para esperar a pauta sem congelar a UI.
@@ -152,7 +141,7 @@ class Controlador:
         wait_thread.start()
 
     def votar(self, e: ft.ControlEvent) -> None:
-        """Armazena o voto pendente e navega para a tela de confirmação."""
+        # Armazena o voto pendente e navega para a tela de confirmação.#
         if e.control.data == 2:
             self.voto_pendente = "a favor"
         elif e.control.data == 1:
@@ -162,17 +151,17 @@ class Controlador:
         self.page.go("/confirmacao")
 
     def confirmar_voto(self, e: ft.ControlEvent) -> None:
-        """Envia o voto pendente para o servidor e vai para a tela de sucesso."""
+        # Envia o voto pendente para o servidor e vai para a tela de sucesso.#
         cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
         self.page.go("/sucesso_voto_computado")
 
     def cancelar_voto(self, e: ft.ControlEvent) -> None:
-        """Cancela a seleção do voto e volta para a tela de votação."""
+        # Cancela a seleção do voto e volta para a tela de votação.#
         self.page.go("/votacao")
 
     # ----------- Host -------------
     def entrar_na_votacao_como_host(self, e: ft.ControlEvent) -> None:
-        """Inicia o modo host, cria o socket e vai para a tela de espera por votantes."""
+        # Inicia o modo host, cria o socket e vai para a tela de espera por votantes.#
         self.udp_socket = servidor.virar_host()
         self.banco_de_dados, self.process, self.flag_de_controle = (
             servidor.aguardar_votantes(self.udp_socket)
@@ -180,13 +169,13 @@ class Controlador:
         self.page.go("/espera_votantes")
 
     def encerrar_espera_de_votantes(self, e: ft.ControlEvent) -> None:
-        """Encerra a fase de aguardar novos votantes e navega para a criação de pauta."""
+        # Encerra a fase de aguardar novos votantes e navega para a criação de pauta.#
         self.flag_de_controle.set()
         self.process.join()
         self.page.go("/criacao_de_pauta")
 
     def enviar_pauta(self, e: ft.ControlEvent) -> None:
-        """Envia a pauta e o tempo para os votantes e inicia o timer de votação."""
+        # Envia a pauta e o tempo para os votantes e inicia o timer de votação.#
         self.process, self.flag_de_controle = servidor.aguardar_votos(
             self.banco_de_dados, self.udp_socket
         )
@@ -213,7 +202,7 @@ class Controlador:
         threading.Timer(2, navegar_para_espera).start()
 
     def encerrar_espera_de_votos(self, e: ft.ControlEvent) -> None:
-        """Encerra a votação, calcula os resultados e navega para a tela de resultados do host."""
+        # Encerra a votação, calcula os resultados e navega para a tela de resultados do host.#
         if not self.flag_de_controle.is_set():
             self.flag_de_controle.set()
             self.process.join()
@@ -223,11 +212,11 @@ class Controlador:
             self.page.go("/resultado_host")
 
     def criar_nova_pauta(self, e: ft.ControlEvent) -> None:
-        """Navega de volta para a tela de criação de pauta para uma nova rodada."""
+        # Navega de volta para a tela de criação de pauta para uma nova rodada.
         self.page.go("/criacao_de_pauta")
 
     def encerrar_sessao(self, e: ft.ControlEvent) -> None:
-        """Envia uma mensagem de encerramento para todos os votantes e volta para a tela inicial."""
+        # Envia uma mensagem de encerramento para todos os votantes e volta para a tela inicial.
         self.mensagem = "sessao encerrada"
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
         self.page.go("/")
