@@ -5,7 +5,7 @@ server_addr = ("127.0.0.1", 5555)
 
 def virar_votante() -> socket.socket:
     votante = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    message = "entrou"
+    message = "joined"
     votante.sendto(message.encode(), server_addr)
     return votante
 
