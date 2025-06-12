@@ -21,10 +21,23 @@ def virar_host() -> socket.socket:
 def mandar_mensagem(
     banco_de_dados: Banco_de_Dados, server: socket.socket, mensagem: str
 ) -> None:
-    for ip, info in banco_de_dados.dados["votantes"].items():
-        porta = info["PORT"]
+    """
+    Envia uma mensagem para todos os votantes registrados.
+
+    A lógica confusa de 'ip' e 'porta' foi clarificada. O dicionário de votantes
+    usa a PORTA do votante como chave e armazena o IP no campo "PORT".
+    Esta função agora lê esses dados de forma clara e envia a mensagem para o
+    destino correto (ip_votante, porta_votante).
+    """
+    for user_id, info in banco_de_dados.dados["votantes"].items():
+        # O campo "PORT" na verdade contém o endereço IP do votante.
+        ip_votante = info["PORT"]
+        # A chave do dicionário ('user_id') é a porta do votante.
+        porta_votante = int(user_id)
+
+        # Envia a mensagem para o endereço (IP, Porta) de cada votante.
         server.sendto(
-            mensagem.encode(), (porta, ip)
+            mensagem.encode(), (ip_votante, porta_votante)
         )  # o ip e a porta estão invertidos para testes
 
 
@@ -38,9 +51,9 @@ def receber_votantes(
             dado, votante = server.recvfrom(1000)
             ip = votante[0]
             porta = votante[1]
-            banco_de_dados.adicionar_votante(
-                porta, ip
-            )  # o ip e a porta estão invertidos para testes
+            # A porta do votante é usada como ID e o IP é armazenado.
+            banco_de_dados.adicionar_votante(porta, ip)
+            # o ip e a porta estão invertidos para testes
             print(f"votante adicionado ip = {ip}, porta = {porta}")
             banco_de_dados.serializar_dados()
         except socket.timeout:
@@ -62,6 +75,7 @@ def receber_votos(
             pauta = dados[1]
             # ip = votante[0]
             porta = votante[1]
+            # O voto é registrado usando a porta do votante como identificador.
             banco_de_dados.registrar_voto(
                 porta, voto, pauta
             )  # em vez de porta precisa ser ip, porém estou usando porta para testes
@@ -80,9 +94,20 @@ def mostrar_resultados(
     qtd_contra = banco_de_dados.dados["pautas"][pauta]["qtd de votos contra"]
     qtd_abstenção = banco_de_dados.dados["pautas"][pauta]["qtd de votos anulados"]
     total = qtd_a_favor + qtd_contra + qtd_abstenção
-    porcentagem_a_favor = qtd_a_favor / total * 100
-    porcentagem_contra = qtd_contra / total * 100
-    porcentagem_abstenção = qtd_abstenção / total * 100
+
+    # --- Início da Correção ---
+    # Verifica se o total de votos é zero para evitar o erro de divisão por zero.
+    if total == 0:
+        porcentagem_a_favor = 0.0
+        porcentagem_contra = 0.0
+        porcentagem_abstenção = 0.0
+    else:
+        # Se houver votos, calcula as porcentagens normalmente.
+        porcentagem_a_favor = qtd_a_favor / total * 100
+        porcentagem_contra = qtd_contra / total * 100
+        porcentagem_abstenção = qtd_abstenção / total * 100
+    # --- Fim da Correção ---
+
     resultado += f"votos a favor = {porcentagem_a_favor:.2f}%\nvotos contra = {porcentagem_contra:.2f}%\nvotos nulos = {porcentagem_abstenção:.2f}%\n"
     resultado += (
         "-------------------------------------------------------------------\n\n"
