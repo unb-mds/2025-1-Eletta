@@ -24,6 +24,8 @@ class Controlador:
         self.timer_thread_votante = None
         self.stop_timer_event = threading.Event()
         self.pauta_start_timestamp = None
+        # --- CORREÇÃO: Atributo para guardar o timer de encerramento ---
+        self.timer_encerramento = None
         # --- Fim dos Atributos do Timer ---
         self.page.go("/")
 
@@ -72,13 +74,23 @@ class Controlador:
                     # Tenta receber uma mensagem (o resultado) do servidor.
                     mensagem_resultado = cliente.receber_mensagem(self.udp_socket)
                     self.mensagem = mensagem_resultado
+
+                    # Navega para a tela de resultados.
                     self.page.run_task(self._navegar_async, "/resultado")
 
-                    # Agora, aguarda a próxima instrução do host.
+                    # Pausa por 10 segundos para que o votante possa ver o resultado com calma.
+                    time.sleep(10)
+
+                    # Após a pausa, mostra a tela de aguardo pela próxima pauta.
+                    self.page.run_task(self._navegar_async, "/aguardar_host")
+
+                    # Agora, aguarda a próxima instrução do host (nova pauta ou fim da sessão).
                     self.udp_socket.settimeout(None)
                     next_message = cliente.receber_mensagem(self.udp_socket)
+
+                    # Processa a nova instrução, que irá navegar para a tela de votação ou inicial.
                     self.page.run_task(self._processar_mensagem_pauta, next_message)
-                    break  # Sai do loop while após processar o resultado.
+                    break  # Sai do loop while, a tarefa desta thread está completa.
 
                 except socket.timeout:
                     # Isso é normal. Nenhuma mensagem foi recebida no último segundo.
@@ -176,6 +188,12 @@ class Controlador:
 
     def enviar_pauta(self, e: ft.ControlEvent) -> None:
         # Envia a pauta e o tempo para os votantes e inicia o timer de votação.#
+
+        # --- CORREÇÃO: Cancela qualquer timer anterior que ainda possa estar ativo ---
+        if self.timer_encerramento and self.timer_encerramento.is_alive():
+            self.timer_encerramento.cancel()
+        # --- FIM DA CORREÇÃO ---
+
         self.process, self.flag_de_controle = servidor.aguardar_votos(
             self.banco_de_dados, self.udp_socket
         )
@@ -190,10 +208,13 @@ class Controlador:
             self.banco_de_dados, self.udp_socket, mensagem_com_tempo
         )
         self.page.go("/sucesso_criacao_sala")
-        timer_encerramento = threading.Timer(
+
+        # --- CORREÇÃO: Armazena o novo timer na instância do controlador ---
+        self.timer_encerramento = threading.Timer(
             tempo_selecionado, self.encerrar_espera_de_votos, args=(None,)
         )
-        timer_encerramento.start()
+        self.timer_encerramento.start()
+        # --- FIM DA CORREÇÃO ---
 
         def navegar_para_espera():
             if self.page.route == "/sucesso_criacao_sala":
@@ -203,6 +224,12 @@ class Controlador:
 
     def encerrar_espera_de_votos(self, e: ft.ControlEvent) -> None:
         # Encerra a votação, calcula os resultados e navega para a tela de resultados do host.#
+
+        # --- CORREÇÃO: Cancela o timer ao encerrar manualmente para evitar execuções futuras ---
+        if self.timer_encerramento and self.timer_encerramento.is_alive():
+            self.timer_encerramento.cancel()
+        # --- FIM DA CORREÇÃO ---
+
         if not self.flag_de_controle.is_set():
             self.flag_de_controle.set()
             self.process.join()

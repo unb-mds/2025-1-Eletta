@@ -73,7 +73,7 @@ def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
             alignment=ft.alignment.center,
             content=ft.Column(
                 [
-                    ft.Icon(name=ft.icons.TIMER_OFF_OUTLINED, color="#39746F", size=40),
+                    ft.Icon(name=ft.Icons.TIMER_OFF_OUTLINED, color="#39746F", size=40),
                     ft.Container(
                         content=ft.Text(
                             "Tempo esgotado!\n\nAguarde o resultado da votação.",
@@ -161,7 +161,7 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
         value=f"Tempo restante: {controlador.tempo_votacao}s",
         size=16,
         weight=ft.FontWeight.BOLD,
-        color=ft.colors.RED_500,
+        color=ft.Colors.RED_500,
     )
     controlador.timer_control_votante = timer_display
     conteudo_da_pagina = [
@@ -289,7 +289,7 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
             width=500,
             bgcolor="#F5F5F5",
             border_radius=10,
-            shadow=ft.BoxShadow(blur_radius=8, color=ft.colors.GREY),
+            shadow=ft.BoxShadow(blur_radius=8, color=ft.Colors.GREY),
         )
     ]
     return ft.View(
