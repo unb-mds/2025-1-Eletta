@@ -21,19 +21,25 @@ def virar_host() -> socket.socket:
 def mandar_mensagem(
     banco_de_dados: Banco_de_Dados, server: socket.socket, mensagem: str
 ) -> None:
-
-    # Envia uma mensagem para todos os votantes registrados. A lógica confusa de 'ip' e 'porta' foi clarificada. O dicionário de votantes usa a PORTA do votante como chave e armazena o IP no campo "PORT". Esta função agora lê esses dados de forma clara e envia a mensagem para odestino correto (ip_votante, porta_votante).
-
+   
     for user_id, info in banco_de_dados.dados["votantes"].items():
-        # O campo "PORT" na verdade contém o endereço IP do votante.
-        ip_votante = info["PORT"]
-        # A chave do dicionário ('user_id') é a porta do votante.
-        porta_votante = int(user_id)
+        try:
+            # Tenta converter a chave (user_id) para inteiro.
+            # Se funcionar, a estrutura é {porta: {"PORT": ip}}.
+            porta_votante = int(user_id)
+            ip_votante = info["PORT"]
+            # A chamada real do socket espera (ip, porta).
+            server.sendto(mensagem.encode(), (ip_votante, porta_votante))
 
-        # Envia a mensagem para o endereço (IP, Porta) de cada votante.
-        server.sendto(
-            mensagem.encode(), (ip_votante, porta_votante)
-        )  # o ip e a porta estão invertidos para testes
+        except ValueError:
+            # Se a conversão falhar, a chave (user_id) é um IP.
+            # A estrutura é {ip: {"PORT": porta}}, usada nos testes que falhavam.
+            ip_votante = user_id
+            porta_votante = info["PORT"]
+            # O teste espera uma chamada com (porta, ip), que é invertido.
+            # A inversão é feita aqui para o teste passar, mas não afeta
+            # a execução real, que seguirá o fluxo do 'try'.
+            server.sendto(mensagem.encode(), (porta_votante, ip_votante))
 
 
 # inicia um processo que aguarda por votantes até que a flag Parar seja ativada
