@@ -54,7 +54,7 @@ class Controlador:
         self.timer_thread_votante = None
 
     def _tarefa_contagem_regressiva_votante(self):
-        # [VERSÃO CORRIGIDA E ROBUSTA],Loop principal do votante que executa em uma thread.
+        # [VERSÃO CORRIGIDA],Loop principal do votante que executa em uma thread.
         self.udp_socket.settimeout(1.0)
         while not self.stop_timer_event.is_set():
             try:
@@ -78,23 +78,45 @@ class Controlador:
                     # Navega para a tela de resultados.
                     self.page.run_task(self._navegar_async, "/resultado")
 
-                    # Pausa por 10 segundos para que o votante possa ver o resultado com calma.
-                    time.sleep(10)
-
-                    # Após a pausa, mostra a tela de aguardo pela próxima pauta.
-                    self.page.run_task(self._navegar_async, "/aguardar_host")
-
-                    # Agora, aguarda a próxima instrução do host (nova pauta ou fim da sessão).
+                    # Define um timeout infinito para aguardar a próxima instrução do host.
                     self.udp_socket.settimeout(None)
-                    next_message = cliente.receber_mensagem(self.udp_socket)
 
-                    # Processa a nova instrução, que irá navegar para a tela de votação ou inicial.
-                    self.page.run_task(self._processar_mensagem_pauta, next_message)
-                    break  # Sai do loop while, a tarefa desta thread está completa.
+                    # Loop para aguardar a próxima ação do host (nova pauta ou fim da sessão)
+                    while not self.stop_timer_event.is_set():
+                        proxima_mensagem = cliente.receber_mensagem(self.udp_socket)
+
+                        if not proxima_mensagem:
+                            continue
+
+                        if proxima_mensagem == "host_criando_nova_pauta":
+                            # O host iniciou a criação de uma nova pauta. Mostra a tela de aguardo.
+                            self.page.run_task(self._navegar_async, "/aguardar_host")
+
+                            # Reinicia a escuta da nova pauta
+                            esperar_thread = threading.Thread(
+                                target=self._tarefa_esperar_pauta, daemon=True
+                            )
+                            esperar_thread.start()
+
+                        elif (
+                            "pauta:" in proxima_mensagem
+                            or proxima_mensagem == "sessao encerrada"
+                        ):
+                            # O host enviou a pauta final ou encerrou a sessão.
+                            # Processa a mensagem, o que causará a navegação para a tela correta.
+                            self.page.run_task(
+                                self._processar_mensagem_pauta, proxima_mensagem
+                            )
+                            break  # Sai do loop de espera
+
+                    break  # Sai do loop de contagem regressiva, a tarefa desta thread está completa.
 
                 except socket.timeout:
-                    # Isso é normal. Nenhuma mensagem foi recebida no último segundo.
-                    if current_time == 0 and self.page.route == "/votacao":
+                    # Lógica de timeout existente (quando o tempo de votação acaba).
+                    if current_time == 0 and self.page.route in [
+                        "/votacao",
+                        "/confirmacao",
+                    ]:
                         self.page.run_task(self._navegar_async, "/tempo_esgotado")
                     continue
             except Exception as e:
@@ -238,8 +260,18 @@ class Controlador:
             )
             self.page.go("/resultado_host")
 
-    def criar_nova_pauta(self, e: ft.ControlEvent) -> None:
-        # Navega de volta para a tela de criação de pauta para uma nova rodada.
+    def criar_nova_pauta(self, e):
+        """Chamado quando o host clica em 'Criar Nova Pauta'."""
+        # Limpa o estado da pauta anterior.
+        self.pauta_string = None
+        self.tempo_pauta = None
+
+        # [CORREÇÃO] Adicionado o argumento self.banco_de_dados que estava faltando.
+        servidor.mandar_mensagem(
+            self.banco_de_dados, self.udp_socket, "host_criando_nova_pauta"
+        )
+
+        # Navega o host para a tela de criação de pauta.
         self.page.go("/criacao_de_pauta")
 
     def encerrar_sessao(self, e: ft.ControlEvent) -> None:
