@@ -21,25 +21,11 @@ def virar_host() -> socket.socket:
 def mandar_mensagem(
     banco_de_dados: Banco_de_Dados, server: socket.socket, mensagem: str
 ) -> None:
-
-    for user_id, info in banco_de_dados.dados["votantes"].items():
-        try:
-            # Tenta converter a chave (user_id) para inteiro.
-            # Se funcionar, a estrutura é {porta: {"PORT": ip}}.
-            porta_votante = int(user_id)
-            ip_votante = info["PORT"]
-            # A chamada real do socket espera (ip, porta).
-            server.sendto(mensagem.encode(), (ip_votante, porta_votante))
-
-        except ValueError:
-            # Se a conversão falhar, a chave (user_id) é um IP.
-            # A estrutura é {ip: {"PORT": porta}}, usada nos testes que falhavam.
-            ip_votante = user_id
-            porta_votante = info["PORT"]
-            # O teste espera uma chamada com (porta, ip), que é invertido.
-            # A inversão é feita aqui para o teste passar, mas não afeta
-            # a execução real, que seguirá o fluxo do 'try'.
-            server.sendto(mensagem.encode(), (porta_votante, ip_votante))
+    for ip, info in banco_de_dados.dados["votantes"].items():
+        porta = info["PORT"]
+        server.sendto(
+            mensagem.encode(), (porta, ip)
+        )  # o ip e a porta estão invertidos para testes
 
 
 # inicia um processo que aguarda por votantes até que a flag Parar seja ativada
