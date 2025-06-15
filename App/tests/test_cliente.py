@@ -40,4 +40,6 @@ def test_votar(mock_socket_class):
     votar(votante, "sim", "pauta1")
 
     # Verifica se o voto foi enviado no formato esperado
-    mock_socket.sendto.assert_called_once_with(b'["sim", "pauta1"]', ('127.0.0.1', 5555))
+    mock_socket.sendto.assert_called_once_with(
+        b'["sim", "pauta1"]', ("127.0.0.1", 5555)
+    )
