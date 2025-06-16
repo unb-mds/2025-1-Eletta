@@ -1,6 +1,7 @@
 import socket
 import threading
 from servidor.Data_Base.DB import Banco_de_Dados
+import json
 
 
 # ----- inicialização do servidor -----
@@ -57,7 +58,7 @@ def receber_votos(
         try:
             dado, votante = server.recvfrom(1000)
             print("voto recebido")
-            dados = dado.decode().split(", ")
+            dados = json.loads(dado.decode())
             voto = dados[0]
             pauta = dados[1]
             # ip = votante[0]
