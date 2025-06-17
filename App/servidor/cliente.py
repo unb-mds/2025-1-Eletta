@@ -1,4 +1,5 @@
 import socket
+import json
 
 server_addr = ("127.0.0.1", 5555)
 
@@ -17,5 +18,6 @@ def receber_mensagem(votante: socket.socket) -> str:
 
 
 def votar(votante: socket.socket, voto: str, pauta: str) -> None:
-    voto = voto + ", " + pauta
+    dados = [voto, pauta]
+    voto = json.dumps(dados)
     votante.sendto(voto.encode(), server_addr)
