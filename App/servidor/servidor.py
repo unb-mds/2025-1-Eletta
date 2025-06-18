@@ -5,14 +5,26 @@ import json
 
 
 # ----- inicialização do servidor -----
-def virar_host() -> socket.socket:
+def virar_host() -> socket.socket | None:
+    """
+    Tenta criar o socket do host na porta 5555.
+    Retorna o socket em caso de sucesso.
+    Retorna None se a porta já estiver em uso (indicando que um host já existe).
+    """
     BIND_IP = "0.0.0.0"
     UDP_PORT = 5555
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server.settimeout(1.0)
-    server.bind((BIND_IP, UDP_PORT))
-    print(f"servidor UDP ativo na porta {UDP_PORT}")
-    return server
+    
+    try:
+        # Tenta se vincular à porta
+        server.bind((BIND_IP, UDP_PORT))
+        print(f"Servidor UDP ativo na porta {UDP_PORT}")
+        return server
+    except OSError:
+        # Este erro ocorre se a porta já estiver ocupada
+        print(f"Falha ao vincular à porta {UDP_PORT}. Provavelmente já existe um host na rede.")
+        return None
 
 
 # ----- funções -----

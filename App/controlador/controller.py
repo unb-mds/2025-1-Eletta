@@ -202,12 +202,34 @@ class Controlador:
 
     # ----------- Host -------------
     def entrar_na_votacao_como_host(self, e: ft.ControlEvent) -> None:
-        # Inicia o modo host, cria o socket e vai para a tela de espera por votantes.
-        self.udp_socket = servidor.virar_host()
-        self.banco_de_dados, self.process, self.flag_de_controle = (
-            servidor.aguardar_votantes(self.udp_socket)
-        )
-        self.page.go("/espera_votantes")
+        """
+        Tenta iniciar o modo host. Se já existir um, exibe uma mensagem flutuante.
+        Caso contrário, cria o socket e prossegue para a tela de espera por votantes.
+        """
+        # 1. Tenta criar o socket do host. A função agora pode retornar None.
+        socket_host = servidor.virar_host()
+
+        # 2. Verifica se a criação do host foi bem-sucedida.
+        if socket_host:
+            # 3. SUCESSO: O fluxo continua como antes.
+            self.udp_socket = socket_host
+            self.banco_de_dados, self.process, self.flag_de_controle = (
+                servidor.aguardar_votantes(self.udp_socket)
+            )
+            self.page.go("/espera_votantes")
+        else:
+            # 4. FALHA: Um host já existe. Exibe a mensagem na tela atual.
+            self.page.snack_bar = ft.SnackBar(
+                content=ft.Text(
+                    "Já existe uma sala criada para essa rede.",
+                    color=ft.Colors.WHITE,
+                    text_align=ft.TextAlign.CENTER,
+                ),
+                bgcolor="#C83A3A",      # Cor de fundo vermelha, como na imagem
+                duration=5000,          # Duração de 5000 ms = 5 segundos
+            )
+            self.page.snack_bar.open = True
+            self.page.update()
 
     def encerrar_espera_de_votantes(self, e: ft.ControlEvent) -> None:
         # Encerra a fase de aguardar novos votantes e navega para a criação de pauta.
