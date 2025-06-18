@@ -15,7 +15,7 @@ def virar_host() -> socket.socket | None:
     UDP_PORT = 5557
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server.settimeout(1.0)
-    
+
     try:
         # Tenta se vincular à porta
         server.bind((BIND_IP, UDP_PORT))
@@ -23,7 +23,9 @@ def virar_host() -> socket.socket | None:
         return server
     except OSError:
         # Este erro ocorre se a porta já estiver ocupada
-        print(f"Falha ao vincular à porta {UDP_PORT}. Provavelmente já existe um host na rede.")
+        print(
+            f"Falha ao vincular à porta {UDP_PORT}. Provavelmente já existe um host na rede."
+        )
         return None
 
 
@@ -64,7 +66,7 @@ def receber_votantes(
 # inicia um processo que aguarda por votos até que a flag Parar seja ativada
 def receber_votos(
     banco_de_dados: Banco_de_Dados, server: socket.socket, Parar: threading.Event
-) -> None:                               
+) -> None:
     # Antes de começar a ouvir os votos, vamos limpar qualquer mensagem antiga.
     print("Limpando buffer de mensagens antigas...")
     while True:
@@ -87,17 +89,17 @@ def receber_votos(
                 voto = dados[0]
                 pauta = dados[1]
                 porta = votante[1]
-                
-                banco_de_dados.registrar_voto(
-                    porta, voto, pauta
-                )
+
+                banco_de_dados.registrar_voto(porta, voto, pauta)
                 banco_de_dados.serializar_dados()
                 print("Voto registrado com sucesso!")
 
             except (json.JSONDecodeError, IndexError):
                 # Se a mensagem não for um JSON válido ou não tiver o formato esperado,
                 # apenas imprime um aviso e continua, sem quebrar.
-                print(f"Mensagem inválida ou não-JSON recebida de {votante}. Ignorando.")
+                print(
+                    f"Mensagem inválida ou não-JSON recebida de {votante}. Ignorando."
+                )
                 continue
 
         except socket.timeout:
