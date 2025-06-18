@@ -217,7 +217,7 @@ class Controlador:
             self.page.go("/espera_votantes")
         else:
             # FALHA: Um host já existe. Exibe uma mensagem de texto que some em 2s.
-            
+
             # 1. Cria o controle de texto do erro.
             texto_erro = ft.Text(
                 "Já existe uma sala criada para essa rede.",
@@ -226,7 +226,7 @@ class Controlador:
                 weight=ft.FontWeight.BOLD,
                 text_align=ft.TextAlign.CENTER,
             )
-            
+
             # 2. Adiciona o texto à tela e atualiza para que ele apareça.
             self.page.views[0].controls.append(texto_erro)
             self.page.update()
@@ -317,21 +317,20 @@ class Controlador:
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
         self.page.go("/")
 
-
     def cleanup(self):
         """
         Este método é chamado ao fechar a janela para garantir que
         todos os recursos de rede e threads sejam liberados.
         """
         print("--- APP ENCERRANDO: REALIZANDO LIMPEZA ---")
-        
+
         # Sinaliza para qualquer thread em execução parar
-        if hasattr(self, 'flag_de_controle') and self.flag_de_controle:
+        if hasattr(self, "flag_de_controle") and self.flag_de_controle:
             self.flag_de_controle.set()
-        
+
         # Fecha o socket de rede se ele existir
-        if hasattr(self, 'udp_socket') and self.udp_socket:
+        if hasattr(self, "udp_socket") and self.udp_socket:
             self.udp_socket.close()
             print("--- Socket fechado com sucesso. ---")
-            
+
         print("--- LIMPEZA CONCLUÍDA ---")
