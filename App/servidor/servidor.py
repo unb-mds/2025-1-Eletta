@@ -12,7 +12,7 @@ def virar_host() -> socket.socket | None:
     Retorna None se a porta já estiver em uso (indicando que um host já existe).
     """
     BIND_IP = "0.0.0.0"
-    UDP_PORT = 5555
+    UDP_PORT = 5557
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server.settimeout(1.0)
     
@@ -64,22 +64,42 @@ def receber_votantes(
 # inicia um processo que aguarda por votos até que a flag Parar seja ativada
 def receber_votos(
     banco_de_dados: Banco_de_Dados, server: socket.socket, Parar: threading.Event
-) -> None:
-    print("recebendo votos")
+) -> None:                               
+    # Antes de começar a ouvir os votos, vamos limpar qualquer mensagem antiga.
+    print("Limpando buffer de mensagens antigas...")
+    while True:
+        try:
+            # Tenta ler qualquer dado que esteja no buffer. O timeout de 1s já está configurado.
+            server.recvfrom(1024)
+        except socket.timeout:
+            # Se der timeout, significa que o buffer está limpo.
+            print("Buffer limpo. Pronto para receber votos.")
+            break  # Sai do loop de limpeza
+    print("Aguardando votos...")
     while not Parar.is_set():
         try:
             dado, votante = server.recvfrom(1000)
-            print("voto recebido")
-            dados = json.loads(dado.decode())
-            voto = dados[0]
-            pauta = dados[1]
-            # ip = votante[0]
-            porta = votante[1]
-            # O voto é registrado usando a porta do votante como identificador.
-            banco_de_dados.registrar_voto(
-                porta, voto, pauta
-            )  # em vez de porta precisa ser ip, porém estou usando porta para testes
-            banco_de_dados.serializar_dados()
+            # Tenta processar a mensagem como um voto em JSON.
+            # Se não conseguir, ignora a mensagem e continua o loop.
+            try:
+                print("voto recebido, tentando decodificar...")
+                dados = json.loads(dado.decode())
+                voto = dados[0]
+                pauta = dados[1]
+                porta = votante[1]
+                
+                banco_de_dados.registrar_voto(
+                    porta, voto, pauta
+                )
+                banco_de_dados.serializar_dados()
+                print("Voto registrado com sucesso!")
+
+            except (json.JSONDecodeError, IndexError):
+                # Se a mensagem não for um JSON válido ou não tiver o formato esperado,
+                # apenas imprime um aviso e continua, sem quebrar.
+                print(f"Mensagem inválida ou não-JSON recebida de {votante}. Ignorando.")
+                continue
+
         except socket.timeout:
             continue
 
