@@ -203,33 +203,41 @@ class Controlador:
     # ----------- Host -------------
     def entrar_na_votacao_como_host(self, e: ft.ControlEvent) -> None:
         """
-        Tenta iniciar o modo host. Se já existir um, exibe uma mensagem flutuante.
-        Caso contrário, cria o socket e prossegue para a tela de espera por votantes.
+        Tenta iniciar o modo host. Se já existir um, exibe uma mensagem
+        temporária na tela que desaparece após 1 segundo.
         """
-        # 1. Tenta criar o socket do host. A função agora pode retornar None.
         socket_host = servidor.virar_host()
 
-        # 2. Verifica se a criação do host foi bem-sucedida.
         if socket_host:
-            # 3. SUCESSO: O fluxo continua como antes.
+            # SUCESSO: O fluxo continua como antes.
             self.udp_socket = socket_host
             self.banco_de_dados, self.process, self.flag_de_controle = (
                 servidor.aguardar_votantes(self.udp_socket)
             )
             self.page.go("/espera_votantes")
         else:
-            # 4. FALHA: Um host já existe. Exibe a mensagem na tela atual.
-            self.page.snack_bar = ft.SnackBar(
-                content=ft.Text(
-                    "Já existe uma sala criada para essa rede.",
-                    color=ft.Colors.WHITE,
-                    text_align=ft.TextAlign.CENTER,
-                ),
-                bgcolor="#C83A3A",      # Cor de fundo vermelha, como na imagem
-                duration=5000,          # Duração de 5000 ms = 5 segundos
+            # FALHA: Um host já existe. Exibe uma mensagem de texto que some em 2s.
+            
+            # 1. Cria o controle de texto do erro.
+            texto_erro = ft.Text(
+                "Já existe uma sala criada para essa rede.",
+                color=ft.Colors.RED_700,
+                size=16,
+                weight=ft.FontWeight.BOLD,
+                text_align=ft.TextAlign.CENTER,
             )
-            self.page.snack_bar.open = True
+            
+            # 2. Adiciona o texto à tela e atualiza para que ele apareça.
+            self.page.views[0].controls.append(texto_erro)
             self.page.update()
+
+            # 3. Define uma função para remover o texto e atualizar a tela novamente.
+            def remover_texto_erro():
+                self.page.views[0].controls.remove(texto_erro)
+                self.page.update()
+
+            # 4. Inicia um timer que chamará a função de remoção após 2 segundos.
+            Timer(1.0, remover_texto_erro).start()
 
     def encerrar_espera_de_votantes(self, e: ft.ControlEvent) -> None:
         # Encerra a fase de aguardar novos votantes e navega para a criação de pauta.
@@ -308,3 +316,22 @@ class Controlador:
         self.mensagem = "sessao encerrada"
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
         self.page.go("/")
+
+
+    def cleanup(self):
+        """
+        Este método é chamado ao fechar a janela para garantir que
+        todos os recursos de rede e threads sejam liberados.
+        """
+        print("--- APP ENCERRANDO: REALIZANDO LIMPEZA ---")
+        
+        # Sinaliza para qualquer thread em execução parar
+        if hasattr(self, 'flag_de_controle') and self.flag_de_controle:
+            self.flag_de_controle.set()
+        
+        # Fecha o socket de rede se ele existir
+        if hasattr(self, 'udp_socket') and self.udp_socket:
+            self.udp_socket.close()
+            print("--- Socket fechado com sucesso. ---")
+            
+        print("--- LIMPEZA CONCLUÍDA ---")
