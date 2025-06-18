@@ -12,7 +12,7 @@ def virar_host() -> socket.socket | None:
     Retorna None se a porta já estiver em uso (indicando que um host já existe).
     """
     BIND_IP = "0.0.0.0"
-    UDP_PORT = 5557
+    UDP_PORT = 5555
     server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server.settimeout(1.0)
 

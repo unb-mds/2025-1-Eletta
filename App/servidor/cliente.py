@@ -1,7 +1,7 @@
 import socket
 import json
 
-server_addr = ("127.0.0.1", 5557)
+server_addr = ("127.0.0.1", 5555)
 
 
 def virar_votante() -> socket.socket:
