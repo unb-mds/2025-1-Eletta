@@ -1,5 +1,5 @@
 import flet as ft
-from socket import socket
+from socket import socket, timeout
 from threading import Thread, Event, Timer
 from servidor import servidor, cliente
 from servidor.Data_Base.DB import Banco_de_Dados
@@ -118,7 +118,7 @@ class Controlador:
 
                     break  # Sai do loop de contagem regressiva, a tarefa desta thread está completa.
 
-                except socket.timeout:
+                except timeout:
                     # Lógica de timeout existente (quando o tempo de votação acaba).
                     if current_time == 0 and self.page.route in [
                         "/votacao",
