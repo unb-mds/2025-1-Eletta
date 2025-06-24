@@ -315,22 +315,18 @@ class Controlador:
         # Envia uma mensagem de encerramento para todos os votantes e volta para a tela inicial.
         self.mensagem = "sessao encerrada"
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self._cleanup()
         self.page.go("/")
 
-    def cleanup(self):
-        """
-        Este método é chamado ao fechar a janela para garantir que
-        todos os recursos de rede e threads sejam liberados.
-        """
-        print("--- APP ENCERRANDO: REALIZANDO LIMPEZA ---")
+    def _cleanup(self):
 
-        # Sinaliza para qualquer thread em execução parar
+        print("--- APP ENCERRANDO: REALIZANDO LIMPEZA ---")
         if hasattr(self, "flag_de_controle") and self.flag_de_controle:
             self.flag_de_controle.set()
 
         # Fecha o socket de rede se ele existir
         if hasattr(self, "udp_socket") and self.udp_socket:
             self.udp_socket.close()
-            print("--- Socket fechado com sucesso. ---")
+            print("--- Porta liberada com sucesso ---")
 
         print("--- LIMPEZA CONCLUÍDA ---")
