@@ -51,13 +51,25 @@ def receber_votantes(
     while not Parar.is_set():
         try:
             dado, votante = server.recvfrom(1000)
+            mensagem = dado.decode()
             ip = votante[0]
             porta = votante[1]
-            # A porta do votante é usada como ID e o IP é armazenado.
-            banco_de_dados.adicionar_votante(porta, ip)
-            # o ip e a porta estão invertidos para testes
-            print(f"votante adicionado ip = {ip}, porta = {porta}")
-            banco_de_dados.serializar_dados()
+
+            # Verifica se é uma mensagem de verificação de host
+            if mensagem == "host_check":
+                # Responde para confirmar que o host está ativo
+                server.sendto("host_active".encode(), votante)
+
+                continue
+            elif mensagem == "joined":
+                # A porta do votante é usada como ID e o IP é armazenado.
+                banco_de_dados.adicionar_votante(porta, ip)
+                # o ip e a porta estão invertidos para testes
+                print(f"votante adicionado ip = {ip}, porta = {porta}")
+                banco_de_dados.serializar_dados()
+            else:
+                print(f"Mensagem desconhecida recebida: {mensagem}")
+
         except socket.timeout:
             continue
     print("votantes definidos")

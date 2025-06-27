@@ -25,6 +25,8 @@ class Controlador:
         self.pauta_start_timestamp = None
         # --- Atributo para guardar o timer de encerramento ---
         self.timer_encerramento = None
+        # --- Atributo para verificar se há host ativo ---
+        self.host_ativo = False
         # --- Fim dos Atributos do Timer ---
         self.page.go("/")
 
@@ -211,6 +213,7 @@ class Controlador:
         if socket_host:
             # SUCESSO: O fluxo continua como antes.
             self.udp_socket = socket_host
+            self.host_ativo = True  # Define que este cliente agora é o host
             self.banco_de_dados, self.process, self.flag_de_controle = (
                 servidor.aguardar_votantes(self.udp_socket)
             )
@@ -315,6 +318,7 @@ class Controlador:
         # Envia uma mensagem de encerramento para todos os votantes e volta para a tela inicial.
         self.mensagem = "sessao encerrada"
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self.host_ativo = False  # Define que não há mais host ativo
         self._cleanup()
         self.page.go("/")
 
@@ -329,4 +333,33 @@ class Controlador:
             self.udp_socket.close()
             print("--- Porta liberada com sucesso ---")
 
+        # Define que não há mais host ativo
+        self.host_ativo = False
+
         print("--- LIMPEZA CONCLUÍDA ---")
+
+    # --- Métodos do Timer e Resultado ---
+    def verificar_status_host(self):
+        """Verifica se há um host ativo na rede e atualiza o status."""
+        self.host_ativo = cliente.verificar_host_ativo()
+        return self.host_ativo
+
+    def iniciar_verificacao_periodica_host(self, botao_votante, page):
+        """Inicia a verificação periódica do status do host e atualiza o botão."""
+
+        def verificacao_periodica():
+            while True:
+                time.sleep(2)  # Verifica a cada 2 segundos
+                if page.route == "/":  # Só verifica se estiver na página inicial
+                    try:
+                        self.verificar_status_host()
+                        botao_votante.disabled = not self.host_ativo
+                        page.update()
+                    except Exception:
+                        break  # Para a thread se a página não existir mais
+                else:
+                    break  # Para a thread se sair da página inicial
+
+        # Inicia a verificação em uma thread separada
+        thread_verificacao = Thread(target=verificacao_periodica, daemon=True)
+        thread_verificacao.start()
