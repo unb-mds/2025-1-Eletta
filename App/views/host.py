@@ -4,16 +4,55 @@ from controlador.controller import Controlador
 
 def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        ft.ElevatedButton(
-            "Encerrar espera de votantes",
-            on_click=controlador.encerrar_espera_de_votantes,
-        )
+        # Retângulo superior
+        ft.Container(height=45, bgcolor="#39746F"),
+        # Conteúdo central com centralização total
+        ft.Container(
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                [
+                    ft.Text(
+                        "Aguardando votantes...",
+                        size=20,
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.BLACK,
+                        text_align=ft.TextAlign.CENTER,
+                    ),
+                    ft.ElevatedButton(
+                        text="Prosseguir para votação",
+                        width=240,
+                        height=50,
+                        bgcolor="#39746F",
+                        color=ft.Colors.WHITE,
+                        on_click=controlador.encerrar_espera_de_votantes,
+                        style=ft.ButtonStyle(
+                            padding=20,
+                            text_style=ft.TextStyle(
+                                size=14,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
+                            ),
+                        ),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                expand=True,
+                spacing=30,
+            ),
+        ),
+        # Retângulo inferior
+        ft.Container(height=45, bgcolor="#39746F"),
     ]
+
     return ft.View(
         "/espera_votantes",
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
     )
 
 
@@ -117,15 +156,55 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
 
 def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        ft.ElevatedButton(
-            "Encerrar espera por votos", on_click=controlador.encerrar_espera_de_votos
-        )
+        # Retângulo superior
+        ft.Container(height=45, bgcolor="#39746F"),
+        # Conteúdo central com centralização total
+        ft.Container(
+            expand=True,
+            content=ft.Column(
+                [
+                    ft.Text(
+                        "Aguardando votos...",
+                        size=20,
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.BLACK,
+                        text_align=ft.TextAlign.CENTER,
+                    ),
+                    ft.ElevatedButton(
+                        text="Encerrar votação",
+                        width=240,
+                        height=50,
+                        bgcolor="#39746F",
+                        color=ft.Colors.WHITE,
+                        on_click=controlador.encerrar_espera_de_votos,
+                        style=ft.ButtonStyle(
+                            padding=20,
+                            text_style=ft.TextStyle(
+                                size=14,
+                                weight=ft.FontWeight.NORMAL,
+                                font_family="Inter",
+                            ),
+                        ),
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,  # vertical
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # horizontal
+                expand=True,
+                spacing=30,  # permite ocupar o Container pai
+            ),
+            alignment=ft.alignment.center,  # centraliza a Column no Container
+        ),
+        # Retângulo inferior
+        ft.Container(height=45, bgcolor="#39746F"),
     ]
+
     return ft.View(
         "/espera_votos",
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
     )
 
 
