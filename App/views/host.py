@@ -20,7 +20,7 @@ def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.Vie
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.ElevatedButton(
-                        text="Encerrar espera de votantes",
+                        text="Prosseguir para votação",
                         width=240,
                         height=50,
                         bgcolor="#39746F",
@@ -171,8 +171,8 @@ def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.ElevatedButton(
-                        text="Encerrar espera por votos",
-                        width=200,
+                        text="Encerrar votação",
+                        width=240,
                         height=50,
                         bgcolor="#39746F",
                         color=ft.Colors.WHITE,
@@ -189,7 +189,8 @@ def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,  # vertical
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # horizontal
-                expand=True,  # permite ocupar o Container pai
+                expand=True,
+                spacing=30,  # permite ocupar o Container pai
             ),
             alignment=ft.alignment.center,  # centraliza a Column no Container
         ),
