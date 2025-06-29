@@ -14,7 +14,6 @@ def main(page: ft.Page) -> None:
         com a rota atual.
         """
 
-    
         # Garante que a thread de contagem regressiva do votante seja
         # interrompida ao navegar para telas onde ela não é necessária.
         # Isso evita que a aplicação congele ou se comporte de forma inesperada.
@@ -26,7 +25,7 @@ def main(page: ft.Page) -> None:
         ]:
             if hasattr(controlador, "parar_contagem_regressiva_votante"):
                 controlador.parar_contagem_regressiva_votante()
-    
+
         page.views.clear()
         if page.route == "/":
             page.views.append(home.pagina_inicial(page, controlador))
@@ -70,11 +69,13 @@ def main(page: ft.Page) -> None:
             page.views.append(home.pagina_do_resultado(page, controlador.mensagem))
 
         elif page.route == "/resultado_host_intermediario":
-            page.views.append(host.pagina_do_resultado_host_intermediario(page, controlador))
+            page.views.append(
+                host.pagina_do_resultado_host_intermediario(page, controlador)
+            )
 
         elif page.route == "/resultado_host_final":
             page.views.append(host.pagina_do_resultado_host_final(page, controlador))
-        
+
         elif page.route == "/sucesso_criacao_sala":
             page.views.append(host.pagina_sucesso_criacao_sala(page))
 

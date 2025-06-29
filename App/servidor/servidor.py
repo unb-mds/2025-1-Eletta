@@ -120,7 +120,10 @@ def receber_votos(
 
 # computa os resultados e envia-os para todos votantes
 def mostrar_resultados(
-    banco_de_dados: Banco_de_Dados, server: socket.socket, pauta: str, enviar: bool = True
+    banco_de_dados: Banco_de_Dados,
+    server: socket.socket,
+    pauta: str,
+    enviar: bool = True,
 ) -> str:
     resultado = "-----------------Resultado da votação!-----------------\n"
     resultado += f"pauta discutida |{pauta}|\n"
@@ -142,11 +145,11 @@ def mostrar_resultados(
     resultado += (
         "-------------------------------------------------------------------\n\n"
     )
-    
+
     # Envia a mensagem apenas se 'enviar' for True
     if enviar:
         mandar_mensagem(banco_de_dados, server, resultado)
-        
+
     return resultado
 
 

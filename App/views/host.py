@@ -218,14 +218,18 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
     )
 
 
-def pagina_do_resultado_host_intermediario(page: ft.Page, controlador: Controlador) -> ft.View:
+def pagina_do_resultado_host_intermediario(
+    page: ft.Page, controlador: Controlador
+) -> ft.View:
     """
     Nova tela que mostra o resultado apenas para o host e dá a opção de enviar.
     """
-    resultado_formatado = "\n".join(controlador.resultado_votacao.split('\n')[1:-2]) # Remove o cabeçalho e rodapé padrão
-    
-    votos = resultado_formatado.strip().split('\n')
-    
+    resultado_formatado = "\n".join(
+        controlador.resultado_votacao.split("\n")[1:-2]
+    )  # Remove o cabeçalho e rodapé padrão
+
+    votos = resultado_formatado.strip().split("\n")
+
     # Extrai os valores de votos para exibição
     votos_favor = "0.00%"
     votos_contra = "0.00%"
@@ -238,7 +242,7 @@ def pagina_do_resultado_host_intermediario(page: ft.Page, controlador: Controlad
             votos_contra = voto.split("=")[1].strip()
         elif "votos nulos" in voto:
             votos_nulos = voto.split("=")[1].strip()
-            
+
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),
         ft.Container(
@@ -251,7 +255,6 @@ def pagina_do_resultado_host_intermediario(page: ft.Page, controlador: Controlad
                         size=16,
                         weight=ft.FontWeight.BOLD,
                         color=ft.Colors.BLACK,
-                        
                     ),
                     ft.Text(
                         f"Concorda: {votos_favor}",
@@ -268,7 +271,7 @@ def pagina_do_resultado_host_intermediario(page: ft.Page, controlador: Controlad
                         size=16,
                         color=ft.Colors.BLACK,
                     ),
-                    ft.Container(height=30), # Espaçador
+                    ft.Container(height=30),  # Espaçador
                     ft.ElevatedButton(
                         text="Enviar resultado",
                         width=200,
@@ -309,7 +312,7 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
             content=ft.Column(
                 [
                     ft.Text(
-                        controlador.resultado_votacao, # Usa o resultado já calculado
+                        controlador.resultado_votacao,  # Usa o resultado já calculado
                         size=16,
                         weight=ft.FontWeight.NORMAL,
                         color="#000000",
