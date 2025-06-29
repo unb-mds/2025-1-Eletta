@@ -1,4 +1,4 @@
-# SPRINT - 7
+# SPRINT - 8
 
 Período: 26/05/2025 a 01/06/2025
 
