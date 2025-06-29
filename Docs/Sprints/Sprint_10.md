@@ -1,18 +1,23 @@
-# SPRINT - 7
+# SPRINT - 10
 
 Período: 09/06/2025 a 15/06/2025
+
+## **📝** Descrição
+
+Corrigir bugs
+
+Criação de telas
+
 
 ## 💬 **Reuniões**
 
 **Reunião 1**
 
-Data: 25/05/2025
+Data: 09/06/2025
 
-Local: Dsicord
+Local: Discord
 
 **Ata:**
-
-Data: 15/06/2025
 
 Tempo de Reunião: 2 horas
 
@@ -26,22 +31,18 @@ Revisar a sprint passada e tirar algumas dúvidas pendentes;
 
 Alocar issues para cada membro;
 
+Detalhar organização;
 
-## **2. Tópicos Abordados**
-
-- **Review da Sprint Anterior**:
-
-Issue do Davi precisa ser concluida
+## **1. Tópicos Abordados**
 
 - **Planejamento das Atividades da Próxima Sprint** :
 
 Definiu-se que a principal atividade para esta semana será
+-Criar tela que avisa que já tem um host
+-BUG decremento cronometro
+-BUG criar pauta com virgula
 
-Bug mostrar resultado- Lívia 
-Broadcast- André
-Duas últimas telas- Livia
-Aplicação mobile-Davi
-Cronômetro(pr atrasada com mt bug)- Davi
+
 
 Membros Presentes:
 
@@ -49,8 +50,6 @@ Membros Presentes:
 
 -André Luís Livio Alvaro dos Santos
 
+-Lívia Yasmin Morena Guimarães Dias
+
 -Enzo Fernandes Borges
-
--Renan dos Santos Ribeiro
-
--Livia Yasmin Morena Guimaraes Dias
