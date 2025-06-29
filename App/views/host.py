@@ -218,18 +218,101 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
     )
 
 
-def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View:
+def pagina_do_resultado_host_intermediario(
+    page: ft.Page, controlador: Controlador
+) -> ft.View:
+    """
+    Nova tela que mostra o resultado apenas para o host e dá a opção de enviar.
+    """
+    resultado_formatado = "\n".join(
+        controlador.resultado_votacao.split("\n")[1:-2]
+    )  # Remove o cabeçalho e rodapé padrão
+
+    votos = resultado_formatado.strip().split("\n")
+
+    # Extrai os valores de votos para exibição
+    votos_favor = "0.00%"
+    votos_contra = "0.00%"
+    votos_nulos = "0.00%"
+
+    for voto in votos:
+        if "votos a favor" in voto:
+            votos_favor = voto.split("=")[1].strip()
+        elif "votos contra" in voto:
+            votos_contra = voto.split("=")[1].strip()
+        elif "votos nulos" in voto:
+            votos_nulos = voto.split("=")[1].strip()
+
     conteudo_da_pagina = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Container central com conteúdo
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
             content=ft.Column(
                 [
                     ft.Text(
-                        controlador.mensagem,
+                        "Resultado da votação:",
+                        size=16,
+                        weight=ft.FontWeight.BOLD,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Text(
+                        f"Concorda: {votos_favor}",
+                        size=16,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Text(
+                        f"Discorda: {votos_contra}",
+                        size=16,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Text(
+                        f"Abstenção: {votos_nulos}",
+                        size=16,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Container(height=30),  # Espaçador
+                    ft.ElevatedButton(
+                        text="Enviar resultado",
+                        width=200,
+                        height=50,
+                        bgcolor="#39746F",
+                        color=ft.Colors.WHITE,
+                        on_click=controlador.enviar_resultado_para_votantes,
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20,
+            ),
+        ),
+        ft.Container(height=45, bgcolor="#39746F"),
+    ]
+
+    return ft.View(
+        "/resultado_host_intermediario",
+        controls=conteudo_da_pagina,
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=ft.Colors.WHITE,
+        padding=0,
+    )
+
+
+def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> ft.View:
+    """
+    Tela final do host, que aparece após o resultado ser enviado.
+    É a mesma que a tela de resultado atual.
+    """
+    conteudo_da_pagina = [
+        ft.Container(height=45, bgcolor="#39746F"),
+        ft.Container(
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                [
+                    ft.Text(
+                        controlador.resultado_votacao,  # Usa o resultado já calculado
                         size=16,
                         weight=ft.FontWeight.NORMAL,
                         color="#000000",
@@ -242,14 +325,6 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                         bgcolor="#39746F",
                         color=ft.Colors.WHITE,
                         on_click=controlador.criar_nova_pauta,
-                        style=ft.ButtonStyle(
-                            padding=20,
-                            text_style=ft.TextStyle(
-                                size=14,
-                                weight=ft.FontWeight.NORMAL,
-                                font_family="Inter",
-                            ),
-                        ),
                     ),
                     ft.ElevatedButton(
                         text="Encerrar Sessão",
@@ -258,14 +333,6 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                         bgcolor="#C83A3A",
                         color=ft.Colors.WHITE,
                         on_click=controlador.encerrar_sessao,
-                        style=ft.ButtonStyle(
-                            padding=20,
-                            text_style=ft.TextStyle(
-                                size=14,
-                                weight=ft.FontWeight.NORMAL,
-                                font_family="Inter",
-                            ),
-                        ),
                     ),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
@@ -273,12 +340,11 @@ def pagina_do_resultado_host(page: ft.Page, controlador: Controlador) -> ft.View
                 spacing=30,
             ),
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
     return ft.View(
-        "/resultado_host",
+        "/resultado_host_final",
         controls=conteudo_da_pagina,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,

@@ -8,11 +8,15 @@ def main(page: ft.Page) -> None:
     controlador = controller.Controlador(page)
 
     def mudar_de_pagina(e: ft.ControlEvent) -> None:
+        """
+        Gerencia a navegação entre as diferentes telas (Views) da aplicação,
+        limpando as visualizações anteriores e adicionando a nova de acordo
+        com a rota atual.
+        """
 
-        # --- Correção ---
-        # Isso garante que a thread que escuta o resultado da votação não seja
-        # encerrada prematuramente quando o usuário vota com sucesso ou quando
-        # o tempo se esgota, o que era a causa do congelamento da tela.
+        # Garante que a thread de contagem regressiva do votante seja
+        # interrompida ao navegar para telas onde ela não é necessária.
+        # Isso evita que a aplicação congele ou se comporte de forma inesperada.
         if page.route not in [
             "/votacao",
             "/confirmacao",
@@ -21,7 +25,6 @@ def main(page: ft.Page) -> None:
         ]:
             if hasattr(controlador, "parar_contagem_regressiva_votante"):
                 controlador.parar_contagem_regressiva_votante()
-        # --- Fim da Correção ---
 
         page.views.clear()
         if page.route == "/":
@@ -65,8 +68,13 @@ def main(page: ft.Page) -> None:
         elif page.route == "/resultado":
             page.views.append(home.pagina_do_resultado(page, controlador.mensagem))
 
-        elif page.route == "/resultado_host":
-            page.views.append(host.pagina_do_resultado_host(page, controlador))
+        elif page.route == "/resultado_host_intermediario":
+            page.views.append(
+                host.pagina_do_resultado_host_intermediario(page, controlador)
+            )
+
+        elif page.route == "/resultado_host_final":
+            page.views.append(host.pagina_do_resultado_host_final(page, controlador))
 
         elif page.route == "/sucesso_criacao_sala":
             page.views.append(host.pagina_sucesso_criacao_sala(page))
@@ -81,4 +89,5 @@ def main(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
-    ft.app(target=main, assets_dir="assets")  # Lê o diretório
+    # Inicia a aplicação Flet, especificando o diretório de assets (imagens, etc.)
+    ft.app(target=main, assets_dir="assets")
