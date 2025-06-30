@@ -14,6 +14,7 @@ class Controlador:
         self.udp_socket: socket
         self.banco_de_dados: Banco_de_Dados
         self.mensagem: str
+        self.resultado_votacao: str
         self.process: Thread
         self.flag_de_controle: Event
         self.voto_pendente: str
@@ -285,20 +286,42 @@ class Controlador:
         Timer(2, navegar_para_espera).start()
 
     def encerrar_espera_de_votos(self, e: ft.ControlEvent) -> None:
-        # Encerra a votação, calcula os resultados e navega para a tela de resultados do host.
-
-        # --- Cancela o timer ao encerrar manualmente para evitar execuções futuras ---
+        # Encerra a votação, calcula os resultados e navega para a tela de resultados do host, SEM enviar aos votantes.
         if self.timer_encerramento and self.timer_encerramento.is_alive():
             self.timer_encerramento.cancel()
-        # ------
 
         if not self.flag_de_controle.is_set():
             self.flag_de_controle.set()
             self.process.join()
-            self.mensagem = servidor.mostrar_resultados(
-                self.banco_de_dados, self.udp_socket, self.mensagem
+            # Apenas calcula o resultado e armazena no atributo da classe
+            self.resultado_votacao = servidor.mostrar_resultados(
+                self.banco_de_dados, self.udp_socket, self.mensagem, enviar=False
             )
-            self.page.go("/resultado_host")
+            self.page.go("/resultado_host_intermediario")
+
+    def enviar_resultado_para_votantes(self, e: ft.ControlEvent) -> None:
+        """
+        Envia o resultado armazenado para todos os votantes e, em seguida,
+        navega o host para a tela final de resultados.
+        """
+        if self.resultado_votacao:
+            servidor.mandar_mensagem(
+                self.banco_de_dados, self.udp_socket, self.resultado_votacao
+            )
+
+        # Simula o pop-up de sucesso e depois vai para a tela final
+        dialog = ft.AlertDialog(
+            title=ft.Text("Resultado enviado com sucesso!"), modal=True
+        )
+        self.page.dialog = dialog
+        dialog.open = True
+        self.page.update()
+
+        # Após um tempo, fecha o diálogo e vai para a tela final de resultado do host
+        time.sleep(2)
+        dialog.open = False
+        self.page.go("/resultado_host_final")
+        self.page.update()
 
     def criar_nova_pauta(self, e):
         """Chamado quando o host clica em 'Criar Nova Pauta'."""

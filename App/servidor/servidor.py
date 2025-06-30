@@ -120,7 +120,10 @@ def receber_votos(
 
 # computa os resultados e envia-os para todos votantes
 def mostrar_resultados(
-    banco_de_dados: Banco_de_Dados, server: socket.socket, pauta: str
+    banco_de_dados: Banco_de_Dados,
+    server: socket.socket,
+    pauta: str,
+    enviar: bool = True,
 ) -> str:
     resultado = "-----------------Resultado da votação!-----------------\n"
     resultado += f"pauta discutida |{pauta}|\n"
@@ -129,24 +132,24 @@ def mostrar_resultados(
     qtd_abstenção = banco_de_dados.dados["pautas"][pauta]["qtd de votos anulados"]
     total = qtd_a_favor + qtd_contra + qtd_abstenção
 
-    # --- Início da Correção ---
-    # Verifica se o total de votos é zero para evitar o erro de divisão por zero.
     if total == 0:
         porcentagem_a_favor = 0.0
         porcentagem_contra = 0.0
         porcentagem_abstenção = 0.0
     else:
-        # Se houver votos, calcula as porcentagens normalmente.
         porcentagem_a_favor = qtd_a_favor / total * 100
         porcentagem_contra = qtd_contra / total * 100
         porcentagem_abstenção = qtd_abstenção / total * 100
-    # --- Fim da Correção ---
 
     resultado += f"votos a favor = {porcentagem_a_favor:.2f}%\nvotos contra = {porcentagem_contra:.2f}%\nvotos nulos = {porcentagem_abstenção:.2f}%\n"
     resultado += (
         "-------------------------------------------------------------------\n\n"
     )
-    mandar_mensagem(banco_de_dados, server, resultado)
+
+    # Envia a mensagem apenas se 'enviar' for True
+    if enviar:
+        mandar_mensagem(banco_de_dados, server, resultado)
+
     return resultado
 
 
