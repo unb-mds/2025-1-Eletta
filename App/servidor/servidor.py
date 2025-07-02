@@ -125,27 +125,12 @@ def mostrar_resultados(
     pauta: str,
     enviar: bool = True,
 ) -> str:
-    resultado = "-----------------Resultado da votação!-----------------\n"
-    resultado += f"pauta discutida |{pauta}|\n"
     qtd_a_favor = banco_de_dados.dados["pautas"][pauta]["qtd de votos a favor"]
     qtd_contra = banco_de_dados.dados["pautas"][pauta]["qtd de votos contra"]
-    qtd_abstenção = banco_de_dados.dados["pautas"][pauta]["qtd de votos anulados"]
-    total = qtd_a_favor + qtd_contra + qtd_abstenção
+    qtd_abstencao = banco_de_dados.dados["pautas"][pauta]["qtd de votos anulados"]
 
-    if total == 0:
-        porcentagem_a_favor = 0.0
-        porcentagem_contra = 0.0
-        porcentagem_abstenção = 0.0
-    else:
-        porcentagem_a_favor = qtd_a_favor / total * 100
-        porcentagem_contra = qtd_contra / total * 100
-        porcentagem_abstenção = qtd_abstenção / total * 100
-
-    resultado += f"votos a favor = {porcentagem_a_favor:.2f}%\nvotos contra = {porcentagem_contra:.2f}%\nvotos nulos = {porcentagem_abstenção:.2f}%\n"
-    resultado += (
-        "-------------------------------------------------------------------\n\n"
-    )
-
+    # Monta a string simples com os números separados por espaço
+    resultado = f"{qtd_a_favor} {qtd_contra} {qtd_abstencao}"
     # Envia a mensagem apenas se 'enviar' for True
     if enviar:
         mandar_mensagem(banco_de_dados, server, resultado)
