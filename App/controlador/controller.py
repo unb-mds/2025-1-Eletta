@@ -187,11 +187,11 @@ class Controlador:
     def votar(self, e: ft.ControlEvent) -> None:
         # Armazena o voto pendente e navega para a tela de confirmação.#
         if e.control.data == 2:
-            self.voto_pendente = "a favor"
+            self.voto_pendente = "A favor"
         elif e.control.data == 1:
-            self.voto_pendente = "contra"
+            self.voto_pendente = "Contra"
         elif e.control.data == 0:
-            self.voto_pendente = "nulo"
+            self.voto_pendente = "Abster-se"
         self.page.go("/confirmacao")
 
     def confirmar_voto(self, e: ft.ControlEvent) -> None:
