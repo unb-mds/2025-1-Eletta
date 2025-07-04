@@ -20,15 +20,17 @@ hide:
     Eletta
   </h1>
   <p align="center" class="eletta-subtitle" style="font-size: 1.5em; color: #fff; margin-bottom: 1.5em; margin-top: 2em; text-shadow: 0 2px 8px #000a;">
-    <b>Transformando decisões em experiências digitais seguras, rápidas e transparentes.</b>
+    <b>Aplicativo Android de votações presenciais</b><br>
+    Transformando decisões em experiências digitais seguras, rápidas e transparentes.
   </p>
 
   <p align="center">
+    <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android">
     <a href="https://github.com/unb-mds/2025-1-Squad06">
-      <img src="https://img.shields.io/badge/GitHub-Eletta-181717?logo=github" alt="GitHub">
+      <img src="https://img.shields.io/badge/GitHub-Eletta-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
     </a>
     <a href="https://miro.com/app/board/uXjVIJOVs_Y=/?moveToWidget=3458764627105264746&cot=14">
-      <img src="https://img.shields.io/badge/Miro-Story%20Map-yellow?logo=miro" alt="Miro">
+      <img src="https://img.shields.io/badge/Miro-Story%20Map-yellow?style=for-the-badge&logo=miro&logoColor=black" alt="Miro">
     </a>
   </p>
 
@@ -454,7 +456,7 @@ document.addEventListener("DOMContentLoaded", function() {
   <!-- Caixa de texto -->
   <div style="flex:2; min-width:320px; max-width: 900px; background: rgba(255,255,255,0.07); border-radius: 14px; box-shadow: 0 2px 12px #0001; padding: 1.5em; display: flex; align-items: center;">
     <p style="font-size:1.15em; color:#f5f5f5; text-shadow: 0 1px 4px #0006; margin:0;">
-      O Eletta é um aplicativo mobile para criar votações locais de forma simples, segura e transparente.
+     O Eletta é um <b>aplicativo Android</b> para criar votações locais de forma simples, segura e transparente.
       Ele permite que grupos tomem decisões coletivas, com anonimato e resultados em tempo real.
       <b>Sem necessidade de internet</b>, bastando que todos estejam conectados à mesma rede local.
     </p>
@@ -463,7 +465,17 @@ document.addEventListener("DOMContentLoaded", function() {
   <div style="flex:1; min-width:260px; display:flex; justify-content:center; align-items:center;">
     <div style="background:#fff; border-radius:32px; box-shadow:0 8px 32px #0003; border:4px solid #e0e0e0; width:260px; height:520px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
       <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; border-radius:28px;">
-        <source src="assets/videos/ApresentaAPP.mp4" type="video/mp4">
+        <source src="assets/videos/VideoHost.mp4" type="video/mp4">
+        Seu navegador não suporta vídeo HTML5.
+      </video>
+      <!-- Simula botão home do celular -->
+      <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:38px;height:5px;background:#e0e0e0;border-radius:3px;"></div>
+    </div>
+  </div>
+  <div style="flex:1; min-width:260px; display:flex; justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:32px; box-shadow:0 8px 32px #0003; border:4px solid #e0e0e0; width:260px; height:520px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+      <video autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; border-radius:28px;">
+        <source src="assets/videos/VideoVotante.mp4" type="video/mp4">
         Seu navegador não suporta vídeo HTML5.
       </video>
       <!-- Simula botão home do celular -->
