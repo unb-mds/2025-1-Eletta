@@ -15,6 +15,7 @@ def ip_local():
         s.close()
     return ip
 
+
 # ----- inicialização do servidor -----
 def virar_host() -> socket.socket | None:
     """

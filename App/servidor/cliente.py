@@ -4,6 +4,25 @@ import json
 server_addr = ("127.0.0.1", 5555)
 
 
+def get_broadcast_ip() -> str:
+    """
+    Retorna o IP de broadcast baseado no IP local atual.
+    Exemplo: se IP local for 192.168.0.104, retorna 192.168.0.255
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+    except Exception:
+        local_ip = "127.0.0.1"
+    finally:
+        s.close()
+
+    ip_parts = local_ip.split(".")
+    ip_parts[-1] = "255"
+    return ".".join(ip_parts)
+
+
 def verificar_host_ativo() -> bool:
     """
     Usa broadcast UDP para descobrir se há um host ativo na rede.
@@ -16,8 +35,9 @@ def verificar_host_ativo() -> bool:
         test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         test_socket.settimeout(2.0)
 
-        # Endereço de broadcast (pode adaptar à sua rede se necessário)
-        broadcast_addr = ("255.255.255.255", 5555)
+        broadcast_ip = get_broadcast_ip()
+        broadcast_addr = (broadcast_ip, 5555)
+
         mensagem = "host_check"
         test_socket.sendto(mensagem.encode(), broadcast_addr)
 
@@ -25,7 +45,7 @@ def verificar_host_ativo() -> bool:
         response, addr = test_socket.recvfrom(1024)
         if response.decode().strip() == "host_active":
             print(f"Host descoberto no IP: {addr[0]}")
-            server_addr = (addr[0], 5555)  # Atualiza com IP real do host
+            server_addr = (addr[0], 5555)
             return True
 
         return False
