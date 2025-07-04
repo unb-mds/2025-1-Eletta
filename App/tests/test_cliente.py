@@ -3,8 +3,23 @@ from servidor.cliente import (
     virar_votante,
     receber_mensagem,
     votar,
-    verificar_host_ativo,
+    get_broadcast_ip,
 )  # seu arquivo cliente.py
+
+
+@patch("socket.socket")
+def test_get_broadcast_ip(mock_socket_class):
+    mock_socket = MagicMock()
+    mock_socket.getsockname.return_value = ("192.168.0.104", 12345)
+    mock_socket_class.return_value = mock_socket
+
+    ip = get_broadcast_ip()
+
+    mock_socket.connect.assert_called_once_with(("8.8.8.8", 80))
+    mock_socket.getsockname.assert_called_once()
+    mock_socket.close.assert_called_once()
+
+    assert ip == "192.168.0.255"
 
 
 @patch("socket.socket")
