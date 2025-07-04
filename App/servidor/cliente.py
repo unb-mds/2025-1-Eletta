@@ -4,36 +4,58 @@ import json
 server_addr = ("127.0.0.1", 5555)
 
 
+def get_broadcast_ip() -> str:
+    """
+    Retorna o IP de broadcast baseado no IP local atual.
+    Exemplo: se IP local for 192.168.0.104, retorna 192.168.0.255
+    """
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+    except Exception:
+        local_ip = "127.0.0.1"
+    finally:
+        s.close()
+
+    ip_parts = local_ip.split(".")
+    ip_parts[-1] = "255"
+    return ".".join(ip_parts)
+
+
 def verificar_host_ativo() -> bool:
     """
-    Verifica se existe um host ativo na rede tentando conectar na porta 5555.
-    Retorna True se houver um host ativo, False caso contrário.
+    Usa broadcast UDP para descobrir se há um host ativo na rede.
+    Se houver, atualiza `server_addr` com o IP do host.
     """
+    global server_addr
     try:
-        # Cria um socket temporário para testar a conexão
+        # Cria um socket UDP com broadcast habilitado
         test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        test_socket.settimeout(1.0)  # Timeout de 1s para esperar resposta
+        test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        test_socket.settimeout(2.0)
 
-        # Tenta enviar uma mensagem de teste
-        test_message = "host_check"
-        test_socket.sendto(test_message.encode(), server_addr)
+        broadcast_ip = get_broadcast_ip()
+        broadcast_addr = (broadcast_ip, 5555)
 
-        # Tenta receber uma resposta do servidor
-        try:
-            response, addr = test_socket.recvfrom(1024)
-            test_socket.close()
-            return True  # Se recebeu resposta, há um host ativo
-        except socket.timeout:
-            # Se não recebeu resposta, não há host ativo
-            test_socket.close()
-            return False
+        mensagem = "host_check"
+        test_socket.sendto(mensagem.encode(), broadcast_addr)
 
-    except (ConnectionRefusedError, OSError):
-        # Se der qualquer erro, significa que não há host ativo
+        # Tenta receber resposta do host
+        response, addr = test_socket.recvfrom(1024)
+        if response.decode().strip() == "host_active":
+            print(f"Host descoberto no IP: {addr[0]}")
+            server_addr = (addr[0], 5555)
+            return True
+
         return False
-    except Exception:
-        # Para qualquer outro erro, assume que não há host
+    except socket.timeout:
         return False
+    except Exception as e:
+        print(f"Erro ao tentar descobrir host: {e}")
+        return False
+    finally:
+        test_socket.close()
 
 
 def virar_votante() -> socket.socket:
