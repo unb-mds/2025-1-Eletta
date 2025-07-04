@@ -1,6 +1,5 @@
 from servidor.cliente import verificar_host_ativo, virar_votante, receber_mensagem
 from servidor.servidor import ip_local
-import time
 
 if __name__ == "__main__":
     local_ip = ip_local()
