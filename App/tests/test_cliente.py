@@ -4,6 +4,7 @@ from servidor.cliente import (
     receber_mensagem,
     votar,
     get_broadcast_ip,
+    verificar_host_ativo,
 )  # seu arquivo cliente.py
 
 
@@ -59,3 +60,23 @@ def test_votar(mock_socket_class):
     mock_socket.sendto.assert_called_once_with(
         b'["sim", "pauta1"]', ("127.0.0.1", 5555)
     )
+
+
+@patch("socket.socket")
+def test_verificar_host_ativo_true(mock_socket_class):
+    # Simula resposta do servidor (host ativo)
+    mock_socket = MagicMock()
+    mock_socket.recvfrom.return_value = (b"host_active", ("127.0.0.1", 5555))
+    mock_socket_class.return_value = mock_socket
+
+    assert verificar_host_ativo() is True
+
+
+@patch("socket.socket")
+def test_verificar_host_ativo_false(mock_socket_class):
+    # Simula timeout (host inativo)
+    mock_socket = MagicMock()
+    mock_socket.recvfrom.side_effect = TimeoutError  # Simula timeout
+    mock_socket_class.return_value = mock_socket
+
+    assert verificar_host_ativo() is False

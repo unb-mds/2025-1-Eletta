@@ -2,11 +2,13 @@ import pytest
 from unittest.mock import Mock, patch, call, MagicMock
 import threading
 import socket
+import itertools
 from servidor.servidor import (
     mandar_mensagem,
     mostrar_resultados,
     virar_host,
     receber_votantes,
+    receber_votos,
 )
 
 
@@ -117,4 +119,41 @@ def test_receber_votantes(monkeypatch):
     banco_mock.adicionar_votante.assert_called_once_with(
         votante_info[1], votante_info[0]
     )
+    banco_mock.serializar_dados.assert_called()
+
+
+def test_receber_votos(monkeypatch):
+    banco_mock = Mock()
+    banco_mock.registrar_voto = Mock()
+    banco_mock.serializar_dados = Mock()
+
+    server_mock = Mock(spec=socket.socket)
+    voto_json = '["sim", "Educação"]'.encode("utf-8")
+    votante_info = ("192.168.0.100", 54321)
+
+    server_mock.recvfrom.side_effect = itertools.chain(
+        [socket.timeout, (voto_json, votante_info)], itertools.repeat(socket.timeout)
+    )
+
+    parar_event = threading.Event()
+
+    def run_func():
+        receber_votos(banco_mock, server_mock, parar_event)
+
+    thread = threading.Thread(target=run_func)
+    thread.start()
+
+    import time
+
+    time.sleep(0.1)
+    parar_event.set()
+    thread.join(timeout=1)
+
+    assert banco_mock.registrar_voto.call_count == 1
+    args, kwargs = banco_mock.registrar_voto.call_args
+    assert args[0] == 54321  # porta
+    assert args[1] == "sim"
+    assert args[2] == "Educação"
+    banco_mock.serializar_dados.assert_called()
+    assert args[2] == "Educação"
     banco_mock.serializar_dados.assert_called()
