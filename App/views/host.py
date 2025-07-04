@@ -222,26 +222,120 @@ def pagina_do_resultado_host_intermediario(
     page: ft.Page, controlador: Controlador
 ) -> ft.View:
     """
-    Nova tela que mostra o resultado apenas para o host e dá a opção de enviar.
+    Tela que mostra o resultado apenas para o host com um gráfico de pizza e legenda.
     """
-    resultado_formatado = "\n".join(
-        controlador.resultado_votacao.split("\n")[1:-2]
-    )  # Remove o cabeçalho e rodapé padrão
+    resultado_formatado = "\n".join(controlador.resultado_votacao.split("\n")[1:-2])
 
     votos = resultado_formatado.strip().split("\n")
 
-    # Extrai os valores de votos para exibição
-    votos_favor = "0.00%"
-    votos_contra = "0.00%"
-    votos_nulos = "0.00%"
+    votos_favor = 0.0
+    votos_contra = 0.0
+    votos_nulos = 0.0
 
     for voto in votos:
         if "votos a favor" in voto:
-            votos_favor = voto.split("=")[1].strip()
+            votos_favor = float(voto.split("=")[1].strip().replace("%", ""))
         elif "votos contra" in voto:
-            votos_contra = voto.split("=")[1].strip()
+            votos_contra = float(voto.split("=")[1].strip().replace("%", ""))
         elif "votos nulos" in voto:
-            votos_nulos = voto.split("=")[1].strip()
+            votos_nulos = float(voto.split("=")[1].strip().replace("%", ""))
+
+    normal_radius = 50
+    hover_radius = 60
+    normal_title_style = ft.TextStyle(
+        size=13,
+        color=ft.Colors.WHITE,
+        weight=ft.FontWeight.BOLD,
+        shadow=ft.BoxShadow(
+            blur_radius=1,
+            color=ft.Colors.BLACK,
+            spread_radius=0,
+            offset=ft.Offset(0, 0),
+        ),
+    )
+    hover_title_style = ft.TextStyle(
+        size=18,
+        color=ft.Colors.WHITE,
+        weight=ft.FontWeight.BOLD,
+        shadow=ft.BoxShadow(
+            blur_radius=2,
+            color=ft.Colors.BLACK54,
+        ),
+    )
+
+    def on_chart_event(e: ft.PieChartEvent):
+        for idx, section in enumerate(chart.sections):
+            if idx == e.section_index:
+                section.radius = hover_radius
+                section.title_style = hover_title_style
+            else:
+                section.radius = normal_radius
+                section.title_style = normal_title_style
+        chart.update()
+
+    chart = ft.PieChart(
+        sections=[
+            ft.PieChartSection(
+                value=votos_favor,
+                title=f"{votos_favor:.2f}%",
+                color=ft.Colors.GREEN,
+                radius=normal_radius,
+                title_style=normal_title_style,
+            ),
+            ft.PieChartSection(
+                value=votos_contra,
+                title=f"{votos_contra:.2f}%",
+                color=ft.Colors.RED,
+                radius=normal_radius,
+                title_style=normal_title_style,
+            ),
+            ft.PieChartSection(
+                value=votos_nulos,
+                title=f"{votos_nulos:.2f}%",
+                color=ft.Colors.GREY,
+                radius=normal_radius,
+                title_style=normal_title_style,
+            ),
+        ],
+        sections_space=0,
+        center_space_radius=40,
+        on_chart_event=on_chart_event,
+        expand=True,
+    )
+
+    legenda = ft.Row(
+        alignment=ft.MainAxisAlignment.CENTER,
+        spacing=20,
+        controls=[
+            ft.Row(
+                spacing=5,
+                controls=[
+                    ft.Container(
+                        width=12, height=12, bgcolor=ft.Colors.GREEN, border_radius=6
+                    ),
+                    ft.Text("A favor", size=12, color=ft.Colors.BLACK),
+                ],
+            ),
+            ft.Row(
+                spacing=5,
+                controls=[
+                    ft.Container(
+                        width=12, height=12, bgcolor=ft.Colors.RED, border_radius=6
+                    ),
+                    ft.Text("Contra", size=12, color=ft.Colors.BLACK),
+                ],
+            ),
+            ft.Row(
+                spacing=5,
+                controls=[
+                    ft.Container(
+                        width=12, height=12, bgcolor=ft.Colors.GREY, border_radius=6
+                    ),
+                    ft.Text("Abstenções", size=12, color=ft.Colors.BLACK),
+                ],
+            ),
+        ],
+    )
 
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),
@@ -256,22 +350,8 @@ def pagina_do_resultado_host_intermediario(
                         weight=ft.FontWeight.BOLD,
                         color=ft.Colors.BLACK,
                     ),
-                    ft.Text(
-                        f"Concorda: {votos_favor}",
-                        size=16,
-                        color=ft.Colors.BLACK,
-                    ),
-                    ft.Text(
-                        f"Discorda: {votos_contra}",
-                        size=16,
-                        color=ft.Colors.BLACK,
-                    ),
-                    ft.Text(
-                        f"Abstenção: {votos_nulos}",
-                        size=16,
-                        color=ft.Colors.BLACK,
-                    ),
-                    ft.Container(height=30),  # Espaçador
+                    chart,
+                    legenda,
                     ft.ElevatedButton(
                         text="Enviar resultado",
                         width=200,
@@ -283,7 +363,7 @@ def pagina_do_resultado_host_intermediario(
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=20,
+                spacing=30,
             ),
         ),
         ft.Container(height=45, bgcolor="#39746F"),
@@ -302,8 +382,122 @@ def pagina_do_resultado_host_intermediario(
 def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> ft.View:
     """
     Tela final do host, que aparece após o resultado ser enviado.
-    É a mesma que a tela de resultado atual.
+    Agora mostra um gráfico de pizza com legenda.
     """
+    # Extrai os valores percentuais do resultado já calculado
+    resultado_formatado = "\n".join(controlador.resultado_votacao.split("\n")[1:-2])
+
+    votos = resultado_formatado.strip().split("\n")
+
+    votos_favor = 0.0
+    votos_contra = 0.0
+    votos_nulos = 0.0
+
+    for voto in votos:
+        if "votos a favor" in voto:
+            votos_favor = float(voto.split("=")[1].strip().replace("%", ""))
+        elif "votos contra" in voto:
+            votos_contra = float(voto.split("=")[1].strip().replace("%", ""))
+        elif "votos nulos" in voto:
+            votos_nulos = float(voto.split("=")[1].strip().replace("%", ""))
+
+    normal_radius = 50
+    hover_radius = 60
+    normal_title_style = ft.TextStyle(
+        size=13,
+        color=ft.Colors.WHITE,
+        weight=ft.FontWeight.BOLD,
+        shadow=ft.BoxShadow(
+            blur_radius=1,
+            color=ft.Colors.BLACK,
+            spread_radius=0,
+            offset=ft.Offset(0, 0),
+        ),
+    )
+    hover_title_style = ft.TextStyle(
+        size=18,
+        color=ft.Colors.WHITE,
+        weight=ft.FontWeight.BOLD,
+        shadow=ft.BoxShadow(
+            blur_radius=2,
+            color=ft.Colors.BLACK54,
+        ),
+    )
+
+    def on_chart_event(e: ft.PieChartEvent):
+        for idx, section in enumerate(chart.sections):
+            if idx == e.section_index:
+                section.radius = hover_radius
+                section.title_style = hover_title_style
+            else:
+                section.radius = normal_radius
+                section.title_style = normal_title_style
+        chart.update()
+
+    chart = ft.PieChart(
+        sections=[
+            ft.PieChartSection(
+                value=votos_favor,
+                title=f"{votos_favor:.2f}%",
+                color=ft.Colors.GREEN,
+                radius=normal_radius,
+                title_style=normal_title_style,
+            ),
+            ft.PieChartSection(
+                value=votos_contra,
+                title=f"{votos_contra:.2f}%",
+                color=ft.Colors.RED,
+                radius=normal_radius,
+                title_style=normal_title_style,
+            ),
+            ft.PieChartSection(
+                value=votos_nulos,
+                title=f"{votos_nulos:.2f}%",
+                color=ft.Colors.GREY,
+                radius=normal_radius,
+                title_style=normal_title_style,
+            ),
+        ],
+        sections_space=0,
+        center_space_radius=40,
+        on_chart_event=on_chart_event,
+        expand=True,
+    )
+
+    legenda = ft.Row(
+        alignment=ft.MainAxisAlignment.CENTER,
+        spacing=20,
+        controls=[
+            ft.Row(
+                spacing=5,
+                controls=[
+                    ft.Container(
+                        width=12, height=12, bgcolor=ft.Colors.GREEN, border_radius=6
+                    ),
+                    ft.Text("A favor", size=12, color=ft.Colors.BLACK),
+                ],
+            ),
+            ft.Row(
+                spacing=5,
+                controls=[
+                    ft.Container(
+                        width=12, height=12, bgcolor=ft.Colors.RED, border_radius=6
+                    ),
+                    ft.Text("Contra", size=12, color=ft.Colors.BLACK),
+                ],
+            ),
+            ft.Row(
+                spacing=5,
+                controls=[
+                    ft.Container(
+                        width=12, height=12, bgcolor=ft.Colors.GREY, border_radius=6
+                    ),
+                    ft.Text("Abstenções", size=12, color=ft.Colors.BLACK),
+                ],
+            ),
+        ],
+    )
+
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),
         ft.Container(
@@ -312,12 +506,13 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
             content=ft.Column(
                 [
                     ft.Text(
-                        controlador.resultado_votacao,  # Usa o resultado já calculado
+                        "Resultado da votação final:",
                         size=16,
-                        weight=ft.FontWeight.NORMAL,
+                        weight=ft.FontWeight.BOLD,
                         color="#000000",
-                        text_align=ft.TextAlign.CENTER,
                     ),
+                    chart,
+                    legenda,
                     ft.ElevatedButton(
                         text="Criar nova pauta",
                         width=160,
