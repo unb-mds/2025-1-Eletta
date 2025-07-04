@@ -3,19 +3,28 @@ site_url: https://unb-mds.github.io/Eletta/
 docs_dir: Docs
 nav:
   - 🏡 Home: index.md
-  - 🗂️ Arquitetura de Software: Arquitetura.md
-  - 🛠️ Protótipo: Prototipo.md
-  - 🧩 Sprints: 
-      - Sprint 0: Sprints/Sprint_0.md
-      - Sprint 1: Sprints/Sprint_1.md
-      - Sprint 2: Sprints/Sprint_2.md
-      - Sprint 3: Sprints/Sprint_3.md
-      - Sprint 4: Sprints/Sprint_4.md
-  - 🗺️ Story Map e User Flow: 
-      - Story Map: StoryMap.md
-      - User Flow: UserFlow.md
-
-
+  - 📚 Documentação:
+      - 🗂️ Arquitetura de Software: Arquitetura.md
+      - 🛠️ Protótipo: Prototipo.md
+      - 🧩 Sprints:
+          - Sprint 0: Sprints/Sprint_0.md
+          - Sprint 1: Sprints/Sprint_1.md
+          - Sprint 2: Sprints/Sprint_2.md
+          - Sprint 3: Sprints/Sprint_3.md
+          - Sprint 4: Sprints/Sprint_4.md
+          - Sprint 5: Sprints/Sprint_5.md
+          - Sprint 6: Sprints/Sprint_6.md
+          - Sprint 7: Sprints/Sprint_7.md
+          - Sprint 8: Sprints/Sprint_8.md
+          - Sprint 9: Sprints/Sprint_9.md
+          - Sprint 10: Sprints/Sprint_10.md
+          - Sprint 11: Sprints/Sprint_11.md
+          - Sprint 12: Sprints/Sprint_12.md
+          - Sprint 13: Sprints/Sprint_13.md
+      - 🗺️ Story Map e User Flow:
+          - Story Map: StoryMap.md
+          - User Flow: UserFlow.md
+  - 📋 Sobre o Projeto: Sobrenos.md
 
 theme:
   name: material
@@ -25,13 +34,10 @@ theme:
   logo: assets/images/logo.png
   favicon: assets/icon/favicon.ico
   features:
+    - navigation.tabs
     - navigation.path
     - toc.integrate
-    - navigation.top
     - search.suggest
-  hide:
-    - navigation
-    - toc
   palette:
     - scheme: slate
       toggle:
@@ -47,12 +53,6 @@ theme:
       primary: teal
       accent: deep orange
 
-
-
-
-
-
-
 markdown_extensions: 
   - attr_list
   - pymdownx.emoji:
@@ -63,7 +63,9 @@ markdown_extensions:
         line_spans: __span
         pygments_lang_class: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: ['./']
+      check_paths: true
   - pymdownx.tabbed:
       alternate_style: true 
   - admonition
