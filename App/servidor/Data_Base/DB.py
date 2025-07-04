@@ -33,6 +33,9 @@ class Banco_de_Dados:
 
         if pauta in self.dados["votantes"][user_id]["pautas votadas"]:
             return
+
+        voto = voto.strip().lower()
+
         if voto == "a favor":
             self.dados["pautas"][pauta]["qtd de votos a favor"] += 1
             self.dados["votantes"][user_id]["votos a favor"].append(pauta)

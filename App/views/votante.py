@@ -240,34 +240,77 @@ def pagina_de_confirmacao(
     page: ft.Page, controlador: Controlador, voto_selecionado: str
 ) -> ft.View:
     texto = f"Você confirma seu voto: '{voto_selecionado}'?"
+
     conteudo = [
-        ft.Text(
-            texto, size=18, weight=ft.FontWeight.BOLD, text_align=ft.TextAlign.CENTER
+        # Retângulo superior
+        ft.Container(height=45, bgcolor="#39746F"),
+        # Conteúdo central
+        ft.Container(
+            expand=True,
+            alignment=ft.alignment.center,
+            content=ft.Column(
+                [
+                    ft.Text(
+                        texto,
+                        size=18,
+                        weight=ft.FontWeight.BOLD,
+                        text_align=ft.TextAlign.CENTER,
+                        color=ft.Colors.BLACK,
+                    ),
+                    ft.Row(
+                        [
+                            ft.ElevatedButton(
+                                "Confirmo",
+                                width=140,
+                                height=50,
+                                bgcolor="#47D147",
+                                color=ft.Colors.WHITE,
+                                on_click=controlador.confirmar_voto,
+                                style=ft.ButtonStyle(
+                                    padding=20,
+                                    text_style=ft.TextStyle(
+                                        size=14,
+                                        font_family="Inter",
+                                    ),
+                                ),
+                            ),
+                            ft.ElevatedButton(
+                                "Não confirmo",
+                                width=140,
+                                height=50,
+                                bgcolor="#C83A3A",
+                                color=ft.Colors.WHITE,
+                                on_click=controlador.cancelar_voto,
+                                style=ft.ButtonStyle(
+                                    padding=20,
+                                    text_style=ft.TextStyle(
+                                        size=14,
+                                        font_family="Inter",
+                                    ),
+                                ),
+                            ),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=20,
+                    ),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=40,
+                expand=True,
+            ),
         ),
-        ft.Row(
-            [
-                ft.ElevatedButton(
-                    "Confirmo",
-                    bgcolor="#47D147",
-                    color=ft.Colors.WHITE,
-                    on_click=controlador.confirmar_voto,
-                ),
-                ft.ElevatedButton(
-                    "Não confirmo",
-                    bgcolor="#C83A3A",
-                    color=ft.Colors.WHITE,
-                    on_click=controlador.cancelar_voto,
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        ),
+        # Retângulo inferior
+        ft.Container(height=45, bgcolor="#39746F"),
     ]
+
     return ft.View(
         "/confirmacao",
         controls=conteudo,
         vertical_alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         bgcolor=ft.Colors.WHITE,
+        padding=0,
     )
 
 

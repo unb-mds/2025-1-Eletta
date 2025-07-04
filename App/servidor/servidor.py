@@ -4,6 +4,18 @@ from servidor.Data_Base.DB import Banco_de_Dados
 import json
 
 
+def ip_local():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = "127.0.0.1"
+    finally:
+        s.close()
+    return ip
+
+
 # ----- inicialização do servidor -----
 def virar_host() -> socket.socket | None:
     """
