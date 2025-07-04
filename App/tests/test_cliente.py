@@ -6,6 +6,7 @@ from servidor.cliente import (
     get_broadcast_ip,
 )  # seu arquivo cliente.py
 
+
 @patch("socket.socket")
 def test_get_broadcast_ip(mock_socket_class):
     mock_socket = MagicMock()
@@ -19,6 +20,7 @@ def test_get_broadcast_ip(mock_socket_class):
     mock_socket.close.assert_called_once()
 
     assert ip == "192.168.0.255"
+
 
 @patch("socket.socket")
 def test_virar_votante(mock_socket_class):
