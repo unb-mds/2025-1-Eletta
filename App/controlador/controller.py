@@ -209,6 +209,27 @@ class Controlador:
         Tenta iniciar o modo host. Se já existir um, exibe uma mensagem
         temporária na tela que desaparece após 1 segundo.
         """
+        # 1. VERIFICAÇÃO ATIVA: Checa se já existe um host na rede.
+        if cliente.verificar_host_ativo():
+            # Se um host for encontrado, exibe uma mensagem de erro e interrompe.
+            texto_erro = ft.Text(
+                "Já existe uma sala criada para essa rede.",
+                color=ft.Colors.RED_700,
+                size=16,
+                weight=ft.FontWeight.BOLD,
+                text_align=ft.TextAlign.CENTER,
+            )
+            self.page.views[0].controls.append(texto_erro)
+            self.page.update()
+
+            def remover_texto_erro():
+                self.page.views[0].controls.remove(texto_erro)
+                self.page.update()
+
+            Timer(2.0, remover_texto_erro).start()
+            return  # Impede a continuação da criação do host
+
+        # 2. TENTATIVA DE BIND: Se nenhum host foi encontrado, tenta se tornar um.
         socket_host = servidor.virar_host()
 
         if socket_host:
