@@ -152,7 +152,7 @@ def pagina_de_votacao(pagina: ft.Page, controlador: Controlador) -> ft.View:
         weight=ft.FontWeight.BOLD,
         color=ft.Colors.RED_500,
     )
-    controlador.timer_control_votante = mostrador_tempo
+    controlador.controle_do_timer_votante = mostrador_tempo
     conteudo_da_pagina = [
         ft.Container(height=45, bgcolor="#39746F"),
         ft.Container(
