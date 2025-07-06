@@ -10,84 +10,84 @@ class Controlador:
     def __init__(self, page: ft.Page):
         self.page = page
         self.page.title = "Elleta"
-        self.socket_udp: socket
+        self.udp_socket: socket
         self.banco_de_dados: Banco_de_Dados
         self.mensagem: str
         self.resultado_votacao: str
-        self.processo_de_escuta: Thread
+        self.process: Thread
         self.flag_de_controle: Event
         self.voto_pendente: str
         self.tempo_votacao = 0
-        self.controle_do_timer_votante = None
-        self.thread_do_timer_votante = None
-        self.parar_timer_evento = Event()
-        self.timestamp_inicio_pauta = None
+        self.timer_control_votante = None
+        self.timer_thread_votante = None
+        self.stop_timer_event = Event()
+        self.pauta_start_timestamp = None
         self.timer_encerramento = None
         self.host_ativo = False
         self.page.go("/")
 
     def iniciar_contagem_regressiva_votante(self):
         if (
-            not self.controle_do_timer_votante
+            not self.timer_control_votante
             or self.tempo_votacao <= 0
-            or self.timestamp_inicio_pauta is None
+            or self.pauta_start_timestamp is None
         ):
             return
         self.parar_contagem_regressiva_votante()
-        self.parar_timer_evento.clear()
-        self.thread_do_timer_votante = Thread(
+        self.stop_timer_event.clear()
+        self.timer_thread_votante = Thread(
             target=self._tarefa_contagem_regressiva_votante, daemon=True
         )
-        self.thread_do_timer_votante.start()
+        self.timer_thread_votante.start()
 
     def parar_contagem_regressiva_votante(self):
-        self.parar_timer_evento.set()
-        if self.thread_do_timer_votante and self.thread_do_timer_votante.is_alive():
-            self.thread_do_timer_votante.join(timeout=1.0)
-        self.thread_do_timer_votante = None
+        self.stop_timer_event.set()
+        if self.timer_thread_votante and self.timer_thread_votante.is_alive():
+            self.timer_thread_votante.join(timeout=1.0)  
+        self.timer_thread_votante = None
 
     def _tarefa_contagem_regressiva_votante(self):
-        self.socket_udp.settimeout(1.0)
-        while not self.parar_timer_evento.is_set():
+        self.udp_socket.settimeout(1.0)
+        while not self.stop_timer_event.is_set():
             try:
-                tempo_decorrido = int(time.time() - self.timestamp_inicio_pauta)
-                tempo_atual = max(0, self.tempo_votacao - tempo_decorrido)
-                if self.page.route == "/votacao" and self.controle_do_timer_votante:
-                    self.controle_do_timer_votante.value = (
-                        f"Tempo restante: {tempo_atual}s"
-                        if tempo_atual > 0
+                elapsed_time = int(time.time() - self.pauta_start_timestamp)
+                current_time = max(0, self.tempo_votacao - elapsed_time)
+                if self.page.route == "/votacao" and self.timer_control_votante:
+                    self.timer_control_votante.value = (
+                        f"Tempo restante: {current_time}s"
+                        if current_time > 0
                         else "Tempo esgotado!"
                     )
                     self.page.update()
 
                 try:
-                    mensagem_resultado = cliente.receber_mensagem(self.socket_udp)
+                    mensagem_resultado = cliente.receber_mensagem(self.udp_socket)
                     self.mensagem = mensagem_resultado
 
-                    self.page.run_task(self._navegar_assincrono, "/resultado")
+                    self.page.run_task(self._navegar_async, "/resultado")
 
-                    self.socket_udp.settimeout(None)
+                    self.udp_socket.settimeout(None)
 
-                    while not self.parar_timer_evento.is_set():
-                        proxima_mensagem = cliente.receber_mensagem(self.socket_udp)
+                    while not self.stop_timer_event.is_set():
+                        proxima_mensagem = cliente.receber_mensagem(self.udp_socket)
 
                         if not proxima_mensagem:
                             continue
 
                         if proxima_mensagem == "host_criando_nova_pauta":
-                            self.page.run_task(self._navegar_assincrono, "/aguardar_host")
+                            self.page.run_task(self._navegar_async, "/aguardar_host")
 
-                            thread_espera = Thread(
+                            esperar_thread = Thread(
                                 target=self._tarefa_esperar_pauta, daemon=True
                             )
-                            thread_espera.start()
+                            esperar_thread.start()
 
                         elif proxima_mensagem == "sessao encerrada":
-                            self.page.run_task(self._navegar_assincrono, "/resultado")
+                            self.page.run_task(self._navegar_async, "/resultado")
 
                             time.sleep(10)
 
-                            self.page.run_task(self._navegar_assincrono, "/")
+                            self.page.run_task(self._navegar_async, "/")
 
                             break
 
@@ -97,36 +97,36 @@ class Controlador:
                             )
                             break
 
-                    break
+                    break  
                 except timeout:
-                    if tempo_atual == 0 and self.page.route in [
+                    if current_time == 0 and self.page.route in [
                         "/votacao",
                         "/confirmacao",
                     ]:
-                        self.page.run_task(self._navegar_assincrono, "/tempo_esgotado")
+                        self.page.run_task(self._navegar_async, "/tempo_esgotado")
                     continue
             except Exception as e:
-                print(f"Ocorreu um erro inesperado no laço do votante: {e}")
+                print(f"Ocorreu um erro inesperado no loop do votante: {e}")
                 time.sleep(1)
                 continue
 
-    async def _navegar_assincrono(self, rota: str):
-        self.page.go(rota)
+    async def _navegar_async(self, route: str):
+        self.page.go(route)
 
-    async def _processar_mensagem_pauta(self, mensagem: str):
+    async def _processar_mensagem_pauta(self, message: str):
 
-        if mensagem == "sessao encerrada" or mensagem == "votação encerrada":
+        if message == "sessao encerrada" or message == "votação encerrada":
             self.page.go("/")
             return
         try:
-            pauta, tempo_str = mensagem.split("|")
+            pauta, tempo_str = message.split("|")
             self.mensagem = pauta
             self.tempo_votacao = int(tempo_str)
-            self.timestamp_inicio_pauta = time.time()
+            self.pauta_start_timestamp = time.time()
         except ValueError:
-            self.mensagem = mensagem
-            self.tempo_votacao = 0
-            self.timestamp_inicio_pauta = time.time()
+            self.mensagem = message
+            self.tempo_votacao = 0  
+            self.pauta_start_timestamp = time.time()
 
         if self.mensagem:
             self.page.go("/votacao")
@@ -135,21 +135,21 @@ class Controlador:
     def _tarefa_esperar_pauta(self):
 
         try:
-            mensagem_servidor = cliente.receber_mensagem(self.socket_udp)
+            mensagem_servidor = cliente.receber_mensagem(self.udp_socket)
             self.page.run_task(self._processar_mensagem_pauta, mensagem_servidor)
         except Exception as e:
             print(f"Erro ao aguardar pauta inicial: {e}")
-            self.page.run_task(self._navegar_assincrono, "/")
+            self.page.run_task(self._navegar_async, "/")
 
     def entrar_na_votacao_como_votante(self, e: ft.ControlEvent) -> None:
         self.page.go("/atencao_votante")
 
     def iniciar_escuta_votante(self, e: ft.ControlEvent) -> None:
 
-        self.socket_udp = cliente.virar_votante()
+        self.udp_socket = cliente.virar_votante()
         self.page.go("/aguardar_host")
-        thread_de_espera = Thread(target=self._tarefa_esperar_pauta, daemon=True)
-        thread_de_espera.start()
+        wait_thread = Thread(target=self._tarefa_esperar_pauta, daemon=True)
+        wait_thread.start()
 
     def votar(self, e: ft.ControlEvent) -> None:
         if e.control.data == 2:
@@ -161,7 +161,7 @@ class Controlador:
         self.page.go("/confirmacao")
 
     def confirmar_voto(self, e: ft.ControlEvent) -> None:
-        cliente.votar(self.socket_udp, self.voto_pendente, self.mensagem)
+        cliente.votar(self.udp_socket, self.voto_pendente, self.mensagem)
         self.page.go("/sucesso_voto_computado")
 
     def cancelar_voto(self, e: ft.ControlEvent) -> None:
@@ -185,15 +185,15 @@ class Controlador:
                 self.page.update()
 
             Timer(2.0, remover_texto_erro).start()
-            return
+            return  
 
         socket_host = servidor.virar_host()
 
         if socket_host:
-            self.socket_udp = socket_host
-            self.host_ativo = True
-            self.banco_de_dados, self.processo_de_escuta, self.flag_de_controle = (
-                servidor.aguardar_votantes(self.socket_udp)
+            self.udp_socket = socket_host
+            self.host_ativo = True 
+            self.banco_de_dados, self.process, self.flag_de_controle = (
+                servidor.aguardar_votantes(self.udp_socket)
             )
             self.page.go("/espera_votantes")
         else:
@@ -217,15 +217,15 @@ class Controlador:
 
     def encerrar_espera_de_votantes(self, e: ft.ControlEvent) -> None:
         self.flag_de_controle.set()
-        self.processo_de_escuta.join()
+        self.process.join()
         self.page.go("/criacao_de_pauta")
 
     def enviar_pauta(self, e: ft.ControlEvent) -> None:
         if self.timer_encerramento and self.timer_encerramento.is_alive():
             self.timer_encerramento.cancel()
 
-        self.processo_de_escuta, self.flag_de_controle = servidor.aguardar_votos(
-            self.banco_de_dados, self.socket_udp
+        self.process, self.flag_de_controle = servidor.aguardar_votos(
+            self.banco_de_dados, self.udp_socket
         )
         campo_pauta, dropdown_tempo = e.control.data
         pauta_texto = campo_pauta.value
@@ -235,7 +235,7 @@ class Controlador:
         self.banco_de_dados.serializar_dados()
         mensagem_com_tempo = f"{self.mensagem}|{tempo_selecionado}"
         servidor.mandar_mensagem(
-            self.banco_de_dados, self.socket_udp, mensagem_com_tempo
+            self.banco_de_dados, self.udp_socket, mensagem_com_tempo
         )
         self.page.go("/sucesso_criacao_sala")
 
@@ -256,9 +256,9 @@ class Controlador:
 
         if not self.flag_de_controle.is_set():
             self.flag_de_controle.set()
-            self.processo_de_escuta.join()
+            self.process.join()
             self.resultado_votacao = servidor.mostrar_resultados(
-                self.banco_de_dados, self.socket_udp, self.mensagem, enviar=False
+                self.banco_de_dados, self.udp_socket, self.mensagem, enviar=False
             )
             self.page.go("/resultado_host_intermediario")
 
@@ -266,18 +266,19 @@ class Controlador:
 
         if self.resultado_votacao:
             servidor.mandar_mensagem(
-                self.banco_de_dados, self.socket_udp, self.resultado_votacao
+                self.banco_de_dados, self.udp_socket, self.resultado_votacao
             )
 
-        caixa_de_dialogo = ft.AlertDialog(
+        dialog = ft.AlertDialog(
             title=ft.Text("Resultado enviado com sucesso!"), modal=True
         )
-        self.page.dialog = caixa_de_dialogo
-        caixa_de_dialogo.open = True
+        self.page.dialog = dialog
+        dialog.open = True
         self.page.update()
 
+
         time.sleep(2)
-        caixa_de_dialogo.open = False
+        dialog.open = False
         self.page.go("/resultado_host_final")
         self.page.update()
 
@@ -286,26 +287,26 @@ class Controlador:
         self.tempo_pauta = None
 
         servidor.mandar_mensagem(
-            self.banco_de_dados, self.socket_udp, "host_criando_nova_pauta"
+            self.banco_de_dados, self.udp_socket, "host_criando_nova_pauta"
         )
 
         self.page.go("/criacao_de_pauta")
 
     def encerrar_sessao(self, e: ft.ControlEvent) -> None:
         self.mensagem = "sessao encerrada"
-        servidor.mandar_mensagem(self.banco_de_dados, self.socket_udp, self.mensagem)
-        self.host_ativo = False
-        self._limpar_recursos()
+        servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
+        self.host_ativo = False  
+        self._cleanup()
         self.page.go("/")
 
-    def _limpar_recursos(self):
+    def _cleanup(self):
 
-        print("--- APP ENCERRANDO: REALIZANDO A LIMPEZA ---")
+        print("--- APP ENCERRANDO: REALIZANDO LIMPEZA ---")
         if hasattr(self, "flag_de_controle") and self.flag_de_controle:
             self.flag_de_controle.set()
 
-        if hasattr(self, "socket_udp") and self.socket_udp:
-            self.socket_udp.close()
+        if hasattr(self, "udp_socket") and self.udp_socket:
+            self.udp_socket.close()
             print("--- Porta liberada com sucesso ---")
 
         self.host_ativo = False
@@ -320,16 +321,16 @@ class Controlador:
 
         def verificacao_periodica():
             while True:
-                time.sleep(2)
-                if page.route == "/":
+                time.sleep(2)  
+                if page.route == "/":  
                     try:
                         self.verificar_status_host()
                         botao_votante.disabled = not self.host_ativo
                         page.update()
                     except Exception:
-                        break
+                        break  
                 else:
-                    break
+                    break  
 
         thread_verificacao = Thread(target=verificacao_periodica, daemon=True)
         thread_verificacao.start()

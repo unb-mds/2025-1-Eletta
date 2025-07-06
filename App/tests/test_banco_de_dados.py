@@ -1,7 +1,7 @@
 from unittest.mock import mock_open, patch
 from servidor.Data_Base.DB import (
     Banco_de_Dados,
-)
+)  
 
 
 def test_adicionar_votante():
@@ -12,7 +12,7 @@ def test_adicionar_votante():
     assert votante["PORT"] == 1234
     assert votante["votos a favor"] == []
     assert votante["votos contra"] == []
-    assert votante["votos nulos"] == []  # Corrigido para "nulos"
+    assert votante["votos nulo"] == []
     assert votante["pautas votadas"] == []
 
 
@@ -23,15 +23,14 @@ def test_adicionar_pauta():
     pauta = bd.dados["pautas"]["pauta1"]
     assert pauta["qtd de votos a favor"] == 0
     assert pauta["qtd de votos contra"] == 0
-    assert pauta["qtd de votos nulos"] == 0  # Corrigido para "nulos"
+    assert pauta["qtd de votos anulados"] == 0
 
 
 def test_registrar_voto_a_favor():
     bd = Banco_de_Dados()
     bd.adicionar_votante("user1", 1234)
     bd.adicionar_pauta("pauta1")
-    # O método registrar_voto usa "A favor" com A maiúsculo
-    bd.registrar_voto("user1", "A favor", "pauta1")
+    bd.registrar_voto("user1", "a favor", "pauta1")
 
     pauta = bd.dados["pautas"]["pauta1"]
     votante = bd.dados["votantes"]["user1"]
@@ -45,8 +44,7 @@ def test_registrar_voto_contra():
     bd = Banco_de_Dados()
     bd.adicionar_votante("user1", 1234)
     bd.adicionar_pauta("pauta1")
-    # O método registrar_voto usa "Contra" com C maiúsculo
-    bd.registrar_voto("user1", "Contra", "pauta1")
+    bd.registrar_voto("user1", "contra", "pauta1")
 
     pauta = bd.dados["pautas"]["pauta1"]
     votante = bd.dados["votantes"]["user1"]
@@ -60,21 +58,20 @@ def test_registrar_voto_nulo():
     bd = Banco_de_Dados()
     bd.adicionar_votante("user1", 1234)
     bd.adicionar_pauta("pauta1")
-    # O método registrar_voto usa "Abster-se"
-    bd.registrar_voto("user1", "Abster-se", "pauta1")
+    bd.registrar_voto("user1", "nulo", "pauta1")
 
     pauta = bd.dados["pautas"]["pauta1"]
     votante = bd.dados["votantes"]["user1"]
 
-    assert pauta["qtd de votos nulos"] == 1  # Corrigido para "nulos"
-    assert "pauta1" in votante["votos nulos"]  # Corrigido para "nulos"
+    assert pauta["qtd de votos anulados"] == 1
+    assert "pauta1" in votante["votos nulo"]
     assert "pauta1" in votante["pautas votadas"]
 
 
 def test_registrar_voto_votante_inexistente():
     bd = Banco_de_Dados()
     bd.adicionar_pauta("pauta1")
-    bd.registrar_voto("user_inexistente", "A favor", "pauta1")
+    bd.registrar_voto("user_inexistente", "a favor", "pauta1")
     pauta = bd.dados["pautas"]["pauta1"]
     assert pauta["qtd de votos a favor"] == 0
 
@@ -83,13 +80,12 @@ def test_registrar_voto_pauta_repetida():
     bd = Banco_de_Dados()
     bd.adicionar_votante("user1", 1234)
     bd.adicionar_pauta("pauta1")
-    bd.registrar_voto("user1", "A favor", "pauta1")
-    bd.registrar_voto("user1", "Contra", "pauta1")  # Segunda tentativa de voto
+    bd.registrar_voto("user1", "a favor", "pauta1")
+    bd.registrar_voto("user1", "contra", "pauta1")
 
     pauta = bd.dados["pautas"]["pauta1"]
     votante = bd.dados["votantes"]["user1"]
 
-    # Garante que apenas o primeiro voto foi computado
     assert pauta["qtd de votos a favor"] == 1
     assert pauta["qtd de votos contra"] == 0
     assert "pauta1" in votante["votos a favor"]
@@ -99,21 +95,20 @@ def test_registrar_voto_pauta_repetida():
 @patch(
     "builtins.open", new_callable=mock_open, read_data='{"votantes": {}, "pautas": {}}'
 )
-def test_ler_json(arquivo_mock):
+def test_ler_json(mock_file):
     bd = Banco_de_Dados()
     bd.ler_json()
     assert bd.dados == {"votantes": {}, "pautas": {}}
-    # Corrigido caminho para consistência
-    arquivo_mock.assert_called_once_with("servidor/Data_Base/dados.json", "r")
+    mock_file.assert_called_once_with("dados.json", "r")
 
 
 @patch("builtins.open", new_callable=mock_open)
-def test_serializar_dados(arquivo_mock):
+def test_serializar_dados(mock_file):
     bd = Banco_de_Dados()
     bd.adicionar_votante("user1", 1234)
     bd.adicionar_pauta("pauta1")
 
     bd.serializar_dados()
-    arquivo_mock.assert_called_once_with("servidor/Data_Base/dados.json", "w")
-    manipulador_arquivo = arquivo_mock()
-    manipulador_arquivo.write.assert_called()
+    mock_file.assert_called_once_with("servidor/Data_Base/dados.json", "w")
+    handle = mock_file()
+    handle.write.assert_called() 

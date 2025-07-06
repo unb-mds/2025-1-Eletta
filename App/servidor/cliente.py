@@ -1,88 +1,67 @@
 import socket
 import json
 
-# Endereço padrão do servidor, atualizado quando o host é descoberto
-endereco_servidor = ("127.0.0.1", 5555)
+server_addr = ("127.0.0.1", 5555)
 
 
-def obter_ip_broadcast() -> str:
-    """
-    Descobre o endereço de IP local e o converte para um endereço de broadcast.
-    Ex: 192.168.1.5 -> 192.168.1.255
-    """
+def get_broadcast_ip() -> str:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        # Conecta-se a um IP externo para descobrir o IP local da interface de rede principal
         s.connect(("8.8.8.8", 80))
-        ip_local = s.getsockname()[0]
+        local_ip = s.getsockname()[0]
     except Exception:
-        ip_local = "127.0.0.1"  # Retorna o localhost em caso de falha
+        local_ip = "127.0.0.1"
     finally:
         s.close()
 
-    partes_ip = ip_local.split(".")
-    partes_ip[-1] = "255"  # Substitui o último octeto por 255
-    return ".".join(partes_ip)
+    ip_parts = local_ip.split(".")
+    ip_parts[-1] = "255"
+    return ".".join(ip_parts)
 
 
 def verificar_host_ativo() -> bool:
-    """
-    Envia uma mensagem de broadcast para descobrir se há um host ativo na rede.
-    """
-    global endereco_servidor
-    socket_teste = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    global server_addr
     try:
-        socket_teste.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        socket_teste.settimeout(2.0)
+        test_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        test_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        test_socket.settimeout(2.0)
 
-        ip_broadcast = obter_ip_broadcast()
-        endereco_broadcast = (ip_broadcast, 5555)
+        broadcast_ip = get_broadcast_ip()
+        broadcast_addr = (broadcast_ip, 5555)
 
-        # Mensagem de verificação (protocolo)
         mensagem = "host_check"
-        socket_teste.sendto(mensagem.encode(), endereco_broadcast)
+        test_socket.sendto(mensagem.encode(), broadcast_addr)
 
-        resposta, endereco = socket_teste.recvfrom(1024)
-        if resposta.decode().strip() == "host_active":
-            print(f"Host descoberto no IP: {endereco[0]}")
-            endereco_servidor = (endereco[0], 5555)  # Atualiza o endereço do servidor
+        response, addr = test_socket.recvfrom(1024)
+        if response.decode().strip() == "host_active":
+            print(f"Host descoberto no IP: {addr[0]}")
+            server_addr = (addr[0], 5555)
             return True
 
         return False
     except socket.timeout:
-        # Se não houver resposta em 2 segundos, assume-se que não há host
         return False
     except Exception as e:
         print(f"Erro ao tentar descobrir host: {e}")
         return False
     finally:
-        socket_teste.close()
+        test_socket.close()
 
 
 def virar_votante() -> socket.socket:
-    """
-    Cria um socket para o votante e notifica o servidor da sua entrada.
-    """
     votante = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # Mensagem de entrada (protocolo)
-    mensagem_entrada = "joined"
-    votante.sendto(mensagem_entrada.encode(), endereco_servidor)
+    message = "joined"
+    votante.sendto(message.encode(), server_addr)
     return votante
 
 
 def receber_mensagem(votante: socket.socket) -> str:
-    """
-    Aguarda e recebe uma mensagem do servidor.
-    """
-    dados, remetente = votante.recvfrom(1024)
+    dados, server = votante.recvfrom(1024)
     mensagem = dados.decode()
     return mensagem
 
 
 def votar(votante: socket.socket, voto: str, pauta: str) -> None:
-    """
-    Envia o voto para o servidor no formato JSON.
-    """
-    dados_voto = [voto, pauta]
-    voto_em_json = json.dumps(dados_voto)
-    votante.sendto(voto_em_json.encode(), endereco_servidor)
+    dados = [voto, pauta]
+    voto = json.dumps(dados)
+    votante.sendto(voto.encode(), server_addr)
