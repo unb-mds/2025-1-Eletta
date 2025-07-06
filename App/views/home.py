@@ -3,10 +3,8 @@ from controlador.controller import Controlador
 
 
 def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
-    # Verifica o status do host ao carregar a página
     controlador.verificar_status_host()
 
-    # Botão de votante
     botao_votante = ft.ElevatedButton(
         text="virar votante",
         width=117,
@@ -14,7 +12,7 @@ def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
         color=ft.Colors.WHITE,
         bgcolor="#39746F",
         on_click=controlador.entrar_na_votacao_como_votante,
-        disabled=not controlador.host_ativo,  # Desabilitado se não houver host ativo
+        disabled=not controlador.host_ativo,
         style=ft.ButtonStyle(
             padding=20,
             text_style=ft.TextStyle(
@@ -25,7 +23,6 @@ def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
         ),
     )
 
-    # Botão de host
     botao_host = ft.ElevatedButton(
         text="virar host",
         width=117,
@@ -44,9 +41,7 @@ def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
     )
 
     conteudo_da_pagina = [
-        # Retângulo superior (topo)
         ft.Container(height=45, bgcolor="#39746F"),
-        # Container central com conteúdo centralizado verticalmente
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
@@ -61,7 +56,6 @@ def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
                 spacing=30,
             ),
         ),
-        # Retângulo inferior (rodapé)
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
@@ -78,7 +72,6 @@ def pagina_inicial(page: ft.Page, controlador: Controlador) -> ft.View:
 
 
 def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
-    # Extrai os dados da string resultado
     resultado_formatado = "\n".join(resultado.split("\n")[1:-2])
 
     votos = resultado_formatado.strip().split("\n")

@@ -4,9 +4,7 @@ from controlador.controller import Controlador
 
 def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Conteúdo central com centralização total
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
@@ -42,7 +40,6 @@ def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.Vie
                 spacing=30,
             ),
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
@@ -57,7 +54,7 @@ def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.Vie
 
 
 def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.View:
-    pauta = ft.TextField(  # Armazena a pauta
+    pauta = ft.TextField(
         width=300,
         color="#4b7d78",
         label="Defina o tema da votação",
@@ -99,9 +96,9 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
         value="30",
         color="#4b7d78",
         border_color="#4b7d78",
-        text_align=ft.TextAlign.CENTER,  # Centraliza o texto selecionado
-        content_padding=ft.padding.only(left=40),  # Ajuste o valor conforme necessário
-        width=301,  # Largura fixa para melhor controle
+        text_align=ft.TextAlign.CENTER,
+        content_padding=ft.padding.only(left=40),
+        width=301,
     )
 
     conteudo_da_pagina = [
@@ -111,9 +108,8 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
                 controls=[
                     ft.Container(
                         content=dropdown_tempo,
-                        # Centraliza o Container que envolve o Dropdown
                         alignment=ft.alignment.center,
-                        width=300,  # Opcional: define um limite de largura
+                        width=300,
                     ),
                     pauta,
                     ft.ElevatedButton(
@@ -139,7 +135,7 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
                 spacing=70,
             ),
             expand=True,
-            alignment=ft.alignment.center,  # Centraliza a Column no Container
+            alignment=ft.alignment.center,
         ),
         ft.Container(height=45, bgcolor="#39746F"),
     ]
@@ -156,9 +152,7 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
 
 def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Conteúdo central com centralização total
         ft.Container(
             expand=True,
             content=ft.Column(
@@ -187,14 +181,13 @@ def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
                         ),
                     ),
                 ],
-                alignment=ft.MainAxisAlignment.CENTER,  # vertical
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # horizontal
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 expand=True,
-                spacing=30,  # permite ocupar o Container pai
+                spacing=30,
             ),
-            alignment=ft.alignment.center,  # centraliza a Column no Container
+            alignment=ft.alignment.center,
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
@@ -221,9 +214,6 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
 def pagina_do_resultado_host_intermediario(
     page: ft.Page, controlador: Controlador
 ) -> ft.View:
-    """
-    Tela que mostra o resultado apenas para o host com um gráfico de pizza e legenda.
-    """
     resultado_formatado = "\n".join(controlador.resultado_votacao.split("\n")[1:-2])
 
     votos = resultado_formatado.strip().split("\n")
@@ -380,11 +370,6 @@ def pagina_do_resultado_host_intermediario(
 
 
 def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> ft.View:
-    """
-    Tela final do host, que aparece após o resultado ser enviado.
-    Agora mostra um gráfico de pizza com legenda.
-    """
-    # Extrai os valores percentuais do resultado já calculado
     resultado_formatado = "\n".join(controlador.resultado_votacao.split("\n")[1:-2])
 
     votos = resultado_formatado.strip().split("\n")

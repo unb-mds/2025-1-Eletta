@@ -2,13 +2,8 @@ import flet as ft
 from controlador.controller import Controlador
 
 
-# --- Nova Página Adicionada ---
 def pagina_de_atencao(page: ft.Page, controlador: Controlador) -> ft.View:
-    """
-    Cria a página de atenção para o votante.
-    """
     conteudo = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
         ft.Container(
             expand=True,
@@ -47,7 +42,6 @@ def pagina_de_atencao(page: ft.Page, controlador: Controlador) -> ft.View:
             ),
             alignment=ft.alignment.center,
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
@@ -62,10 +56,6 @@ def pagina_de_atencao(page: ft.Page, controlador: Controlador) -> ft.View:
 
 
 def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
-    """
-    Esta é a nova tela para onde o usuário é enviado quando o tempo de votação acaba
-    e ele não votou. Mostra uma mensagem apropriada e um indicador de progresso.
-    """
     conteudo = [
         ft.Container(height=45, bgcolor="#39746F"),
         ft.Container(
@@ -84,7 +74,7 @@ def pagina_tempo_esgotado(page: ft.Page) -> ft.View:
                         ),
                         padding=ft.padding.only(top=20),
                     ),
-                    ft.ProgressRing(color="#39746F"),  # Anel de progresso
+                    ft.ProgressRing(color="#39746F"),
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -155,7 +145,6 @@ def aguardar_host(
 
 
 def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
-
     pauta = controlador.mensagem
     timer_display = ft.Text(
         value=f"Tempo restante: {controlador.tempo_votacao}s",
@@ -223,7 +212,6 @@ def pagina_de_votacao(page: ft.Page, controlador: Controlador) -> ft.View:
                 ],
             ),
         ),
-        # Retângulo inferior (rodapé)
         ft.Container(height=45, bgcolor="#39746F"),
     ]
     return ft.View(
@@ -242,9 +230,7 @@ def pagina_de_confirmacao(
     texto = f"Você confirma seu voto: '{voto_selecionado}'?"
 
     conteudo = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Conteúdo central
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
@@ -300,7 +286,6 @@ def pagina_de_confirmacao(
                 expand=True,
             ),
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
