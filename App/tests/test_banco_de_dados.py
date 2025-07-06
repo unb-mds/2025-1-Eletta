@@ -1,7 +1,7 @@
 from unittest.mock import mock_open, patch
 from servidor.Data_Base.DB import (
     Banco_de_Dados,
-)  
+)
 
 
 def test_adicionar_votante():
@@ -111,4 +111,4 @@ def test_serializar_dados(mock_file):
     bd.serializar_dados()
     mock_file.assert_called_once_with("servidor/Data_Base/dados.json", "w")
     handle = mock_file()
-    handle.write.assert_called() 
+    handle.write.assert_called()

@@ -43,7 +43,7 @@ class Controlador:
     def parar_contagem_regressiva_votante(self):
         self.stop_timer_event.set()
         if self.timer_thread_votante and self.timer_thread_votante.is_alive():
-            self.timer_thread_votante.join(timeout=1.0)  
+            self.timer_thread_votante.join(timeout=1.0)
         self.timer_thread_votante = None
 
     def _tarefa_contagem_regressiva_votante(self):
@@ -97,7 +97,7 @@ class Controlador:
                             )
                             break
 
-                    break  
+                    break
                 except timeout:
                     if current_time == 0 and self.page.route in [
                         "/votacao",
@@ -125,7 +125,7 @@ class Controlador:
             self.pauta_start_timestamp = time.time()
         except ValueError:
             self.mensagem = message
-            self.tempo_votacao = 0  
+            self.tempo_votacao = 0
             self.pauta_start_timestamp = time.time()
 
         if self.mensagem:
@@ -185,13 +185,13 @@ class Controlador:
                 self.page.update()
 
             Timer(2.0, remover_texto_erro).start()
-            return  
+            return
 
         socket_host = servidor.virar_host()
 
         if socket_host:
             self.udp_socket = socket_host
-            self.host_ativo = True 
+            self.host_ativo = True
             self.banco_de_dados, self.process, self.flag_de_controle = (
                 servidor.aguardar_votantes(self.udp_socket)
             )
@@ -276,7 +276,6 @@ class Controlador:
         dialog.open = True
         self.page.update()
 
-
         time.sleep(2)
         dialog.open = False
         self.page.go("/resultado_host_final")
@@ -295,7 +294,7 @@ class Controlador:
     def encerrar_sessao(self, e: ft.ControlEvent) -> None:
         self.mensagem = "sessao encerrada"
         servidor.mandar_mensagem(self.banco_de_dados, self.udp_socket, self.mensagem)
-        self.host_ativo = False  
+        self.host_ativo = False
         self._cleanup()
         self.page.go("/")
 
@@ -321,16 +320,16 @@ class Controlador:
 
         def verificacao_periodica():
             while True:
-                time.sleep(2)  
-                if page.route == "/":  
+                time.sleep(2)
+                if page.route == "/":
                     try:
                         self.verificar_status_host()
                         botao_votante.disabled = not self.host_ativo
                         page.update()
                     except Exception:
-                        break  
+                        break
                 else:
-                    break  
+                    break
 
         thread_verificacao = Thread(target=verificacao_periodica, daemon=True)
         thread_verificacao.start()

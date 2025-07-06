@@ -5,7 +5,7 @@ from servidor.cliente import (
     votar,
     get_broadcast_ip,
     verificar_host_ativo,
-) 
+)
 
 
 @patch("socket.socket")
@@ -71,7 +71,7 @@ def test_verificar_host_ativo_true(mock_socket_class):
 @patch("socket.socket")
 def test_verificar_host_ativo_false(mock_socket_class):
     mock_socket = MagicMock()
-    mock_socket.recvfrom.side_effect = TimeoutError 
+    mock_socket.recvfrom.side_effect = TimeoutError
     mock_socket_class.return_value = mock_socket
 
     assert verificar_host_ativo() is False

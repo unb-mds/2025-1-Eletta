@@ -39,9 +39,7 @@ def mandar_mensagem(
 ) -> None:
     for ip, info in banco_de_dados.dados["votantes"].items():
         porta = info["PORT"]
-        server.sendto(
-            mensagem.encode(), (porta, ip)
-        ) 
+        server.sendto(mensagem.encode(), (porta, ip))
 
 
 def receber_votantes(
@@ -80,7 +78,7 @@ def receber_votos(
             server.recvfrom(1024)
         except socket.timeout:
             print("Buffer limpo. Pronto para receber votos.")
-            break  
+            break
     print("Aguardando votos...")
     while not Parar.is_set():
         try:
@@ -142,9 +140,7 @@ def mostrar_resultados(
 def aguardar_votantes(
     server: socket.socket,
 ) -> tuple[Banco_de_Dados, threading.Thread, threading.Event]:
-    Encerrar_espera_por_votantes = (
-        threading.Event()
-    )  
+    Encerrar_espera_por_votantes = threading.Event()
     banco_de_dados = Banco_de_Dados()
     processo = threading.Thread(
         target=receber_votantes,
@@ -157,9 +153,7 @@ def aguardar_votantes(
 def aguardar_votos(
     banco_de_dados: Banco_de_Dados, server: socket.socket
 ) -> tuple[threading.Thread, threading.Event]:
-    Encerrar_espera_por_votos = (
-        threading.Event()
-    ) 
+    Encerrar_espera_por_votos = threading.Event()
     processo = threading.Thread(
         target=receber_votos, args=(banco_de_dados, server, Encerrar_espera_por_votos)
     )
