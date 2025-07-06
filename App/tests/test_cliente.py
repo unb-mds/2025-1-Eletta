@@ -5,7 +5,7 @@ from servidor.cliente import (
     votar,
     get_broadcast_ip,
     verificar_host_ativo,
-)  # seu arquivo cliente.py
+) 
 
 
 @patch("socket.socket")
@@ -30,7 +30,6 @@ def test_virar_votante(mock_socket_class):
 
     votante = virar_votante()
 
-    # Verifica se socket foi criado e message "joined" foi enviado para o server_addr
     mock_socket.sendto.assert_called_once_with(b"joined", ("127.0.0.1", 5555))
     assert votante == mock_socket
 
@@ -38,7 +37,6 @@ def test_virar_votante(mock_socket_class):
 @patch("socket.socket")
 def test_receber_mensagem(mock_socket_class):
     mock_socket = MagicMock()
-    # Mockar o retorno do recvfrom para simular a mensagem recebida
     mock_socket.recvfrom.return_value = (b"mensagem do servidor", ("127.0.0.1", 5555))
     mock_socket_class.return_value = mock_socket
 
@@ -56,7 +54,6 @@ def test_votar(mock_socket_class):
     votante = mock_socket
     votar(votante, "sim", "pauta1")
 
-    # Verifica se o voto foi enviado no formato esperado
     mock_socket.sendto.assert_called_once_with(
         b'["sim", "pauta1"]', ("127.0.0.1", 5555)
     )
@@ -64,7 +61,6 @@ def test_votar(mock_socket_class):
 
 @patch("socket.socket")
 def test_verificar_host_ativo_true(mock_socket_class):
-    # Simula resposta do servidor (host ativo)
     mock_socket = MagicMock()
     mock_socket.recvfrom.return_value = (b"host_active", ("127.0.0.1", 5555))
     mock_socket_class.return_value = mock_socket
@@ -74,9 +70,8 @@ def test_verificar_host_ativo_true(mock_socket_class):
 
 @patch("socket.socket")
 def test_verificar_host_ativo_false(mock_socket_class):
-    # Simula timeout (host inativo)
     mock_socket = MagicMock()
-    mock_socket.recvfrom.side_effect = TimeoutError  # Simula timeout
+    mock_socket.recvfrom.side_effect = TimeoutError 
     mock_socket_class.return_value = mock_socket
 
     assert verificar_host_ativo() is False

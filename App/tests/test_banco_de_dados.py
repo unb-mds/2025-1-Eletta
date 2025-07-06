@@ -1,7 +1,7 @@
 from unittest.mock import mock_open, patch
 from servidor.Data_Base.DB import (
     Banco_de_Dados,
-)  # nome do seu arquivo .py que contém a classe
+)  
 
 
 def test_adicionar_votante():
@@ -71,7 +71,6 @@ def test_registrar_voto_nulo():
 def test_registrar_voto_votante_inexistente():
     bd = Banco_de_Dados()
     bd.adicionar_pauta("pauta1")
-    # Votante não existe, então não deve alterar nada
     bd.registrar_voto("user_inexistente", "a favor", "pauta1")
     pauta = bd.dados["pautas"]["pauta1"]
     assert pauta["qtd de votos a favor"] == 0
@@ -82,7 +81,6 @@ def test_registrar_voto_pauta_repetida():
     bd.adicionar_votante("user1", 1234)
     bd.adicionar_pauta("pauta1")
     bd.registrar_voto("user1", "a favor", "pauta1")
-    # Segunda votação na mesma pauta pelo mesmo usuário deve ser ignorada
     bd.registrar_voto("user1", "contra", "pauta1")
 
     pauta = bd.dados["pautas"]["pauta1"]
@@ -113,4 +111,4 @@ def test_serializar_dados(mock_file):
     bd.serializar_dados()
     mock_file.assert_called_once_with("servidor/Data_Base/dados.json", "w")
     handle = mock_file()
-    handle.write.assert_called()  # Verifica que algo foi escrito
+    handle.write.assert_called() 
