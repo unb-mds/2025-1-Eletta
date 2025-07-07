@@ -24,7 +24,7 @@ def pagina_inicial(pagina: ft.Page, controlador: Controlador) -> ft.View:
     )
 
     botao_host = ft.ElevatedButton(
-        text="Virar Anfitrião",
+        text="Virar Host",
         width=117,
         height=56,
         color=ft.Colors.WHITE,
