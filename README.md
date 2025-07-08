@@ -58,6 +58,7 @@
 - Linguagem: [Python](https://www.python.org/)
 - Framework: [Flet](https://flet.dev/)
 - Comunicação em rede via UDP
+- Android Studio 
 
 ## 📦 Instalação
 
