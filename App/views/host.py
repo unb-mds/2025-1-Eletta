@@ -2,11 +2,9 @@ import flet as ft
 from controlador.controller import Controlador
 
 
-def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.View:
+def pagina_de_espera_votantes(pagina: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Conteúdo central com centralização total
         ft.Container(
             expand=True,
             alignment=ft.alignment.center,
@@ -42,7 +40,6 @@ def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.Vie
                 spacing=30,
             ),
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
@@ -56,8 +53,8 @@ def pagina_de_espera_votantes(page: ft.Page, controlador: Controlador) -> ft.Vie
     )
 
 
-def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.View:
-    pauta = ft.TextField(  # Armazena a pauta
+def pagina_de_criacao_de_pauta(pagina: ft.Page, controlador: Controlador) -> ft.View:
+    pauta = ft.TextField(
         width=300,
         color="#4b7d78",
         label="Defina o tema da votação",
@@ -99,9 +96,9 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
         value="30",
         color="#4b7d78",
         border_color="#4b7d78",
-        text_align=ft.TextAlign.CENTER,  # Centraliza o texto selecionado
-        content_padding=ft.padding.only(left=40),  # Ajuste o valor conforme necessário
-        width=301,  # Largura fixa para melhor controle
+        text_align=ft.TextAlign.CENTER,
+        content_padding=ft.padding.only(left=40),
+        width=301,
     )
 
     conteudo_da_pagina = [
@@ -111,9 +108,8 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
                 controls=[
                     ft.Container(
                         content=dropdown_tempo,
-                        # Centraliza o Container que envolve o Dropdown
                         alignment=ft.alignment.center,
-                        width=300,  # Opcional: define um limite de largura
+                        width=300,
                     ),
                     pauta,
                     ft.ElevatedButton(
@@ -139,7 +135,7 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
                 spacing=70,
             ),
             expand=True,
-            alignment=ft.alignment.center,  # Centraliza a Column no Container
+            alignment=ft.alignment.center,
         ),
         ft.Container(height=45, bgcolor="#39746F"),
     ]
@@ -154,11 +150,9 @@ def pagina_de_criacao_de_pauta(page: ft.Page, controlador: Controlador) -> ft.Vi
     )
 
 
-def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
+def pagina_de_espera_votos(pagina: ft.Page, controlador: Controlador) -> ft.View:
     conteudo_da_pagina = [
-        # Retângulo superior
         ft.Container(height=45, bgcolor="#39746F"),
-        # Conteúdo central com centralização total
         ft.Container(
             expand=True,
             content=ft.Column(
@@ -187,14 +181,13 @@ def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
                         ),
                     ),
                 ],
-                alignment=ft.MainAxisAlignment.CENTER,  # vertical
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,  # horizontal
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 expand=True,
-                spacing=30,  # permite ocupar o Container pai
+                spacing=30,
             ),
-            alignment=ft.alignment.center,  # centraliza a Column no Container
+            alignment=ft.alignment.center,
         ),
-        # Retângulo inferior
         ft.Container(height=45, bgcolor="#39746F"),
     ]
 
@@ -208,7 +201,7 @@ def pagina_de_espera_votos(page: ft.Page, controlador: Controlador) -> ft.View:
     )
 
 
-def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
+def pagina_do_resultado(pagina: ft.Page, resultado: str) -> ft.View:
     conteudo_da_pagina = [ft.Text(value=resultado)]
     return ft.View(
         "/resultado",
@@ -219,11 +212,8 @@ def pagina_do_resultado(page: ft.Page, resultado: str) -> ft.View:
 
 
 def pagina_do_resultado_host_intermediario(
-    page: ft.Page, controlador: Controlador
+    pagina: ft.Page, controlador: Controlador
 ) -> ft.View:
-    """
-    Tela que mostra o resultado apenas para o host com um gráfico de pizza e legenda.
-    """
     resultado_formatado = "\n".join(controlador.resultado_votacao.split("\n")[1:-2])
 
     votos = resultado_formatado.strip().split("\n")
@@ -240,9 +230,9 @@ def pagina_do_resultado_host_intermediario(
         elif "votos nulos" in voto:
             votos_nulos = float(voto.split("=")[1].strip().replace("%", ""))
 
-    normal_radius = 50
-    hover_radius = 60
-    normal_title_style = ft.TextStyle(
+    raio_normal = 50
+    raio_hover = 60
+    estilo_titulo_normal = ft.TextStyle(
         size=13,
         color=ft.Colors.WHITE,
         weight=ft.FontWeight.BOLD,
@@ -253,7 +243,7 @@ def pagina_do_resultado_host_intermediario(
             offset=ft.Offset(0, 0),
         ),
     )
-    hover_title_style = ft.TextStyle(
+    estilo_titulo_hover = ft.TextStyle(
         size=18,
         color=ft.Colors.WHITE,
         weight=ft.FontWeight.BOLD,
@@ -263,43 +253,43 @@ def pagina_do_resultado_host_intermediario(
         ),
     )
 
-    def on_chart_event(e: ft.PieChartEvent):
-        for idx, section in enumerate(chart.sections):
-            if idx == e.section_index:
-                section.radius = hover_radius
-                section.title_style = hover_title_style
+    def em_evento_grafico(e: ft.PieChartEvent):
+        for indice, secao in enumerate(grafico_pizza.sections):
+            if indice == e.section_index:
+                secao.radius = raio_hover
+                secao.title_style = estilo_titulo_hover
             else:
-                section.radius = normal_radius
-                section.title_style = normal_title_style
-        chart.update()
+                secao.radius = raio_normal
+                secao.title_style = estilo_titulo_normal
+        grafico_pizza.update()
 
-    chart = ft.PieChart(
+    grafico_pizza = ft.PieChart(
         sections=[
             ft.PieChartSection(
                 value=votos_favor,
                 title=f"{votos_favor:.2f}%",
                 color=ft.Colors.GREEN,
-                radius=normal_radius,
-                title_style=normal_title_style,
+                radius=raio_normal,
+                title_style=estilo_titulo_normal,
             ),
             ft.PieChartSection(
                 value=votos_contra,
                 title=f"{votos_contra:.2f}%",
                 color=ft.Colors.RED,
-                radius=normal_radius,
-                title_style=normal_title_style,
+                radius=raio_normal,
+                title_style=estilo_titulo_normal,
             ),
             ft.PieChartSection(
                 value=votos_nulos,
                 title=f"{votos_nulos:.2f}%",
                 color=ft.Colors.GREY,
-                radius=normal_radius,
-                title_style=normal_title_style,
+                radius=raio_normal,
+                title_style=estilo_titulo_normal,
             ),
         ],
         sections_space=0,
         center_space_radius=40,
-        on_chart_event=on_chart_event,
+        on_chart_event=em_evento_grafico,
         expand=True,
     )
 
@@ -350,7 +340,7 @@ def pagina_do_resultado_host_intermediario(
                         weight=ft.FontWeight.BOLD,
                         color=ft.Colors.BLACK,
                     ),
-                    chart,
+                    grafico_pizza,
                     legenda,
                     ft.ElevatedButton(
                         text="Enviar resultado",
@@ -379,12 +369,9 @@ def pagina_do_resultado_host_intermediario(
     )
 
 
-def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> ft.View:
-    """
-    Tela final do host, que aparece após o resultado ser enviado.
-    Agora mostra um gráfico de pizza com legenda.
-    """
-    # Extrai os valores percentuais do resultado já calculado
+def pagina_do_resultado_host_final(
+    pagina: ft.Page, controlador: Controlador
+) -> ft.View:
     resultado_formatado = "\n".join(controlador.resultado_votacao.split("\n")[1:-2])
 
     votos = resultado_formatado.strip().split("\n")
@@ -401,9 +388,9 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
         elif "votos nulos" in voto:
             votos_nulos = float(voto.split("=")[1].strip().replace("%", ""))
 
-    normal_radius = 50
-    hover_radius = 60
-    normal_title_style = ft.TextStyle(
+    raio_normal = 50
+    raio_hover = 60
+    estilo_titulo_normal = ft.TextStyle(
         size=13,
         color=ft.Colors.WHITE,
         weight=ft.FontWeight.BOLD,
@@ -414,7 +401,7 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
             offset=ft.Offset(0, 0),
         ),
     )
-    hover_title_style = ft.TextStyle(
+    estilo_titulo_hover = ft.TextStyle(
         size=18,
         color=ft.Colors.WHITE,
         weight=ft.FontWeight.BOLD,
@@ -424,43 +411,43 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
         ),
     )
 
-    def on_chart_event(e: ft.PieChartEvent):
-        for idx, section in enumerate(chart.sections):
-            if idx == e.section_index:
-                section.radius = hover_radius
-                section.title_style = hover_title_style
+    def em_evento_grafico(e: ft.PieChartEvent):
+        for indice, secao in enumerate(grafico_pizza.sections):
+            if indice == e.section_index:
+                secao.radius = raio_hover
+                secao.title_style = estilo_titulo_hover
             else:
-                section.radius = normal_radius
-                section.title_style = normal_title_style
-        chart.update()
+                secao.radius = raio_normal
+                secao.title_style = estilo_titulo_normal
+        grafico_pizza.update()
 
-    chart = ft.PieChart(
+    grafico_pizza = ft.PieChart(
         sections=[
             ft.PieChartSection(
                 value=votos_favor,
                 title=f"{votos_favor:.2f}%",
                 color=ft.Colors.GREEN,
-                radius=normal_radius,
-                title_style=normal_title_style,
+                radius=raio_normal,
+                title_style=estilo_titulo_normal,
             ),
             ft.PieChartSection(
                 value=votos_contra,
                 title=f"{votos_contra:.2f}%",
                 color=ft.Colors.RED,
-                radius=normal_radius,
-                title_style=normal_title_style,
+                radius=raio_normal,
+                title_style=estilo_titulo_normal,
             ),
             ft.PieChartSection(
                 value=votos_nulos,
                 title=f"{votos_nulos:.2f}%",
                 color=ft.Colors.GREY,
-                radius=normal_radius,
-                title_style=normal_title_style,
+                radius=raio_normal,
+                title_style=estilo_titulo_normal,
             ),
         ],
         sections_space=0,
         center_space_radius=40,
-        on_chart_event=on_chart_event,
+        on_chart_event=em_evento_grafico,
         expand=True,
     )
 
@@ -511,7 +498,7 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
                         weight=ft.FontWeight.BOLD,
                         color="#000000",
                     ),
-                    chart,
+                    grafico_pizza,
                     legenda,
                     ft.ElevatedButton(
                         text="Criar nova pauta",
@@ -548,7 +535,7 @@ def pagina_do_resultado_host_final(page: ft.Page, controlador: Controlador) -> f
     )
 
 
-def pagina_sucesso_criacao_sala(page: ft.Page) -> ft.View:
+def pagina_sucesso_criacao_sala(pagina: ft.Page) -> ft.View:
     conteudo = [
         ft.Container(height=45, bgcolor="#39746F"),
         ft.Container(

@@ -36,28 +36,26 @@ def socket_mock():
     return Mock(spec=socket.socket)
 
 
-@patch("servidor.servidor.socket.socket")  # Mocka a classe socket.socket
-def test_virar_host_cria_socket_udp(mock_socket_class):
-    mock_socket_instance = MagicMock()
-    mock_socket_class.return_value = mock_socket_instance
+@patch("servidor.servidor.socket.socket")
+def test_virar_host_cria_socket_udp(mock_classe_socket):
+    mock_instancia_socket = MagicMock()
+    mock_classe_socket.return_value = mock_instancia_socket
 
-    # Chama a função que queremos testar
-    server = virar_host()
+    servidor = virar_host()
 
-    # Verificações com asserts simples, padrão pytest
-    mock_socket_class.assert_called_once_with(socket.AF_INET, socket.SOCK_DGRAM)
-    mock_socket_instance.settimeout.assert_called_once_with(1.0)
-    mock_socket_instance.bind.assert_called_once_with(("0.0.0.0", 5555))
-    assert server == mock_socket_instance
+    mock_classe_socket.assert_called_once_with(socket.AF_INET, socket.SOCK_DGRAM)
+    mock_instancia_socket.settimeout.assert_called_once_with(1.0)
+    mock_instancia_socket.bind.assert_called_once_with(("0.0.0.0", 5555))
+    assert servidor == mock_instancia_socket
 
 
 def test_mandar_mensagem_envia_para_todos(socket_mock, banco_mock):
     mandar_mensagem(banco_mock, socket_mock, "Mensagem de teste")
-    expected_calls = [
+    chamadas_esperadas = [
         call.sendto(b"Mensagem de teste", (12345, "192.168.0.10")),
         call.sendto(b"Mensagem de teste", (12346, "192.168.0.11")),
     ]
-    socket_mock.assert_has_calls(expected_calls, any_order=True)
+    socket_mock.assert_has_calls(chamadas_esperadas, any_order=True)
 
 
 def test_mostrar_resultados_envia_resultado_formatado(socket_mock, banco_mock):
@@ -68,56 +66,45 @@ def test_mostrar_resultados_envia_resultado_formatado(socket_mock, banco_mock):
     assert "votos contra = 20.00%" in resultado
     assert "votos nulos = 20.00%" in resultado
 
-    # Verifica se a função manda mensagem para os votantes
     assert socket_mock.sendto.called
 
 
 def test_receber_votantes(monkeypatch):
-    # Mocks
     banco_mock = Mock()
     banco_mock.adicionar_votante = Mock()
     banco_mock.serializar_dados = Mock()
 
-    # Criar um mock para socket
-    server_mock = Mock(spec=socket.socket)
+    mock_servidor = Mock(spec=socket.socket)
 
-    # Criar dados para retornar do recvfrom
-    votante_info = ("192.168.0.100", 54321)
+    info_votante = ("192.168.0.100", 54321)
     dado_recebido = b"joined"
 
-    # Criar lista de dados que o recvfrom vai retornar
-    # Primeiro retorno válido, depois timeout para parar o loop
-    def recvfrom_side_effect(buffer_size):
-        if not hasattr(recvfrom_side_effect, "called"):
-            recvfrom_side_effect.called = True
-            return (dado_recebido, votante_info)
+    def efeito_colateral_recvfrom(buffer_size):
+        if not hasattr(efeito_colateral_recvfrom, "called"):
+            efeito_colateral_recvfrom.called = True
+            return (dado_recebido, info_votante)
         else:
             raise socket.timeout
 
-    server_mock.recvfrom.side_effect = recvfrom_side_effect
+    mock_servidor.recvfrom.side_effect = efeito_colateral_recvfrom
 
-    # Criar o evento que vai parar a função após um ciclo
-    parar_event = threading.Event()
+    evento_parar = threading.Event()
 
-    # Rodar receber_votantes em thread para não travar o teste
-    def run_func():
-        receber_votantes(banco_mock, server_mock, parar_event)
+    def executar_funcao():
+        receber_votantes(banco_mock, mock_servidor, evento_parar)
 
-    thread = threading.Thread(target=run_func)
+    thread = threading.Thread(target=executar_funcao)
     thread.start()
 
-    # Esperar um pouco para função rodar e depois parar o loop
     import time
 
     time.sleep(0.1)
-    parar_event.set()
+    evento_parar.set()
 
-    # Espera a thread terminar
     thread.join(timeout=1)
 
-    # Verificar se o banco foi atualizado com os dados corretos
     banco_mock.adicionar_votante.assert_called_once_with(
-        votante_info[1], votante_info[0]
+        info_votante[1], info_votante[0]
     )
     banco_mock.serializar_dados.assert_called()
 
@@ -127,31 +114,31 @@ def test_receber_votos(monkeypatch):
     banco_mock.registrar_voto = Mock()
     banco_mock.serializar_dados = Mock()
 
-    server_mock = Mock(spec=socket.socket)
+    mock_servidor = Mock(spec=socket.socket)
     voto_json = '["sim", "Educação"]'.encode("utf-8")
-    votante_info = ("192.168.0.100", 54321)
+    info_votante = ("192.168.0.100", 54321)
 
-    server_mock.recvfrom.side_effect = itertools.chain(
-        [socket.timeout, (voto_json, votante_info)], itertools.repeat(socket.timeout)
+    mock_servidor.recvfrom.side_effect = itertools.chain(
+        [socket.timeout, (voto_json, info_votante)], itertools.repeat(socket.timeout)
     )
 
-    parar_event = threading.Event()
+    evento_parar = threading.Event()
 
-    def run_func():
-        receber_votos(banco_mock, server_mock, parar_event)
+    def executar_funcao():
+        receber_votos(banco_mock, mock_servidor, evento_parar)
 
-    thread = threading.Thread(target=run_func)
+    thread = threading.Thread(target=executar_funcao)
     thread.start()
 
     import time
 
     time.sleep(0.1)
-    parar_event.set()
+    evento_parar.set()
     thread.join(timeout=1)
 
     assert banco_mock.registrar_voto.call_count == 1
     args, kwargs = banco_mock.registrar_voto.call_args
-    assert args[0] == 54321  # porta
+    assert args[0] == 54321
     assert args[1] == "sim"
     assert args[2] == "Educação"
     banco_mock.serializar_dados.assert_called()
