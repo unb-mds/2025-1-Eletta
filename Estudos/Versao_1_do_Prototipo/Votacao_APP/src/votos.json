@@ -1,0 +1,35 @@
+{
+  "total": {
+    "a_favor": 4
+  },
+  "historico": [
+    {
+      "pergunta": "davii?",
+      "tipo": "a_favor",
+      "endereco_cripto": "gAAAAABoDqIr5KZlm7NapVrvQgExdqczlq2NpbI3UDxWgrl9DrrWK2CJ0I9VUN6yowUc4YYrRP1qDWwLdGVYqCxNFlj9gJMEqA==",
+      "porta": 63012,
+      "timestamp": "2025-04-27T18:31:23.451777"
+    },
+    {
+      "pergunta": "Nenhuma pergunta definida",
+      "tipo": "a_favor",
+      "endereco_cripto": "gAAAAABoDqMgIhojHKu9LZcZyPpjdM4JtRrmpk2gf5hP91YvZ-S_PjEDlOMx2OBxdQ36EZU7L1cVlH-EbE1EGobV4lsQ5iJpRQ==",
+      "porta": 53523,
+      "timestamp": "2025-04-27T18:35:28.274044"
+    },
+    {
+      "pergunta": "Nenhuma pergunta definida",
+      "tipo": "a_favor",
+      "endereco_cripto": "gAAAAABoDqO4hG_Qgm4WmhGcUX7LMXSX_Dmc0rBN0IUBW70W3iMsY9DY17tvFKZD6TdTZG_hQ-o1CFrb-hZrmeYIea9gGpYyyg==",
+      "porta": 60551,
+      "timestamp": "2025-04-27T18:38:00.994079"
+    },
+    {
+      "pergunta": "Nenhuma pergunta definida",
+      "tipo": "a_favor",
+      "endereco_cripto": "gAAAAABoDqSOucWj_iyAlbQOkNY7WQICFZ0Uj2JlNY-66iD-SEj7vcZ3UPqcJv8Icb528h6EhAG24h8_EgtXLhHfuGOhsHDyZg==",
+      "porta": 60551,
+      "timestamp": "2025-04-27T18:41:34.171554"
+    }
+  ]
+}

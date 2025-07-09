@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Votação Presencial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+    h1 { margin-bottom: 20px; color: #2c3e50; }
+    p { font-size: 16px; margin-bottom: 20px; }
+    .button {
+      padding: 12px 20px;
+      margin: 10px 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      color: white;
+      font-weight: 600;
+    }
+    .button.favor { background: #27ae60; }
+    .button.favor:hover { background: #219150; }
+    .button.contra { background: #e74c3c; }
+    .button.contra:hover { background: #c44133; }
+    .button.abstencao { background: #f1c40f; color: #333; }
+    .button.abstencao:hover { background: #d4af0d; }
+    .status { margin-top: 15px; font-weight: 600; }
+    .question-input { margin-top: 30px; text-align: left; }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      font-size: 15px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .define-button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    .define-button:hover { background: #2980b9; }
+    .historico {
+      margin-top: 40px;
+      text-align: left;
+    }
+    .historico h3 {
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Votação Presencial</h1>
+    <p id="question">Aguardando a questão...</p>
+    <div>
+      <button class="button favor" onclick="sendVote('a_favor')">✅ A Favor</button>
+      <button class="button contra" onclick="sendVote('contra')">❌ Contra</button>
+      <button class="button abstencao" onclick="sendVote('abstencao')">🤔 Abster-se</button>
+    </div>
+    <p id="status" class="status"></p>
+
+    <div style="margin-top: 30px;">
+      <button class="define-button" onclick="ativarAdmin()">🔐 Entrar como Admin</button>
+    </div>
+
+    <div class="question-input" id="adminPanel" style="display: none;">
+      <label for="novaQuestao"><strong>Definir Nova Questão:</strong></label>
+      <input type="text" id="novaQuestao" placeholder="Digite a nova questão..." />
+      <button class="define-button" onclick="definirQuestao()">Definir</button>
+      <p id="definicaoStatus" class="status"></p>
+    </div>
+
+    <div class="historico" id="historico" style="display: none;"></div>
+  </div>
+
+  <script>
+    const server = "http://127.0.0.1:8000";
+    const userId = localStorage.getItem("userId") || Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("userId", userId);
+
+    async function fetchResults() {
+      const response = await fetch(`${server}/results`);
+      const data = await response.json();
+
+      const current = data.perguntas[data.perguntas.length - 1];
+      document.getElementById("question").innerText = current?.question || "Aguardando a questão...";
+
+      if (localStorage.getItem("isAdmin") === "true") {
+        const historicoDiv = document.getElementById("historico");
+        let html = '<h3>Histórico de Perguntas</h3>';
+        html += '<table><tr><th>Pergunta</th><th>A Favor</th><th>Contra</th><th>Abstenção</th></tr>';
+        data.perguntas.forEach(p => {
+          html += `<tr><td>${p.question}</td><td>${p.results.a_favor}</td><td>${p.results.contra}</td><td>${p.results.abstencao}</td></tr>`;
+        });
+        html += '</table>';
+        historicoDiv.innerHTML = html;
+        historicoDiv.style.display = "block";
+      }
+    }
+
+    async function sendVote(vote) {
+      const response = await fetch(`${server}/vote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, vote: vote })
+      });
+
+      const result = await response.json();
+      const status = document.getElementById("status");
+      status.innerText = result.message || result.error;
+      status.style.color = result.error ? "#e74c3c" : "#27ae60";
+      fetchResults();
+    }
+
+    async function definirQuestao() {
+      const questao = document.getElementById("novaQuestao").value;
+      if (!questao) return;
+
+      const response = await fetch(`${server}/question`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: questao })
+      });
+
+      const result = await response.json();
+      const status = document.getElementById("definicaoStatus");
+      status.innerText = result.message || result.error;
+      status.style.color = result.error ? "#e74c3c" : "#3498db";
+      fetchResults();
+    }
+
+    function ativarAdmin() {
+      const senha = prompt("Digite a senha do administrador:");
+      if (senha === "1") {
+        localStorage.setItem("isAdmin", "true");
+        document.getElementById("adminPanel").style.display = "block";
+        document.getElementById("historico").style.display = "block";
+        fetchResults();
+      } else {
+        alert("Senha incorreta!");
+      }
+    }
+
+    setInterval(fetchResults, 5000);
+    fetchResults();
+  </script>
+</body>
+</html>

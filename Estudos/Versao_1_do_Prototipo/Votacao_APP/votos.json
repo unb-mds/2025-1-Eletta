@@ -1,0 +1,30 @@
+{
+  "total": {
+    "a_favor": 1,
+    "contra": 1,
+    "abstencao": 1
+  },
+  "historico": [
+    {
+      "pergunta": "dasdlpkmakpmfa?",
+      "tipo": "a_favor",
+      "endereco_cripto": "gAAAAABoGpZeW1OQFMSi_tdEaNNblbivpLdnVUjdeV4nYxPSxocAC6pO-4ZVwIWIbwuBU2AYXtJuNGjJZ8NiPjQuxJGHFnSnGQ==",
+      "porta": 49263,
+      "timestamp": "2025-05-06T20:08:14.640006"
+    },
+    {
+      "pergunta": "djmkamndkmnak?",
+      "tipo": "contra",
+      "endereco_cripto": "gAAAAABoGpZqHKYZszYZqBe5oyHy4KmMyoAar5AAy2s9xZCZNd4MqkfH253VZH-JgGL1dQx2QBnaB95Bz3pY_SGtCcYOHCKYvA==",
+      "porta": 49263,
+      "timestamp": "2025-05-06T20:08:26.258007"
+    },
+    {
+      "pergunta": "domandojknmaoikd?",
+      "tipo": "abstencao",
+      "endereco_cripto": "gAAAAABoGpZwBCMvlfCJkitB-Ivf8LvaD_WeWj6OcH76DPoW-JWGn5WzIBRnfM6a5mrshSojbZeK61cEp4zzZzNS8wVl1iS11w==",
+      "porta": 49263,
+      "timestamp": "2025-05-06T20:08:32.069012"
+    }
+  ]
+}

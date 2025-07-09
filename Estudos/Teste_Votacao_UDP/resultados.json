@@ -1,0 +1,9 @@
+{
+  "question": null,
+  "results": {
+    "a_favor": 0,
+    "contra": 0,
+    "abstencao": 0
+  },
+  "ids_votantes": []
+}
